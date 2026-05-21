@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { motion, useMotionTemplate, useSpring } from "motion/react";
 
 export const MouseSpotlight = () => {
-  const springConfig = { damping: 30, stiffness: 200, mass: 1 };
+  const springConfig = { damping: 30, stiffness: 500, mass: 1 };
   const x = useSpring(typeof window !== "undefined" ? window.innerWidth / 2 : 0, springConfig);
   const y = useSpring(typeof window !== "undefined" ? window.innerHeight / 2 : 0, springConfig);
 
