@@ -50,7 +50,7 @@ export const BentoShowcase = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[minmax(140px,auto)]">
           {bentoItems.map((item, idx) => {
             const Icon = item.icon;
-            const tr = t.bento.items[item.key];
+            const tr = (t.bento.items as any)[item.key];
             return (
               <motion.div
                 key={item.id}
@@ -67,7 +67,6 @@ export const BentoShowcase = () => {
                   hover:shadow-lg
                 `}
               >
-                {/* gradient orb on hover */}
                 <div
                   className={`absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 blur-2xl transition-opacity duration-500`}
                 />

@@ -45,6 +45,13 @@ import { TextScramble } from "./components/utils/TextScramble.tsx";
 import { TiltCard } from "./components/utils/TiltCard.tsx";
 import { MagneticButton } from "./components/utils/MagneticButton.tsx";
 import { AnimatedGrid } from "./components/utils/AnimatedGrid.tsx";
+import { MentorsPage } from "./components/pages/MentorsPage.tsx";
+import { ProjectsShowcase } from "./components/utils/ProjectsShowcase.tsx";
+import { CompaniesStrip } from "./components/utils/CompaniesStrip.tsx";
+import { TestimonialsCarousel } from "./components/utils/TestimonialsCarousel.tsx";
+import { FAQAccordion } from "./components/utils/FAQAccordion.tsx";
+import { PricingTable } from "./components/utils/PricingTable.tsx";
+import { MiniQuiz } from "./components/utils/MiniQuiz.tsx";
 
 
 // --- ДАННЫЕ ПЕРЕВОДОВ ---
@@ -52,8 +59,90 @@ import { AnimatedGrid } from "./components/utils/AnimatedGrid.tsx";
 const translations = {
 
   EN: {
+    companies: {
+  title: "Our graduates work at",
+},
+testimonials: {
+  title: "Real stories from",
+  titleAccent: "our students",
+  items: [
+    { name: "Alex Petrov",    role: "Junior Frontend @ Yandex",  text: "Switched from accounting to coding in 8 months. SkillPath made the path clear and structured.",                       before: "Accountant",     after: "$3k/mo" },
+    { name: "Maria Volkova",  role: "ML Engineer @ Tinkoff",     text: "I had zero math background. The roadmap broke everything into bite-sized pieces. Now I train models at a top bank.", before: "Marketing",      after: "$5k/mo" },
+    { name: "Daniel Kim",     role: "Pentester @ Group-IB",      text: "From watching Mr. Robot to actually hacking systems legally. Best decision of my career.",                          before: "Sysadmin",       after: "$4k/mo" },
+    { name: "Sofia Lebedeva", role: "Data Analyst @ Avito",      text: "I tried to learn alone for 2 years. With SkillPath I got a job in 6 months. The mentor changed everything.",         before: "Student",        after: "$3.5k/mo" },
+  ]
+},
+faq: {
+  title: "Frequently Asked",
+  titleAccent: "Questions",
+  items: [
+    { q: "How much does it cost?",              a: "We have a free tier with basic roadmaps and a Pro plan starting from $19/month with mentor access, certificates and projects." },
+    { q: "How long until I get a job?",         a: "Most students land their first offer within 6-8 months of focused learning (10h/week). Some do it in 4 months, others in a year — it's your pace." },
+    { q: "Do I need any coding background?",    a: "Nope. 60% of our students started from zero. The roadmaps are built for absolute beginners with clear step-by-step progression." },
+    { q: "What if I get stuck?",                a: "You get a personal mentor, 24/7 AI copilot and an active Discord community of 5000+ students helping each other." },
+    { q: "Do you help with job placement?",     a: "Yes — resume reviews, mock interviews, referrals to partner companies (Yandex, Tinkoff, Sber, Avito) and a job board with exclusive openings." },
+    { q: "Can I switch roadmaps later?",        a: "Absolutely. You can switch anytime, and completed skills carry over where they overlap." },
+  ]
+},
+pricing: {
+  title: "Choose your",
+  titleAccent: "plan",
+  subtitle: "Start free. Upgrade when you're ready to level up.",
+  monthly: "Monthly",
+  yearly: "Yearly",
+  save: "Save 20%",
+  popular: "Most Popular",
+  perMonth: "/month",
+  cta: "Get Started",
+  plans: [
+    { name: "Free",    price: 0,  yearPrice: 0,    desc: "Perfect to explore",     features: ["All public roadmaps", "Community access", "Basic progress tracking", "1 free mentor session"], cta: "Start Free" },
+    { name: "Pro",     price: 19, yearPrice: 15,   desc: "For serious learners",   features: ["Everything in Free", "Unlimited mentor chat", "All certificates", "Live workshops", "Project reviews", "Priority support"], cta: "Go Pro", popular: true },
+    { name: "Premium", price: 49, yearPrice: 39,   desc: "Full career package",    features: ["Everything in Pro", "1-on-1 weekly mentor", "Interview prep program", "Job placement help", "Resume & LinkedIn review", "Lifetime access"], cta: "Go Premium" },
+  ]
+},
+mini: {
+  title: "Find your",
+  titleAccent: "perfect path",
+  subtitle: "Answer 3 quick questions",
+  questions: [
+    { q: "What gets you excited?", opts: [
+      { emoji: "🎨", text: "Beautiful design", v: "frontend" },
+      { emoji: "🤖", text: "Smart machines",   v: "ai" },
+      { emoji: "🛡", text: "Solving puzzles",  v: "cybersec" },
+      { emoji: "📊", text: "Finding patterns", v: "datascience" },
+    ]},
+    { q: "Your superpower?", opts: [
+      { emoji: "✨", text: "Visual taste",     v: "frontend" },
+      { emoji: "🧮", text: "Math & logic",     v: "ai" },
+      { emoji: "🔍", text: "Attention to detail", v: "cybersec" },
+      { emoji: "📈", text: "Spotting trends",  v: "datascience" },
+    ]},
+    { q: "Ideal Saturday?", opts: [
+      { emoji: "🖌", text: "Drawing concepts", v: "frontend" },
+      { emoji: "📚", text: "Reading research", v: "ai" },
+      { emoji: "🕵", text: "Solving mysteries", v: "cybersec" },
+      { emoji: "📉", text: "Analyzing data",   v: "datascience" },
+    ]},
+  ],
+  result: "You're best suited for",
+  cta: "See full roadmap",
+  retake: "Take again",
+},
 
-    nav: { profs: "Professions", roads: "Roadmaps", mentors: "Mentors", login: "Login" },
+    nav: { profs: "Professions", 
+      roads: "Roadmaps", 
+      mentors: "Mentors", 
+      login: "Login",
+      loginTitle: "Welcome back",          // 👈 добавь
+      loginSubtitle: "Login to continue your journey",
+      emailPlaceholder: "Email",
+      passwordPlaceholder: "Password",
+      loginBtn: "Sign In",
+      noAccount: "Don't have an account?",
+      signUp: "Sign up",
+      orContinue: "or continue with",
+      comingSoon: "Coming soon! 🚀",
+      mentorsToast: "Mentor matching is launching next month",},
 
     hero: {
 
@@ -431,8 +520,90 @@ const translations = {
 
 
   RU: {
+    companies: {
+  title: "Наши выпускники работают в",
+},
+testimonials: {
+  title: "Реальные истории",
+  titleAccent: "наших студентов",
+  items: [
+    { name: "Алексей Петров",   role: "Junior Frontend @ Yandex",  text: "За 8 месяцев перешёл из бухгалтерии в код. SkillPath сделал путь понятным и структурированным.",                before: "Бухгалтер",    after: "$3k/мес" },
+    { name: "Мария Волкова",    role: "ML Engineer @ Tinkoff",     text: "У меня был ноль по математике. Роадмап разбил всё на маленькие шаги. Сейчас тренирую модели в банке.",          before: "Маркетолог",   after: "$5k/мес" },
+    { name: "Данил Ким",        role: "Pentester @ Group-IB",      text: "От просмотра Mr. Robot до реальных взломов систем легально. Лучшее решение в карьере.",                       before: "Сисадмин",     after: "$4k/мес" },
+    { name: "София Лебедева",   role: "Data Analyst @ Avito",      text: "Училась сама 2 года. С SkillPath нашла работу за 6 месяцев. Ментор изменил всё.",                           before: "Студентка",    after: "$3.5k/мес" },
+  ]
+},
+faq: {
+  title: "Частые",
+  titleAccent: "вопросы",
+  items: [
+    { q: "Сколько это стоит?",                   a: "Есть бесплатный план с базовыми роадмапами и Pro-план от $19/мес с менторами, сертификатами и проектами." },
+    { q: "Как быстро я найду работу?",           a: "Большинство студентов получают первый офер за 6-8 месяцев (10ч/неделя). Кто-то за 4, кто-то за год — это твой темп." },
+    { q: "Нужен ли опыт программирования?",      a: "Нет. 60% наших студентов начинали с нуля. Роадмапы созданы для абсолютных новичков с понятной прогрессией." },
+    { q: "Что если я застряну?",                 a: "У тебя будет личный ментор, 24/7 AI-копилот и активное Discord-сообщество из 5000+ студентов." },
+    { q: "Помогаете с трудоустройством?",        a: "Да — ревью резюме, mock-собесы, рекомендации в компании-партнёры (Yandex, Tinkoff, Сбер, Avito) и доска эксклюзивных вакансий." },
+    { q: "Можно ли сменить роадмап потом?",      a: "Абсолютно. Можно сменить когда угодно, пройденные навыки переносятся там где пересекаются." },
+  ]
+},
+pricing: {
+  title: "Выбери свой",
+  titleAccent: "план",
+  subtitle: "Начни бесплатно. Прокачайся когда будешь готов.",
+  monthly: "Помесячно",
+  yearly: "Годовой",
+  save: "Скидка 20%",
+  popular: "Популярный",
+  perMonth: "/мес",
+  cta: "Начать",
+  plans: [
+    { name: "Free",    price: 0,  yearPrice: 0,    desc: "Чтобы попробовать",   features: ["Все публичные роадмапы", "Доступ к сообществу", "Базовое отслеживание прогресса", "1 бесплатная сессия с ментором"], cta: "Начать бесплатно" },
+    { name: "Pro",     price: 19, yearPrice: 15,   desc: "Для серьёзного обучения", features: ["Всё из Free", "Безлимит чата с ментором", "Все сертификаты", "Live-воркшопы", "Ревью проектов", "Приоритетная поддержка"], cta: "Перейти на Pro", popular: true },
+    { name: "Premium", price: 49, yearPrice: 39,   desc: "Полный карьерный пакет", features: ["Всё из Pro", "1-на-1 с ментором еженедельно", "Программа подготовки к собесам", "Помощь с трудоустройством", "Ревью резюме и LinkedIn", "Доступ навсегда"], cta: "Перейти на Premium" },
+  ]
+},
+mini: {
+  title: "Найди свой",
+  titleAccent: "идеальный путь",
+  subtitle: "Ответь на 3 быстрых вопроса",
+  questions: [
+    { q: "Что тебя зажигает?", opts: [
+      { emoji: "🎨", text: "Красивый дизайн", v: "frontend" },
+      { emoji: "🤖", text: "Умные машины",    v: "ai" },
+      { emoji: "🛡", text: "Решать головоломки", v: "cybersec" },
+      { emoji: "📊", text: "Искать паттерны", v: "datascience" },
+    ]},
+    { q: "Твоя суперсила?", opts: [
+      { emoji: "✨", text: "Чувство вкуса",    v: "frontend" },
+      { emoji: "🧮", text: "Математика и логика", v: "ai" },
+      { emoji: "🔍", text: "Внимание к деталям", v: "cybersec" },
+      { emoji: "📈", text: "Видеть тренды",    v: "datascience" },
+    ]},
+    { q: "Идеальная суббота?", opts: [
+      { emoji: "🖌", text: "Рисовать концепты", v: "frontend" },
+      { emoji: "📚", text: "Читать исследования", v: "ai" },
+      { emoji: "🕵", text: "Расследовать тайны", v: "cybersec" },
+      { emoji: "📉", text: "Анализировать данные", v: "datascience" },
+    ]},
+  ],
+  result: "Тебе подходит",
+  cta: "Открыть роадмап",
+  retake: "Пройти ещё раз",
+},
 
-    nav: { profs: "Профессии", roads: "Роадмапc", mentors: "Менторы", login: "Войти" },
+    nav: {  profs: "Профессии", 
+      roads: "Роадмапы", 
+      mentors: "Менторы", 
+      login: "Войти",
+      loginTitle: "С возвращением",
+      loginSubtitle: "Войдите чтобы продолжить обучение",
+      emailPlaceholder: "Email",
+      passwordPlaceholder: "Пароль",
+      loginBtn: "Войти",
+      noAccount: "Нет аккаунта?",
+      signUp: "Регистрация",
+      orContinue: "или войдите через",
+      comingSoon: "Скоро! 🚀",
+      mentorsToast: "Запуск раздела менторов уже в следующем месяце", },
 
     hero: {
 
@@ -835,8 +1006,27 @@ const translations = {
 
 
 
-export const LanguageContext = createContext({ lang: 'EN', setLang: () => {}, t: translations.EN, currentPage: 'home', setCurrentPage: () => {}, openRoadmap: null, setOpenRoadmap: () => {} });
+type Lang = "EN" | "RU";
 
+interface LangCtx {
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  t: typeof translations.EN;
+  currentPage: string;
+  setCurrentPage: (p: string) => void;
+  openRoadmap: string | null;
+  setOpenRoadmap: (k: string | null) => void;
+}
+
+export const LanguageContext = createContext<LangCtx>({
+  lang: 'EN',
+  setLang: () => {},
+  t: translations.EN,
+  currentPage: 'home',
+  setCurrentPage: () => {},
+  openRoadmap: null,
+  setOpenRoadmap: () => {},
+});
 
 const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
 
@@ -892,14 +1082,10 @@ const LanguageToggle = () => {
   const { lang, setLang } = useContext(LanguageContext);
 
   const cycleLang = () => {
-
-    const order = ["EN", "RU"];
-
-    const next = order[(order.indexOf(lang) + 1) % order.length];
-
-    setLang(next);
-
-  };
+  const order: Lang[] = ["EN", "RU"];
+  const next = order[(order.indexOf(lang) + 1) % order.length];
+  setLang(next);
+};
 
   return (
 
@@ -1006,7 +1192,8 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
               whileHover={{ scale: 1.05 }}
 
               whileTap={{ scale: 0.95 }}
-
+              
+              onClick={() => document.getElementById('roles')?.scrollIntoView({ behavior: 'smooth' })} 
               className="px-8 py-4 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-800 dark:text-white font-bold tracking-wide hover:bg-black/10 dark:hover:bg-white/10 transition-all backdrop-blur-md flex items-center gap-2"
 
             >
@@ -1171,7 +1358,13 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
 };
 
 
-const RoleCard = ({ icon: Icon, title, desc, colorClass, roadmapKey }) => {
+const RoleCard = ({ icon: Icon, title, desc, colorClass, roadmapKey }: {
+  icon: any;
+  title: string;
+  desc: string;
+  colorClass: string;
+  roadmapKey: string;
+}) => {
 
   const { t, setCurrentPage, setOpenRoadmap } = useContext(LanguageContext);
 
@@ -1234,7 +1427,7 @@ const RolesSection = () => {
 
   return (
 
-    <section className="py-24 relative z-10">
+     <section id="roles" className="py-24 relative z-10">
 
       <div className="container mx-auto px-6">
 
@@ -1275,119 +1468,238 @@ const RolesSection = () => {
 
 
 const StepsSection = () => {
-
   const { t } = useContext(LanguageContext);
-
   return (
-
     <section className="py-24 relative overflow-hidden">
-
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[500px] bg-cyan-500/5 rounded-full blur-[150px] pointer-events-none" />
-
       
-
       <div className="container mx-auto px-6">
-
         <div className="flex flex-col lg:flex-row gap-16 items-center">
-
+          {/* LEFT — steps */}
           <div className="flex-1 space-y-8">
-
             <h2 className="text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white">
-
               {t.steps.t} <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-500">{t.steps.ts}</span>
-
             </h2>
-
             
-
             <div className="space-y-6">
-
               {[t.steps.s1, t.steps.s2, t.steps.s3].map((item, i) => (
-
                 <motion.div 
-
                   initial={{ opacity: 0, x: -20 }}
-
                   whileInView={{ opacity: 1, x: 0 }}
-
                   viewport={{ once: true }}
-
                   transition={{ delay: i * 0.2 }}
-
                   key={i} 
-
                   className={`p-6 ${glassCard} flex gap-6 items-start`}
-
                 >
-
                   <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-blue-600 dark:from-cyan-400 dark:to-pink-500 drop-shadow-sm">
-
                     0{i+1}
-
                   </div>
-
                   <div>
-
                     <h4 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">{item.t}</h4>
-
                     <p className="text-sm text-slate-600 dark:text-white/60">{item.d}</p>
-
                   </div>
-
                 </motion.div>
-
               ))}
-
             </div>
-
           </div>
 
-          
+          {/* RIGHT — device showcase */}
+          <div className="flex-1 relative w-full max-w-[500px] h-[600px] flex items-center justify-center">
+            {/* Decorative animated rings */}
+            <motion.div 
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[480px] h-[480px] rounded-full border border-dashed border-cyan-500/20 dark:border-cyan-500/30"
+            />
+            <motion.div 
+              animate={{ rotate: -360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[360px] h-[360px] rounded-full border border-dashed border-pink-500/20 dark:border-pink-500/30"
+            />
 
-          <div className="flex-1 relative">
+            {/* PHONE MOCKUP (center) */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              animate={{ y: [-8, 8, -8] }}
+              transition={{ y: { duration: 6, repeat: Infinity, ease: "easeInOut" } }}
+              className="relative z-20 w-[260px] h-[540px] rounded-[3rem] bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-950 dark:to-slate-900 p-3 shadow-2xl border-[3px] border-slate-700 dark:border-slate-800"
+            >
+              {/* notch */}
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-2xl z-30" />
+              
+              {/* screen */}
+              <div className="w-full h-full rounded-[2.3rem] bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 overflow-hidden relative">
+                {/* status bar */}
+                <div className="px-6 pt-4 pb-2 flex justify-between items-center text-[10px] font-bold text-slate-900 dark:text-white">
+                  <span>9:41</span>
+                  <div className="flex gap-1">
+                    <div className="w-3 h-2 rounded-sm bg-slate-900 dark:bg-white" />
+                    <div className="w-4 h-2 rounded-sm bg-slate-900 dark:bg-white" />
+                  </div>
+                </div>
 
-             <div className={`p-2 ${glassCard} rounded-[3rem]`}>
+                {/* header */}
+                <div className="px-5 pt-3 pb-4">
+                  <p className="text-[10px] text-slate-500 dark:text-white/50 uppercase tracking-wider font-bold mb-1">Your Roadmap</p>
+                  <p className="text-base font-black text-slate-900 dark:text-white">Frontend Dev</p>
+                </div>
 
-               <img 
+                {/* progress bar */}
+                <div className="px-5 mb-4">
+                  <div className="flex justify-between text-[9px] mb-1 font-bold">
+                    <span className="text-slate-500 dark:text-white/60">Progress</span>
+                    <span className="text-cyan-600 dark:text-cyan-400">68%</span>
+                  </div>
+                  <div className="h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      whileInView={{ width: "68%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.5, delay: 0.5 }}
+                      className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.6)]"
+                    />
+                  </div>
+                </div>
 
-                 src="https://images.unsplash.com/photo-1634715841611-67741dc71459?auto=format&fit=crop&q=80&w=600" 
+                {/* skill list */}
+                <div className="px-4 space-y-2">
+                  {[
+                    { name: "HTML & CSS", done: true,  color: "cyan" },
+                    { name: "JavaScript",  done: true,  color: "cyan" },
+                    { name: "React",       done: true,  color: "cyan" },
+                    { name: "TypeScript",  done: false, color: "pink", current: true },
+                    { name: "Testing",     done: false, color: "pink" },
+                  ].map((s, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.8 + i * 0.1 }}
+                      className={`flex items-center gap-2 p-2 rounded-lg ${
+                        s.current 
+                          ? "bg-pink-50 dark:bg-pink-500/10 border border-pink-500/30" 
+                          : s.done 
+                            ? "bg-green-50 dark:bg-green-500/10" 
+                            : "bg-slate-50 dark:bg-white/5"
+                      }`}
+                    >
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        s.done ? "bg-green-500" : s.current ? `bg-pink-500 animate-pulse` : "bg-slate-200 dark:bg-white/10"
+                      }`}>
+                        {s.done && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>}
+                      </div>
+                      <span className={`text-[11px] font-bold ${
+                        s.done ? "text-slate-400 dark:text-white/40 line-through" : "text-slate-800 dark:text-white"
+                      }`}>{s.name}</span>
+                    </motion.div>
+                  ))}
+                </div>
 
-                 alt="Future Tech" 
+                {/* CTA at bottom */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl p-3 text-center shadow-lg shadow-cyan-500/30">
+                    <p className="text-[10px] text-white/80 font-medium">Continue</p>
+                    <p className="text-xs text-white font-black">TypeScript →</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
 
-                 className="w-full h-auto rounded-[2.5rem]"
+            {/* FLOATING CODE EDITOR (top-left) */}
+            <motion.div
+              initial={{ opacity: 0, y: -20, x: -20 }}
+              whileInView={{ opacity: 1, y: 0, x: 0 }}
+              viewport={{ once: true }}
+              animate={{ y: [-12, 4, -12] }}
+              transition={{ y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 } }}
+              className="absolute top-8 -left-6 z-30 w-[220px] rounded-2xl bg-slate-900 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 shadow-2xl overflow-hidden"
+            >
+              {/* editor header */}
+              <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 dark:bg-slate-900 border-b border-slate-700">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                <span className="ml-2 text-[9px] text-slate-400 font-mono">app.tsx</span>
+              </div>
+              {/* code */}
+              <div className="p-3 text-[10px] font-mono leading-relaxed">
+                <p><span className="text-pink-400">const</span> <span className="text-cyan-400">App</span> <span className="text-slate-400">=</span> <span className="text-slate-400">() {`=>`}</span> {`{`}</p>
+                <p className="pl-3"><span className="text-pink-400">return</span> <span className="text-slate-400">(</span></p>
+                <p className="pl-6"><span className="text-slate-500">&lt;</span><span className="text-cyan-400">SkillPath</span> <span className="text-slate-500">/&gt;</span></p>
+                <p className="pl-3"><span className="text-slate-400">)</span></p>
+                <p>{`}`}</p>
+                <p className="mt-1 text-green-400">// 🚀 ready to ship</p>
+              </div>
+            </motion.div>
 
-               />
+            {/* FLOATING ACHIEVEMENT BADGE (bottom-right) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              animate={{ y: [10, -8, 10] }}
+              transition={{ 
+                scale: { duration: 0.5, delay: 0.5 },
+                y: { duration: 7, repeat: Infinity, ease: "easeInOut" }
+              }}
+              className="absolute bottom-12 -right-4 z-30 px-4 py-3 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500 shadow-2xl flex items-center gap-3"
+            >
+              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l2.39 7.36H22l-6.18 4.5 2.39 7.36L12 16.72l-6.18 4.5 2.39-7.36L2 9.36h7.61L12 2z"/>
+                </svg>
+              </div>
+              <div>
+                <p className="text-[10px] text-white/90 font-bold uppercase tracking-wider">Achievement</p>
+                <p className="text-sm text-white font-black">Phase Done!</p>
+              </div>
+            </motion.div>
 
-             </div>
+            {/* FLOATING STATS PILL (middle-right) */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              animate={{ x: [5, -5, 5] }}
+              transition={{ 
+                opacity: { duration: 0.5, delay: 0.8 },
+                x: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+              }}
+              className={`absolute top-1/2 -right-2 z-10 px-4 py-2.5 ${glassCard} flex items-center gap-3 rounded-2xl`}
+            >
+              <div className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              </div>
+              <div>
+                <p className="text-[9px] text-slate-500 dark:text-white/50 uppercase tracking-wider font-bold">Streak</p>
+                <p className="text-sm text-slate-900 dark:text-white font-black">27 days 🔥</p>
+              </div>
+            </motion.div>
 
-             
-
-             {/* Floating decorative elements */}
-
-             <motion.div 
-
-                animate={{ rotate: 360 }}
-
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-
-                className="absolute -top-8 -right-8 w-24 h-24 rounded-full border border-dashed border-cyan-500/20 dark:border-cyan-500/30 flex items-center justify-center"
-
-             >
-
-                <div className="w-16 h-16 rounded-full border border-solid border-pink-500/20" />
-
-             </motion.div>
-
+            {/* tiny particles */}
+            {[
+              { top: "10%", left: "15%", color: "cyan", delay: 0 },
+              { top: "75%", left: "10%", color: "pink", delay: 1 },
+              { top: "25%", right: "20%", color: "purple", delay: 0.5 },
+              { top: "85%", right: "10%", color: "cyan", delay: 1.5 },
+            ].map((p, i) => (
+              <motion.div
+                key={i}
+                animate={{ y: [-20, 20, -20], opacity: [0.3, 1, 0.3] }}
+                transition={{ duration: 3 + i, repeat: Infinity, ease: "easeInOut", delay: p.delay }}
+                style={p as any}
+                className={`absolute w-1.5 h-1.5 rounded-full bg-${p.color}-500 shadow-[0_0_8px_currentColor]`}
+              />
+            ))}
           </div>
-
         </div>
-
       </div>
-
     </section>
-
   );
-
 };
 
 
@@ -1427,7 +1739,7 @@ const Navbar = () => {
 
           <button onClick={() => { setCurrentPage('roadmaps'); setOpenRoadmap(null); }} className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white transition-colors">{t.nav.roads}</button>
 
-          <a href="#" className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white transition-colors">{t.nav.mentors}</a>
+          <button onClick={() => { setCurrentPage('mentors'); setOpenRoadmap(null); }} className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white transition-colors">{t.nav.mentors}</button>
 
         </div>
 
@@ -1497,66 +1809,65 @@ const Footer = () => {
 const Content = () => {
 
   const [showQuiz, setShowQuiz] = useState(false);
+  
 
   const { lang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap } = useContext(LanguageContext);
 
   const isLearningPage = currentPage.startsWith('learning:');
   const learningSkillId = isLearningPage ? currentPage.split(':')[1] : null;
 
+  
+
+
   return (
 
     <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-300">
       <MouseSpotlight />
-      <Navbar />
+      <Navbar/>
       
 
       <main>
         
 
         {showQuiz ? (
-
-          <Quiz onExit={() => { setShowQuiz(false); setCurrentPage('home'); }} lang={lang} /> 
-
-        ) : currentPage === 'professions' ? (
-
-          <ProfessionsPage onBack={() => setCurrentPage('home')} lang={lang} t={t} />
-
-        ) : currentPage === 'roadmaps' ? (
-
-          <RoadmapsPage t={t} initialRoadmap={openRoadmap} onOpenRoadmap={(val) => {
-            if (val && val.startsWith('learn:')) {
-              const skillId = val.split(':')[1];
-              setCurrentPage('learning:' + skillId);
-              setOpenRoadmap(null);
-            } else {
-              setOpenRoadmap(val);
-            }
-          }} lang={lang} />
-
-        ) : isLearningPage ? (
-
-          <SkillLearningPage skillId={learningSkillId} onBack={() => setCurrentPage('roadmaps')} lang={lang} />
-
-        ) : (
-
-          <>
-
-            <Hero onStartQuiz={() => setShowQuiz(true)} />
-            <StatsSection />
-            <TechMarquee />  
-            <RolesSection />
-            
-            <BentoShowcase />
-
-            <StepsSection />
-
-          </>
-
-        )}
+  <Quiz onExit={() => { setShowQuiz(false); setCurrentPage('home'); }} lang={lang} /> 
+) : currentPage === 'professions' ? (
+  <ProfessionsPage onBack={() => setCurrentPage('home')} lang={lang} t={t} />
+) : currentPage === 'roadmaps' ? (
+  <RoadmapsPage t={t} initialRoadmap={openRoadmap} onOpenRoadmap={(val: string | null) => {
+  if (val && val.startsWith('learn:')) {
+      const skillId = val.split(':')[1];
+      setCurrentPage('learning:' + skillId);
+      setOpenRoadmap(null);
+    } else {
+      setOpenRoadmap(val);
+    }
+  }} lang={lang} />
+) : currentPage === 'mentors' ? (                                                      // 👈 новый кейс
+  <MentorsPage onBack={() => setCurrentPage('home')} lang={lang} t={t} />
+) : isLearningPage ? (
+  <SkillLearningPage skillId={learningSkillId} onBack={() => setCurrentPage('roadmaps')} lang={lang} />
+) : (
+   <>
+      <Hero onStartQuiz={() => setShowQuiz(true)} />                   
+      <CompaniesStrip />          
+      <StatsSection />            
+      <RolesSection />            
+      <TechMarquee />             
+      <BentoShowcase />         
+      <MiniQuiz />               
+      <ProjectsShowcase />        
+      <TestimonialsCarousel />   
+      <StepsSection />           
+      <PricingTable />           
+      <FAQAccordion />             
+  </>
+)}
 
       </main>
 
       {currentPage === 'home' && !showQuiz && <Footer />}
+      
 
     </div>
 
@@ -1566,28 +1877,16 @@ const Content = () => {
 
 
 export default function App() {
-
-  const [lang, setLang] = useState("EN");
-
+  const [lang, setLang] = useState<Lang>("EN");
   const t = translations[lang];
-
-  const [currentPage, setCurrentPage] = useState('home');
-
-  const [openRoadmap, setOpenRoadmap] = useState(null);
-
+  const [currentPage, setCurrentPage] = useState<string>('home');
+  const [openRoadmap, setOpenRoadmap] = useState<string | null>(null);
 
   return (
-
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-
       <LanguageContext.Provider value={{ lang, setLang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap }}>
-
         <Content />
-
       </LanguageContext.Provider>
-
     </ThemeProvider>
-
   );
-
 }
