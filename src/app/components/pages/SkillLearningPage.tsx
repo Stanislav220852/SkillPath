@@ -1,249 +1,290 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowLeft, Play, CheckCircle, BookOpen, Code, 
-  ChevronRight, RotateCcw, Star, Trophy, Zap,
-  Lightbulb, Eye
+  ChevronRight, Star, Trophy, Zap,
+  Lightbulb, Eye, Copy, Check, RefreshCw, Menu, X
 } from 'lucide-react';
 import { lessonData } from './LessonData.tsx';
+import hljs from 'highlight.js';
 
 const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
 
-const colorText = {
+const colorText: Record<string, string> = {
   cyan: "text-cyan-500 dark:text-cyan-400",
   pink: "text-pink-500 dark:text-pink-400",
   purple: "text-purple-500 dark:text-purple-400",
   blue: "text-blue-500 dark:text-blue-400",
 };
 
-const colorGradient = {
+const colorGradient: Record<string, string> = {
   cyan: "from-cyan-500 to-blue-600",
   pink: "from-pink-500 to-purple-600",
   purple: "from-purple-500 to-pink-600",
   blue: "from-blue-500 to-cyan-600",
 };
 
-const CodeEditor = ({ initialCode, language, onRun, output, error, isRunning, t }) => {
-  const [code, setCode] = useState(initialCode || '');
-  const textareaRef = useRef(null);
-  const lineNumbersRef = useRef(null);
+// === localStorage helpers ===
+const LESSONS_STORAGE_KEY = "skillpath-lessons-progress-v1";
 
-  useEffect(() => {
-    setCode(initialCode || '');
-  }, [initialCode]);
+const loadCompletedLessons = (skillId: string): string[] => {
+  try {
+    const raw = localStorage.getItem(LESSONS_STORAGE_KEY);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    return data[skillId] || [];
+  } catch {
+    return [];
+  }
+};
+
+const saveCompletedLessons = (skillId: string, lessons: string[]) => {
+  try {
+    const raw = localStorage.getItem(LESSONS_STORAGE_KEY);
+    const data = raw ? JSON.parse(raw) : {};
+    data[skillId] = lessons;
+    localStorage.setItem(LESSONS_STORAGE_KEY, JSON.stringify(data));
+  } catch {}
+};
+
+// === auto-detect language ===
+const detectLang = (code: string): string => {
+  const t = code.trim();
+  if (t.startsWith('<!DOCTYPE') || t.startsWith('<html') || /<\w+/.test(t.slice(0, 200))) return 'html';
+  if (/^\s*(\.|#|\*|@media|body|html)\s*{/m.test(t) && !/function|const|let|var|=>/m.test(t)) return 'css';
+  if (/^\s*(def |import |from |print\(|class \w+:)/m.test(t)) return 'python';
+  return 'javascript';
+};
+
+// === HIGHLIGHTED CODE BLOCK (for theory) ===
+const HighlightedCode = ({ code, language }: { code: string; language?: string }) => {
+  const lang = language || detectLang(code);
+  const [copied, setCopied] = useState(false);
+  
+  const highlighted = useMemo(() => {
+    try {
+      return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+    } catch {
+      return hljs.highlightAuto(code).value;
+    }
+  }, [code, lang]);
+
+  const copy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <div className="relative bg-[#282c34] rounded-xl my-3 overflow-hidden group">
+      <div className="flex items-center justify-between px-4 py-2 bg-black/30 border-b border-white/5">
+        <span className="text-[10px] text-white/40 font-mono uppercase tracking-wider">{lang}</span>
+        <button
+          onClick={copy}
+          className="text-[10px] text-white/40 hover:text-white/80 transition-colors flex items-center gap-1 opacity-0 group-hover:opacity-100"
+        >
+          {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
+      </div>
+      <pre className="p-4 overflow-x-auto text-sm leading-6">
+        <code className={`hljs language-${lang}`} dangerouslySetInnerHTML={{ __html: highlighted }} />
+      </pre>
+    </div>
+  );
+};
+
+// === CODE EDITOR ===
+const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error, isRunning, t, autoRun }: any) => {
+  const [code, setCode] = useState(initialCode || '');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const preRef = useRef<HTMLPreElement>(null);
+
+  useEffect(() => { setCode(initialCode || ''); }, [initialCode]);
+  useEffect(() => { if (onCodeChange) onCodeChange(code); }, [code, onCodeChange]);
+
+  const lang = language === 'html' || language === 'html-css-js' ? 'html'
+    : language === 'css' ? 'css'
+    : language === 'python' ? 'python'
+    : 'javascript';
+
+  const highlighted = useMemo(() => {
+    try {
+      return hljs.highlight(code + '\n', { language: lang, ignoreIllegals: true }).value;
+    } catch { return code; }
+  }, [code, lang]);
 
   const handleScroll = useCallback(() => {
-    if (textareaRef.current && lineNumbersRef.current) {
-      lineNumbersRef.current.scrollTop = textareaRef.current.scrollTop;
+    if (textareaRef.current && preRef.current) {
+      preRef.current.scrollTop = textareaRef.current.scrollTop;
+      preRef.current.scrollLeft = textareaRef.current.scrollLeft;
     }
   }, []);
 
-  const lineCount = code.split('\n').length;
-  const lines = Array.from({ length: lineCount }, (_, i) => i + 1);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const t = e.currentTarget;
+      const start = t.selectionStart, end = t.selectionEnd;
+      const newCode = code.substring(0, start) + '  ' + code.substring(end);
+      setCode(newCode);
+      requestAnimationFrame(() => { t.selectionStart = t.selectionEnd = start + 2; });
+    }
+  };
 
   return (
-    <div className={`rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-[#1e1e2e]`}>
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[#181825] border-b border-white/5">
+    <div className="rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-[#282c34]">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[#21252b] border-b border-white/5">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-red-500/80" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
             <div className="w-3 h-3 rounded-full bg-green-500/80" />
           </div>
-          <span className="text-xs text-white/50 ml-2 font-mono">
-            {language === 'javascript' ? 'script.js' : language === 'python' ? 'main.py' : language === 'html' ? 'index.html' : 'styles.css'}
+          <span className="text-xs text-white/60 ml-2 font-mono">
+            {lang === 'html' ? 'index.html' : lang === 'python' ? 'main.py' : lang === 'css' ? 'styles.css' : 'script.js'}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-white/30 uppercase tracking-wider">{language}</span>
-        </div>
+        <span className="text-[10px] text-white/30 uppercase tracking-wider font-bold">{lang}</span>
       </div>
 
-      <div className="flex relative">
-        <div 
-          ref={lineNumbersRef}
-          className="w-10 py-4 text-right pr-2 text-xs font-mono text-white/20 select-none overflow-hidden bg-[#181825]/50"
-        >
-          {lines.map(n => (
-            <div key={n} className="leading-5">{n}</div>
-          ))}
-        </div>
-
-        <textarea
-          ref={textareaRef}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          onScroll={handleScroll}
-          className="flex-1 py-4 px-3 bg-transparent text-white/90 font-mono text-sm leading-5 resize-none outline-none min-h-[200px] max-h-[400px] overflow-auto"
+      <div className="relative" style={{ minHeight: '300px', maxHeight: '500px' }}>
+        <pre ref={preRef} aria-hidden="true"
+          className="absolute inset-0 m-0 p-4 overflow-auto pointer-events-none text-sm font-mono leading-6"
+          style={{ tabSize: 2 }}>
+          <code className={`hljs language-${lang}`} dangerouslySetInnerHTML={{ __html: highlighted }} />
+        </pre>
+        <textarea ref={textareaRef} value={code}
+          onChange={(e) => setCode(e.target.value)} onScroll={handleScroll} onKeyDown={handleKeyDown}
           spellCheck={false}
-          style={{ tabSize: 2 }}
-          onKeyDown={(e) => {
-            if (e.key === 'Tab') {
-              e.preventDefault();
-              const target = e.target;
-              const start = target.selectionStart;
-              const end = target.selectionEnd;
-              setCode(code.substring(0, start) + '  ' + code.substring(end));
-              setTimeout(() => {
-                target.selectionStart = target.selectionEnd = start + 2;
-              }, 0);
-            }
-          }}
+          className="absolute inset-0 p-4 bg-transparent font-mono text-sm leading-6 resize-none outline-none"
+          style={{ color: 'transparent', caretColor: '#fff', tabSize: 2, WebkitTextFillColor: 'transparent' }}
         />
       </div>
 
       {(output || error) && (
         <div className={`border-t border-white/5 ${error ? 'bg-red-500/10' : 'bg-green-500/5'}`}>
           <div className="flex items-center gap-2 px-4 py-2 bg-black/20">
-            {error ? (
-              <span className="text-xs font-bold text-red-400">{t.error || 'Error'}</span>
-            ) : (
-              <span className="text-xs font-bold text-green-400">{t.output || 'Output'}</span>
-            )}
+            {error ? <span className="text-xs font-bold text-red-400">⚠ {t.error}</span>
+                   : <span className="text-xs font-bold text-green-400">✓ {t.output}</span>}
           </div>
-          <pre className={`px-4 py-3 text-sm font-mono whitespace-pre-wrap ${error ? 'text-red-400' : 'text-green-300'}`}>
+          <pre className={`px-4 py-3 text-sm font-mono whitespace-pre-wrap max-h-[200px] overflow-auto ${error ? 'text-red-400' : 'text-green-300'}`}>
             {error || output}
           </pre>
         </div>
       )}
 
-      <div className="p-3 bg-[#181825] border-t border-white/5">
-        <button
-          onClick={() => onRun(code)}
-          disabled={isRunning}
-          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r ${colorGradient[language === 'javascript' ? 'cyan' : language === 'python' ? 'pink' : 'purple']} text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50`}
-        >
-          {isRunning ? (
-            <RotateCcw className="w-4 h-4 animate-spin" />
-          ) : (
-            <Play className="w-4 h-4" />
-          )}
-          {isRunning ? (t.running || 'Running...') : (t.runCode || 'Run Code')}
+      <div className="p-3 bg-[#21252b] border-t border-white/5 flex items-center gap-2">
+        <button onClick={() => onRun(code)} disabled={isRunning}
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50">
+          {isRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+          {isRunning ? t.running : t.runCode}
         </button>
+        {autoRun && (
+          <span className="text-[10px] text-white/40 uppercase tracking-wider font-bold px-3">Live ⚡</span>
+        )}
       </div>
     </div>
   );
 };
 
-const PreviewFrame = ({ html, css, js, error }) => {
-  const iframeRef = useRef(null);
+// === PREVIEW FRAME ===
+const PreviewFrame = ({ fullHtml, fallbackHtml }: { fullHtml?: string; fallbackHtml?: string }) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [iframeError, setIframeError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (iframeRef.current) {
-      const doc = iframeRef.current.contentDocument;
-      doc.open();
-      doc.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style>${css || ''}</style>
-          <style>
-            body { 
-              font-family: system-ui, -apple-system, sans-serif; 
-              padding: 16px; 
-              background: #0f172a;
-              color: #e2e8f0;
-              margin: 0;
-            }
-          </style>
-        </head>
-        <body>
-          ${html || ''}
-          <script>
-            try {
-              ${js || ''}
-            } catch(e) {
-              document.body.innerHTML += '<div style="color:red;padding:8px;font-size:12px;font-family:monospace;margin-top:8px;border:1px solid red;border-radius:4px;">Error: ' + e.message + '</div>';
-            }
-          </script>
-        </body>
-        </html>
-      `);
-      doc.close();
-    }
-  }, [html, css, js]);
+    if (!iframeRef.current) return;
+    const content = fullHtml || fallbackHtml || '';
+    const isFullPage = /<html[\s>]/i.test(content) || /<!DOCTYPE/i.test(content);
+    const wrappedHtml = isFullPage ? content : `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><style>body{font-family:system-ui;padding:16px;margin:0;color:#1e293b;background:#fff}</style></head>
+<body>${content}<script>window.addEventListener('error',function(e){const d=document.createElement('div');d.style.cssText='position:fixed;bottom:8px;left:8px;right:8px;padding:10px;background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;border-radius:8px;font-family:monospace;font-size:12px;z-index:9999';d.textContent='Runtime error: '+e.message;document.body.appendChild(d)})</script></body></html>`;
+
+    try {
+      iframeRef.current.srcdoc = wrappedHtml;
+      setIframeError(null);
+    } catch (e: any) { setIframeError(e.message); }
+  }, [fullHtml, fallbackHtml]);
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-white dark:bg-[#1e1e2e]">
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-[#181825] border-b border-white/5">
-        <Eye className="w-4 h-4 text-white/50" />
-        <span className="text-xs text-white/50 font-medium">Preview</span>
+    <div className="rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-white">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[#21252b] border-b border-white/5">
+        <div className="flex items-center gap-2">
+          <Eye className="w-4 h-4 text-white/50" />
+          <span className="text-xs text-white/60 font-medium">Live Preview</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-[10px] text-white/40 uppercase tracking-wider font-bold">Live</span>
+        </div>
       </div>
-      <iframe
-        ref={iframeRef}
-        className="w-full h-[300px] bg-white dark:bg-[#0f172a]"
-        sandbox="allow-scripts"
-        title="Code Preview"
-      />
-      {error && (
+      <iframe ref={iframeRef} className="w-full h-[500px] bg-white" sandbox="allow-scripts allow-same-origin" title="Code Preview" />
+      {iframeError && (
         <div className="p-3 bg-red-500/10 border-t border-red-500/20">
-          <p className="text-xs text-red-400 font-mono">{error}</p>
+          <p className="text-xs text-red-400 font-mono">{iframeError}</p>
         </div>
       )}
     </div>
   );
 };
 
-const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompleteLesson, t }) => {
+// === LESSON VIEW ===
+const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompleteLesson, t }: any) => {
   const [activeTab, setActiveTab] = useState('theory');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
   const [isRunning, setIsRunning] = useState(false);
+  const [liveCode, setLiveCode] = useState(lesson.practice?.starterCode || '');
+  const [debouncedCode, setDebouncedCode] = useState(liveCode);
 
   const isCompleted = completedLessons.includes(lesson.id);
+  const isHtmlLesson = lesson.type === 'html-css-js';
 
-  const handleRunCode = (code) => {
-    setIsRunning(true);
-    setOutput('');
-    setError('');
+  useEffect(() => {
+    setLiveCode(lesson.practice?.starterCode || '');
+    setDebouncedCode(lesson.practice?.starterCode || '');
+    setOutput(''); setError(''); setActiveTab('theory');
+  }, [lesson.id]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedCode(liveCode), 400);
+    return () => clearTimeout(timer);
+  }, [liveCode]);
+
+  const handleRunCode = (code: string) => {
+    setIsRunning(true); setOutput(''); setError('');
     setTimeout(() => {
       try {
-        if (lesson.type === 'html-css-js') {
-          setOutput(t.codeRanSuccessfully || 'Code executed successfully!');
-          setError('');
+        if (isHtmlLesson) {
+          setOutput(t.codeRanSuccessfully); setError(''); setActiveTab('preview');
         } else if (lesson.type === 'javascript') {
-          const logs = [];
+          const logs: string[] = [];
           const mockConsole = {
-            log: (...args) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
-            error: (...args) => logs.push('ERROR: ' + args.join(' ')),
-            warn: (...args) => logs.push('WARN: ' + args.join(' ')),
+            log: (...args: any[]) => logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ')),
+            error: (...args: any[]) => logs.push('ERROR: ' + args.join(' ')),
+            warn: (...args: any[]) => logs.push('WARN: ' + args.join(' ')),
           };
           const fn = new Function('console', code);
           fn(mockConsole);
-          setOutput(logs.join('\n') || t.noOutput || 'No output');
-          setError('');
-        } else if (lesson.type === 'python') {
-          if (lesson.expectedOutput) {
-            setOutput(lesson.expectedOutput);
-            setError('');
-          } else {
-            setOutput(t.simulatedOutput || '[Simulated Python output]');
-            setError('');
-          }
+          setOutput(logs.join('\n') || t.noOutput); setError('');
+        } else {
+          setOutput(lesson.expectedOutput || t.simulatedOutput); setError('');
         }
-      } catch (e) {
-        setError(e.message);
-        setOutput('');
-      }
+      } catch (e: any) { setError(e.message); setOutput(''); }
       setIsRunning(false);
-    }, 500);
+    }, 300);
   };
 
   const tabs = [
-    { id: 'theory', icon: BookOpen, label: t.theory || 'Theory' },
-    { id: 'practice', icon: Code, label: t.practice || 'Practice' },
-    ...(lesson.type === 'html-css-js' ? [{ id: 'preview', icon: Eye, label: t.preview || 'Preview' }] : []),
+    { id: 'theory', icon: BookOpen, label: t.theory },
+    { id: 'practice', icon: Code, label: t.practice },
+    ...(isHtmlLesson ? [{ id: 'preview', icon: Eye, label: t.preview }] : []),
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="flex items-start justify-between mb-6">
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
+      <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className={`text-xs font-bold uppercase tracking-widest px-2 py-1 rounded-full bg-${colorClass}-500/10 ${colorText[colorClass]}`}>
@@ -258,10 +299,8 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{lesson.title}</h2>
         </div>
         {!isCompleted && (
-          <button
-            onClick={() => onCompleteLesson(lesson.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r ${colorGradient[colorClass]} text-white text-sm font-bold hover:opacity-90 transition-all`}
-          >
+          <button onClick={() => onCompleteLesson(lesson.id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r ${colorGradient[colorClass]} text-white text-sm font-bold hover:opacity-90 transition-all`}>
             <CheckCircle className="w-4 h-4" />
             {t.markComplete}
           </button>
@@ -270,15 +309,12 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
 
       <div className="flex gap-1 mb-6 p-1 bg-black/5 dark:bg-white/5 rounded-xl">
         {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)}
             className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${
               activeTab === tab.id 
                 ? 'bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm' 
                 : 'text-slate-500 dark:text-white/40 hover:text-slate-700 dark:hover:text-white/60'
-            }`}
-          >
+            }`}>
             <tab.icon className="w-4 h-4" />
             <span className="hidden sm:inline">{tab.label}</span>
           </button>
@@ -287,97 +323,78 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
 
       <AnimatePresence mode="wait">
         {activeTab === 'theory' && (
-          <motion.div
-            key="theory"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className={`${glassCard} p-6`}
-          >
-            <div className="prose prose-slate dark:prose-invert max-w-none">
-              {lesson.theory && lesson.theory.sections && lesson.theory.sections.map((section, i) => (
-                <div key={i} className="mb-6 last:mb-0">
-                  {section.type === 'heading' && (
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                      <Lightbulb className={`w-4 h-4 ${colorText[colorClass]}`} />
-                      {section.content}
-                    </h3>
-                  )}
-                  {section.type === 'text' && (
-                    <p className="text-slate-600 dark:text-white/60 leading-relaxed">{section.content}</p>
-                  )}
-                  {section.type === 'code' && (
-                    <div className="bg-[#1e1e2e] rounded-xl p-4 my-3 overflow-x-auto">
-                      <pre className="text-sm font-mono text-green-300 whitespace-pre-wrap">{section.content}</pre>
-                    </div>
-                  )}
-                  {section.type === 'tip' && (
-                    <div className={`flex gap-3 p-4 rounded-xl bg-${colorClass}-500/5 border border-${colorClass}-500/20`}>
-                      <Zap className={`w-5 h-5 flex-shrink-0 mt-0.5 ${colorText[colorClass]}`} />
-                      <p className="text-sm text-slate-700 dark:text-white/70 leading-relaxed">{section.content}</p>
-                    </div>
-                  )}
-                  {section.type === 'list' && (
-                    <ul className="space-y-2 my-3">
-                      {section.items && section.items.map((item, j) => (
-                        <li key={j} className="flex items-start gap-2 text-slate-600 dark:text-white/60">
-                          <span className={`w-1.5 h-1.5 rounded-full bg-${colorClass}-500 flex-shrink-0 mt-2`} />
-                          <span className="text-sm">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
+          <motion.div key="theory" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className={`${glassCard} p-6`}>
+            {lesson.theory?.sections?.map((section: any, i: number) => (
+              <div key={i} className="mb-6 last:mb-0">
+                {section.type === 'heading' && (
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                    <Lightbulb className={`w-4 h-4 ${colorText[colorClass]}`} />
+                    {section.content}
+                  </h3>
+                )}
+                {section.type === 'text' && (
+                  <p className="text-slate-600 dark:text-white/70 leading-relaxed mb-3">{section.content}</p>
+                )}
+                {section.type === 'code' && <HighlightedCode code={section.content} />}
+                {section.type === 'tip' && (
+                  <div className={`flex gap-3 p-4 rounded-xl bg-${colorClass}-500/5 border border-${colorClass}-500/20 my-3`}>
+                    <Zap className={`w-5 h-5 flex-shrink-0 mt-0.5 ${colorText[colorClass]}`} />
+                    <p className="text-sm text-slate-700 dark:text-white/80 leading-relaxed">{section.content}</p>
+                  </div>
+                )}
+                {section.type === 'list' && (
+                  <ul className="space-y-2 my-3">
+                    {section.items?.map((item: string, j: number) => (
+                      <li key={j} className="flex items-start gap-2 text-slate-600 dark:text-white/70">
+                        <span className={`w-1.5 h-1.5 rounded-full bg-${colorClass}-500 flex-shrink-0 mt-2`} />
+                        <span className="text-sm leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
           </motion.div>
         )}
 
         {activeTab === 'practice' && (
-          <motion.div
-            key="practice"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className={`${glassCard} p-6`}
-          >
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <Code className={`w-5 h-5 ${colorText[colorClass]}`} />
-              {lesson.practice ? lesson.practice.title : (t.practice || 'Practice')}
-            </h3>
-            {lesson.practice && lesson.practice.description && (
-              <p className="text-sm text-slate-600 dark:text-white/60 mb-4">{lesson.practice.description}</p>
-            )}
-            {lesson.practice && lesson.practice.task && (
-              <div className="mb-4 p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
-                <p className="text-sm font-medium text-slate-700 dark:text-white/70">{lesson.practice.task}</p>
+          <motion.div key="practice" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
+            <div className={`${glassCard} p-6`}>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                <Code className={`w-5 h-5 ${colorText[colorClass]}`} />
+                {lesson.practice?.title || t.practice}
+              </h3>
+              {lesson.practice?.description && (
+                <p className="text-sm text-slate-600 dark:text-white/70 mb-3">{lesson.practice.description}</p>
+              )}
+              {lesson.practice?.task && (
+                <div className={`mb-4 p-3 rounded-xl bg-${colorClass}-500/5 border border-${colorClass}-500/20`}>
+                  <p className="text-sm font-medium text-slate-700 dark:text-white/80">
+                    <span className={`font-bold ${colorText[colorClass]}`}>🎯 {t.taskLabel}: </span>
+                    {lesson.practice.task}
+                  </p>
+                </div>
+              )}
+              <CodeEditor initialCode={lesson.practice?.starterCode} language={lesson.type}
+                onCodeChange={setLiveCode} onRun={handleRunCode}
+                output={output} error={error} isRunning={isRunning} t={t} autoRun={isHtmlLesson} />
+            </div>
+
+            {isHtmlLesson && (
+              <div className={`${glassCard} p-6`}>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <Eye className={`w-4 h-4 ${colorText[colorClass]}`} />
+                  {t.livePreview}
+                </h3>
+                <PreviewFrame fullHtml={debouncedCode} />
               </div>
             )}
-            <CodeEditor
-              initialCode={lesson.practice ? lesson.practice.starterCode : ''}
-              language={lesson.type === 'html-css-js' ? 'html' : lesson.type}
-              onRun={handleRunCode}
-              output={output}
-              error={error}
-              isRunning={isRunning}
-              t={t}
-            />
           </motion.div>
         )}
 
-        {activeTab === 'preview' && lesson.type === 'html-css-js' && (
-          <motion.div
-            key="preview"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-          >
-            <PreviewFrame
-              html={lesson.practice ? lesson.practice.starterCode : ''}
-              css=""
-              js=""
-              error={error}
-            />
+        {activeTab === 'preview' && isHtmlLesson && (
+          <motion.div key="preview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+            <PreviewFrame fullHtml={debouncedCode} fallbackHtml={lesson.practice?.starterCode} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -385,11 +402,64 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
   );
 };
 
-export const SkillLearningPage = ({ skillId, onBack, lang }) => {
+// === LESSON NAVIGATOR — compact for 20+ lessons ===
+const LessonNavigator = ({ lessons, currentIndex, completedLessons, onSelect, colorClass }: any) => {
+  return (
+    <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+      {lessons.map((lesson: any, i: number) => {
+        const isCompleted = completedLessons.includes(lesson.id);
+        const isCurrent = i === currentIndex;
+        return (
+          <button
+            key={lesson.id}
+            onClick={() => onSelect(i)}
+            className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              isCurrent
+                ? `bg-gradient-to-r ${colorGradient[colorClass]} text-white shadow-lg`
+                : isCompleted
+                ? 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20'
+                : 'bg-black/5 dark:bg-white/5 text-slate-600 dark:text-white/50 border border-black/5 dark:border-white/10 hover:border-black/10 dark:hover:border-white/20'
+            }`}
+          >
+            {isCompleted ? (
+              <CheckCircle className="w-3.5 h-3.5" />
+            ) : (
+              <Star className="w-3.5 h-3.5" />
+            )}
+            <span className="hidden sm:inline">{lesson.title}</span>
+            <span className="sm:hidden">L{i + 1}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
+// === MAIN PAGE ===
+export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
-  const [completedLessons, setCompletedLessons] = useState([]);
+  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   
   const lessons = lessonData[skillId] && lessonData[skillId][lang] ? lessonData[skillId][lang] : null;
+
+  // Load completed from localStorage on mount
+  useEffect(() => {
+    if (skillId) {
+      setCompletedLessons(loadCompletedLessons(skillId));
+    }
+  }, [skillId]);
+
+  // Save completed to localStorage on change
+  useEffect(() => {
+    if (skillId && completedLessons.length >= 0) {
+      saveCompletedLessons(skillId, completedLessons);
+    }
+  }, [skillId, completedLessons]);
+
+  // Scroll to top when changing lesson
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentLessonIndex]);
 
   if (!lessons) {
     return (
@@ -402,10 +472,8 @@ export const SkillLearningPage = ({ skillId, onBack, lang }) => {
             <p className="text-slate-600 dark:text-white/60 mb-6">
               {lang === 'RU' ? 'Уроки для этой темы скоро появятся.' : 'Lessons for this topic are coming soon.'}
             </p>
-            <button
-              onClick={onBack}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-all"
-            >
+            <button onClick={onBack}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-all">
               <ArrowLeft className="w-4 h-4" />
               {lang === 'RU' ? 'Назад к роадмапу' : 'Back to Roadmap'}
             </button>
@@ -419,23 +487,17 @@ export const SkillLearningPage = ({ skillId, onBack, lang }) => {
   const currentLesson = skill.lessons[currentLessonIndex];
   const totalLessons = skill.lessons.length;
   const progress = totalLessons > 0 ? Math.round((completedLessons.length / totalLessons) * 100) : 0;
-  const colorClass = skillId === 'html-css' ? 'cyan' : skillId === 'js-core' ? 'pink' : 'purple';
+  const colorClass = skillId === 'html-css' ? 'cyan' : skillId === 'js-core' || skillId === 'react' ? 'pink' : 'purple';
 
-  const handleCompleteLesson = (lessonId) => {
+  const handleCompleteLesson = (lessonId: string) => {
     if (!completedLessons.includes(lessonId)) {
       setCompletedLessons([...completedLessons, lessonId]);
     }
   };
 
-  const handleNextLesson = () => {
-    if (currentLessonIndex < totalLessons - 1) {
-      setCurrentLessonIndex(currentLessonIndex + 1);
-    }
-  };
-
-  const handlePrevLesson = () => {
-    if (currentLessonIndex > 0) {
-      setCurrentLessonIndex(currentLessonIndex - 1);
+  const handleResetProgress = () => {
+    if (confirm(lang === 'RU' ? 'Сбросить весь прогресс по этой теме?' : 'Reset all progress for this topic?')) {
+      setCompletedLessons([]);
     }
   };
 
@@ -446,21 +508,25 @@ export const SkillLearningPage = ({ skillId, onBack, lang }) => {
     theory: lang === 'RU' ? 'Теория' : 'Theory',
     practice: lang === 'RU' ? 'Практика' : 'Practice',
     preview: lang === 'RU' ? 'Превью' : 'Preview',
-    lessonsCompleted: lang === 'RU' ? 'уроков пройдено' : 'lessons completed',
+    lessonsCompleted: lang === 'RU' ? 'из' : 'of',
+    lessonsLabel: lang === 'RU' ? 'уроков пройдено' : 'lessons done',
     previousLesson: lang === 'RU' ? 'Предыдущий' : 'Previous',
     nextLesson: lang === 'RU' ? 'Следующий' : 'Next',
     backToRoadmap: lang === 'RU' ? 'Назад к роадмапу' : 'Back to Roadmap',
-    runCode: lang === 'RU' ? 'Запустить код' : 'Run Code',
+    runCode: lang === 'RU' ? 'Запустить' : 'Run Code',
     running: lang === 'RU' ? 'Запуск...' : 'Running...',
     output: lang === 'RU' ? 'Вывод' : 'Output',
     error: lang === 'RU' ? 'Ошибка' : 'Error',
-    codeRanSuccessfully: lang === 'RU' ? 'Код выполнен успешно!' : 'Code executed successfully!',
+    codeRanSuccessfully: lang === 'RU' ? 'Готово! Смотри Preview' : 'Done! Check Preview',
     noOutput: lang === 'RU' ? 'Нет вывода' : 'No output',
-    simulatedOutput: lang === 'RU' ? '[Симулированный вывод Python]' : '[Simulated Python output]',
+    simulatedOutput: lang === 'RU' ? '[Симуляция]' : '[Simulated output]',
     allLessonsComplete: lang === 'RU' ? 'Все уроки пройдены!' : 'All Lessons Complete!',
-    greatJob: lang === 'RU' ? 'Отличная работа! Вы прошли все уроки по этой теме.' : 'Great job! You\'ve completed all lessons for this topic.',
-    noLessonsAvailable: lang === 'RU' ? 'Уроки ещё не доступны' : 'No lessons available yet',
-    lessonsComingSoon: lang === 'RU' ? 'Уроки для этой темы скоро появятся.' : 'Lessons for this topic are coming soon.',
+    greatJob: lang === 'RU' ? 'Отличная работа! Ты прошёл всю тему.' : "Great job! You finished the whole topic.",
+    allLessons: lang === 'RU' ? 'Все уроки' : 'All lessons',
+    current: lang === 'RU' ? 'Текущий' : 'Current',
+    reset: lang === 'RU' ? 'Сбросить' : 'Reset',
+    taskLabel: lang === 'RU' ? 'Задание' : 'Task',
+    livePreview: lang === 'RU' ? 'Живой превью (обновляется пока печатаешь)' : 'Live Preview (updates as you type)',
   };
 
   return (
@@ -468,12 +534,11 @@ export const SkillLearningPage = ({ skillId, onBack, lang }) => {
       <div className={`absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-${colorClass}-500/10 dark:bg-${colorClass}-500/20 rounded-full blur-[120px] pointer-events-none`} />
 
       <div className="container mx-auto max-w-5xl relative z-10">
+        {/* HEADER */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <button
-              onClick={onBack}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 text-slate-600 dark:text-white/60 hover:bg-black/10 dark:hover:bg-white/20 transition-all text-sm font-medium"
-            >
+          <div className="flex items-center gap-3 mb-4 flex-wrap">
+            <button onClick={onBack}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 text-slate-600 dark:text-white/60 hover:bg-black/10 dark:hover:bg-white/20 transition-all text-sm font-medium">
               <ArrowLeft className="w-4 h-4" />
               {t.backToRoadmap}
             </button>
@@ -487,102 +552,82 @@ export const SkillLearningPage = ({ skillId, onBack, lang }) => {
           <p className="text-slate-600 dark:text-white/60">{skill.description}</p>
         </div>
 
-        <div className={`${glassCard} p-4 mb-8`}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Trophy className={`w-4 h-4 ${colorText[colorClass]}`} />
-              <span className="text-sm font-bold text-slate-700 dark:text-white/70">
-                {completedLessons.length}/{totalLessons} {t.lessonsCompleted}
-              </span>
+        {/* BIG PROGRESS BAR with reset button */}
+        <div className={`${glassCard} p-5 mb-6`}>
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${colorGradient[colorClass]} flex items-center justify-center shadow-lg`}>
+                <Trophy className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-black text-slate-900 dark:text-white">
+                  {completedLessons.length} {t.lessonsCompleted} {totalLessons}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-white/50">{t.lessonsLabel}</p>
+              </div>
             </div>
-            <span className={`text-sm font-black ${colorText[colorClass]}`}>{progress}%</span>
+            <div className="flex items-center gap-3">
+              {completedLessons.length > 0 && (
+                <button onClick={handleResetProgress}
+                  className="flex items-center gap-1 text-xs text-slate-400 hover:text-red-500 transition-colors font-bold">
+                  <X className="w-3 h-3" /> {t.reset}
+                </button>
+              )}
+              <span className={`text-3xl font-black ${colorText[colorClass]}`}>{progress}%</span>
+            </div>
           </div>
-          <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
-            <motion.div
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className={`h-full rounded-full bg-gradient-to-r ${colorGradient[colorClass]}`}
-            />
+          <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-3 overflow-hidden">
+            <motion.div animate={{ width: `${progress}%` }} transition={{ duration: 0.5, ease: "easeOut" }}
+              className={`h-full rounded-full bg-gradient-to-r ${colorGradient[colorClass]} shadow-[0_0_20px_currentColor]`} />
           </div>
         </div>
 
-        <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
-          {skill.lessons.map((lesson, i) => {
-            const isCompleted = completedLessons.includes(lesson.id);
-            const isCurrent = i === currentLessonIndex;
-            return (
-              <button
-                key={lesson.id}
-                onClick={() => setCurrentLessonIndex(i)}
-                className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  isCurrent
-                    ? `bg-gradient-to-r ${colorGradient[colorClass]} text-white shadow-lg`
-                    : isCompleted
-                    ? 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20'
-                    : 'bg-black/5 dark:bg-white/5 text-slate-600 dark:text-white/50 border border-black/5 dark:border-white/10 hover:border-black/10 dark:hover:border-white/20'
-                }`}
-              >
-                {isCompleted ? (
-                  <CheckCircle className="w-3.5 h-3.5" />
-                ) : (
-                  <Star className="w-3.5 h-3.5" />
-                )}
-                <span className="hidden sm:inline">{lesson.title}</span>
-                <span className="sm:hidden">L{i + 1}</span>
-              </button>
-            );
-          })}
-        </div>
+        {/* COMPACT LESSON GRID NAVIGATOR */}
+        <LessonNavigator
+          lessons={skill.lessons}
+          currentIndex={currentLessonIndex}
+          completedLessons={completedLessons}
+          onSelect={setCurrentLessonIndex}
+          colorClass={colorClass}
+        />
 
+        {/* LESSON CONTENT */}
         <AnimatePresence mode="wait">
-          <LessonView
-            key={currentLesson.id}
-            lesson={currentLesson}
-            lessonIndex={currentLessonIndex}
-            colorClass={colorClass}
-            completedLessons={completedLessons}
-            onCompleteLesson={handleCompleteLesson}
-            t={t}
-          />
+          <LessonView key={currentLesson.id} lesson={currentLesson} lessonIndex={currentLessonIndex}
+            colorClass={colorClass} completedLessons={completedLessons}
+            onCompleteLesson={handleCompleteLesson} t={t} />
         </AnimatePresence>
 
-        <div className="flex items-center justify-between mt-8">
-          <button
-            onClick={handlePrevLesson}
-            disabled={currentLessonIndex === 0}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/5 dark:bg-white/10 text-slate-600 dark:text-white/60 font-medium text-sm disabled:opacity-30 hover:bg-black/10 dark:hover:bg-white/20 transition-all"
-          >
+        {/* PREV / NEXT */}
+        <div className="flex items-center justify-between mt-8 gap-3 flex-wrap">
+          <button onClick={() => setCurrentLessonIndex(currentLessonIndex - 1)} disabled={currentLessonIndex === 0}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/5 dark:bg-white/10 text-slate-600 dark:text-white/60 font-medium text-sm disabled:opacity-30 hover:bg-black/10 dark:hover:bg-white/20 transition-all">
             <ArrowLeft className="w-4 h-4" />
             {t.previousLesson}
           </button>
 
-          <span className="text-sm text-slate-500 dark:text-white/40 font-medium">
+          <span className="text-sm text-slate-500 dark:text-white/40 font-bold">
             {currentLessonIndex + 1} / {totalLessons}
           </span>
 
-          <button
-            onClick={handleNextLesson}
-            disabled={currentLessonIndex === totalLessons - 1}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r ${colorGradient[colorClass]} text-white font-bold text-sm disabled:opacity-30 hover:opacity-90 transition-all`}
-          >
+          <button onClick={() => setCurrentLessonIndex(currentLessonIndex + 1)} disabled={currentLessonIndex === totalLessons - 1}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r ${colorGradient[colorClass]} text-white font-bold text-sm disabled:opacity-30 hover:opacity-90 transition-all`}>
             {t.nextLesson}
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
         {completedLessons.length === totalLessons && totalLessons > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`mt-8 ${glassCard} p-6 text-center`}
-          >
-            <div className="text-4xl mb-4">🎉</div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-              {t.allLessonsComplete}
-            </h3>
-            <p className="text-slate-600 dark:text-white/60 text-sm">
-              {t.greatJob}
-            </p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            className={`mt-8 ${glassCard} p-8 text-center`}>
+            <div className="text-5xl mb-4">🎉</div>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{t.allLessonsComplete}</h3>
+            <p className="text-slate-600 dark:text-white/60">{t.greatJob}</p>
+            <button onClick={onBack}
+              className={`mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${colorGradient[colorClass]} text-white font-bold`}>
+              <ArrowLeft className="w-4 h-4" />
+              {t.backToRoadmap}
+            </button>
           </motion.div>
         )}
       </div>

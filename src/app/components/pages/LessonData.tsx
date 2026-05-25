@@ -1,3 +1,5 @@
+import { htmlCssLessons } from "./lessons/html-css";
+
 export const lessonData: Record<string, Record<'EN' | 'RU', any>> = {
   "html-css": {
     EN: {
@@ -600,5 +602,8 @@ export const lessonData: Record<string, Record<'EN' | 'RU', any>> = {
         }
       ]
     }
+      
   }
+  
 };
+lessonData["html-css"] = htmlCssLessons;
