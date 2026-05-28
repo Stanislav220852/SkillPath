@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   Terminal, Cpu, ShieldCheck, Database, ArrowLeft, Play, X,
   Code2, Brain, Lock, BarChart3, Coffee, Zap, ArrowRight,
+  Server, Smartphone, Settings, Gamepad2  // 🆕 добавь это
 } from "lucide-react";
 import { LanguageContext } from "../../App";
 
@@ -95,6 +96,82 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       dayInLife: lang === "RU"
         ? ["SQL-запросы и EDA", "Построение дашбордов", "Презентации стейкхолдерам", "Создание предиктивных моделей"]
         : ["SQL queries and EDA", "Building dashboards", "Presenting to stakeholders", "Creating predictive models"],
+    },
+     {
+      id: "backend",
+      roadmapKey: "backend",
+      title: lang === "RU" ? "Backend-разработчик" : "Backend Developer",
+      icon: Server,
+      desc: lang === "RU"
+        ? "Создавайте серверы, API и базы данных. Невидимая часть веба, которая держит все приложения."
+        : "Build servers, APIs and databases. The invisible part of the web that powers every application.",
+      skills: ["Node.js", "Python", "PostgreSQL", "MongoDB", "REST", "GraphQL", "Docker"],
+      tools: ["Postman", "DBeaver", "Docker", "AWS", "Linux"],
+      salaryMin: 90,
+      salaryMax: 180,
+      color: "emerald",
+      gradient: "from-emerald-500 to-teal-600",
+      videoId: "Oe421EPjeBE",
+      dayInLife: lang === "RU"
+        ? ["Проектирование API эндпоинтов", "Оптимизация SQL запросов", "Код-ревью", "Деплой обновлений на серверы"]
+        : ["Designing API endpoints", "Optimizing SQL queries", "Code reviews", "Deploying updates to servers"],
+    },
+    {
+      id: "mobile",
+      roadmapKey: "mobile",
+      title: lang === "RU" ? "Mobile-разработчик" : "Mobile Developer",
+      icon: Smartphone,
+      desc: lang === "RU"
+        ? "Создавайте приложения для iOS и Android. Миллионы людей будут носить ваши продукты в карманах."
+        : "Build iOS and Android applications. Millions will carry your products in their pockets every day.",
+      skills: ["React Native", "Swift", "Kotlin", "Expo", "Firebase", "Redux"],
+      tools: ["Xcode", "Android Studio", "Figma", "TestFlight", "Sentry"],
+      salaryMin: 95,
+      salaryMax: 185,
+      color: "amber",
+      gradient: "from-amber-500 to-orange-600",
+      videoId: "0-S5a0eXPoc",
+      dayInLife: lang === "RU"
+        ? ["Реализация новых экранов", "Тестирование на разных девайсах", "Публикация в App Store", "Работа с push-уведомлениями"]
+        : ["Building new screens", "Testing on different devices", "App Store publishing", "Working with push notifications"],
+    },
+    {
+      id: "devops",
+      roadmapKey: "devops",
+      title: lang === "RU" ? "DevOps Инженер" : "DevOps Engineer",
+      icon: Settings,
+      desc: lang === "RU"
+        ? "Автоматизируйте инфраструктуру. CI/CD пайплайны, Kubernetes, облака. Делайте деплой одним кликом."
+        : "Automate infrastructure. CI/CD pipelines, Kubernetes, cloud platforms. Deploy with one click.",
+      skills: ["Linux", "Docker", "Kubernetes", "Terraform", "AWS", "Jenkins", "Bash"],
+      tools: ["Grafana", "Prometheus", "GitLab CI", "Ansible", "Helm"],
+      salaryMin: 110,
+      salaryMax: 200,
+      color: "orange",
+      gradient: "from-orange-500 to-red-600",
+      videoId: "j5Zsa_eOXeY",
+      dayInLife: lang === "RU"
+        ? ["Мониторинг продакшн-серверов", "Настройка CI/CD пайплайнов", "Деплой через Kubernetes", "Оптимизация облачных затрат"]
+        : ["Monitoring production servers", "Setting up CI/CD pipelines", "Deploying via Kubernetes", "Optimizing cloud costs"],
+    },
+    {
+      id: "gamedev",
+      roadmapKey: "gamedev",
+      title: lang === "RU" ? "Game-разработчик" : "Game Developer",
+      icon: Gamepad2,
+      desc: lang === "RU"
+        ? "Создавайте миры. Unity, Unreal, шейдеры, физика — превращайте воображение в играбельную реальность."
+        : "Create worlds. Unity, Unreal, shaders, physics — turn imagination into playable reality.",
+      skills: ["C#", "Unity", "Unreal", "C++", "Blender", "Shaders", "Math"],
+      tools: ["Unity Editor", "Visual Studio", "Blender", "Photoshop", "Git LFS"],
+      salaryMin: 75,
+      salaryMax: 160,
+      color: "rose",
+      gradient: "from-rose-500 to-pink-600",
+      videoId: "XtQMytORBmM",
+      dayInLife: lang === "RU"
+        ? ["Программирование игровой механики", "Работа с 3D-моделями", "Оптимизация производительности", "Плейтесты с командой"]
+        : ["Programming game mechanics", "Working with 3D models", "Performance optimization", "Playtesting with the team"],
     },
   ];
 

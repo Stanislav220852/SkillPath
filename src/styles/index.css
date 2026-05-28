@@ -3,3 +3,132 @@
 @import './theme.css';
 
 @import "highlight.js/styles/atom-one-dark.css";
+
+
+.quiz-progress.ui-progressbar {
+  height: 8px !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+}
+
+.dark .quiz-progress.ui-progressbar {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.quiz-progress.ui-progressbar .ui-progressbar-value {
+  background: linear-gradient(90deg, #06b6d4, #ec4899) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  margin: 0 !important;
+  transition: width 0.4s ease !important;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.5) !important;
+}
+
+/* ============ Dialog (модалка результата) ============ */
+.ui-widget-overlay.ui-front {
+  background: rgba(0, 0, 0, 0.7) !important;
+  opacity: 1 !important;
+  backdrop-filter: blur(8px);
+  z-index: 9998 !important;
+}
+
+.ui-dialog.skillpath-dialog {
+  background: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.3) !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+  overflow: hidden !important;
+  z-index: 9999 !important;
+}
+
+.dark .ui-dialog.skillpath-dialog {
+  background: #1e293b !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.skillpath-dialog .ui-dialog-titlebar {
+  background: linear-gradient(135deg, #06b6d4, #ec4899) !important;
+  border: none !important;
+  padding: 16px 24px !important;
+  color: white !important;
+  border-radius: 24px 24px 0 0 !important;
+}
+
+.skillpath-dialog .ui-dialog-title {
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  color: white !important;
+}
+
+.skillpath-dialog .ui-dialog-titlebar-close {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  top: 50% !important;
+  transform: translateY(-50%);
+  right: 16px !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+}
+
+.skillpath-dialog .ui-dialog-titlebar-close:hover {
+  background: rgba(255, 255, 255, 0.35) !important;
+}
+
+.skillpath-dialog .ui-dialog-titlebar-close .ui-icon {
+  background: none !important;
+  text-indent: 0 !important;
+  position: relative;
+}
+
+.skillpath-dialog .ui-dialog-titlebar-close .ui-icon::before {
+  content: "✕";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.skillpath-dialog .ui-dialog-content {
+  padding: 24px !important;
+  background: transparent !important;
+  color: inherit !important;
+}
+
+.dark .skillpath-dialog .ui-dialog-content p {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.quiz-progress.ui-progressbar {
+  height: 8px !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+}
+
+.dark .quiz-progress.ui-progressbar {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.quiz-progress.ui-progressbar .ui-progressbar-value {
+  background: linear-gradient(90deg, #06b6d4, #ec4899) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  margin: 0 !important;
+  transition: width 0.4s ease !important;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.5) !important;
+}

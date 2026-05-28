@@ -4,6 +4,7 @@ import {
   ChevronRight, X, CheckCircle2, BookOpen, Zap, ArrowRight,
   Terminal, Cpu, ShieldAlert, Database, Play, Search,
   Clock, RotateCcw, Users, Filter,
+  Server, Smartphone, Settings, Gamepad2  // 🆕 добавь эти 4 иконки
 } from 'lucide-react';
 import { lessonData } from './LessonData.tsx';
 import { useRoadmapProgress, useProgressVersion, getProgressPercent } from '../utils/useRoadmapProgress';
@@ -17,17 +18,47 @@ const tagColors: Record<string, string> = {
   "Pro":  "bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/20",
 };
 
-const colorBorder: Record<string, string> = { cyan: "border-cyan-500", pink: "border-pink-500", purple: "border-purple-500", blue: "border-blue-500" };
-const colorBg:     Record<string, string> = { cyan: "bg-cyan-500",      pink: "bg-pink-500",      purple: "bg-purple-500",     blue: "bg-blue-500" };
-const colorText:   Record<string, string> = { cyan: "text-cyan-500 dark:text-cyan-400", pink: "text-pink-500 dark:text-pink-400", purple: "text-purple-500 dark:text-purple-400", blue: "text-blue-500 dark:text-blue-400" };
-const colorGlow:   Record<string, string> = { cyan: "shadow-[0_0_20px_rgba(34,211,238,0.4)]", pink: "shadow-[0_0_20px_rgba(236,72,153,0.4)]", purple: "shadow-[0_0_20px_rgba(168,85,247,0.4)]", blue: "shadow-[0_0_20px_rgba(59,130,246,0.4)]" };
-const colorGradient: Record<string, string> = { cyan: "from-cyan-500 to-blue-600", pink: "from-pink-500 to-purple-600", purple: "from-purple-500 to-pink-600", blue: "from-blue-500 to-cyan-600" };
+const colorBorder: Record<string, string> = { 
+  cyan: "border-cyan-500", pink: "border-pink-500", purple: "border-purple-500", blue: "border-blue-500",
+  emerald: "border-emerald-500", amber: "border-amber-500", orange: "border-orange-500", rose: "border-rose-500"
+};
+
+const colorBg: Record<string, string> = { 
+  cyan: "bg-cyan-500", pink: "bg-pink-500", purple: "bg-purple-500", blue: "bg-blue-500",
+  emerald: "bg-emerald-500", amber: "bg-amber-500", orange: "bg-orange-500", rose: "bg-rose-500"
+};
+
+const colorText: Record<string, string> = { 
+  cyan: "text-cyan-500 dark:text-cyan-400", pink: "text-pink-500 dark:text-pink-400", 
+  purple: "text-purple-500 dark:text-purple-400", blue: "text-blue-500 dark:text-blue-400",
+  emerald: "text-emerald-500 dark:text-emerald-400", amber: "text-amber-500 dark:text-amber-400", 
+  orange: "text-orange-500 dark:text-orange-400", rose: "text-rose-500 dark:text-rose-400"
+};
+
+const colorGlow: Record<string, string> = { 
+  cyan: "shadow-[0_0_20px_rgba(34,211,238,0.4)]", pink: "shadow-[0_0_20px_rgba(236,72,153,0.4)]", 
+  purple: "shadow-[0_0_20px_rgba(168,85,247,0.4)]", blue: "shadow-[0_0_20px_rgba(59,130,246,0.4)]",
+  emerald: "shadow-[0_0_20px_rgba(16,185,129,0.4)]", amber: "shadow-[0_0_20px_rgba(245,158,11,0.4)]",
+  orange: "shadow-[0_0_20px_rgba(249,115,22,0.4)]", rose: "shadow-[0_0_20px_rgba(244,63,94,0.4)]"
+};
+
+const colorGradient: Record<string, string> = { 
+  cyan: "from-cyan-500 to-blue-600", pink: "from-pink-500 to-purple-600", 
+  purple: "from-purple-500 to-pink-600", blue: "from-blue-500 to-cyan-600",
+  emerald: "from-emerald-500 to-teal-600", amber: "from-amber-500 to-orange-600",
+  orange: "from-orange-500 to-red-600", rose: "from-rose-500 to-pink-600"
+};
 
 const iconMap: Record<string, any> = {
   frontend: Terminal,
   ai: Cpu,
   cybersec: ShieldAlert,
   datascience: Database,
+  // 🆕
+  backend: Server,
+  mobile: Smartphone,
+  devops: Settings,
+  gamedev: Gamepad2,
 };
 
 const skillIdToLessonKey: Record<string, string> = {
@@ -38,6 +69,13 @@ const skillIdToLessonKey: Record<string, string> = {
   "python-ds": "python-ds", "sql": "sql", "eda": "eda", "stats": "stats",
   "ml-ds": "ml-ds", "bi": "bi", "bigdata": "bigdata",
   "state": "state", "testing": "testing", "deploy": "deploy",
+  "node": "node", "db-basics": "db-basics", "auth": "auth", "apis": "apis", "docker": "docker", "cloud": "cloud",
+  // 🆕 mobile
+  "rn-basics": "rn-basics", "mobile-ui": "mobile-ui", "native-api": "native-api", "state-mobile": "state-mobile", "appstore": "appstore", "perf-mobile": "perf-mobile",
+  // 🆕 devops
+  "linux-devops": "linux-devops", "git-devops": "git-devops", "k8s": "k8s", "terraform": "terraform", "monitoring": "monitoring", "aws-devops": "aws-devops",
+  // 🆕 gamedev
+  "csharp": "csharp", "game-math": "game-math", "2d-games": "2d-games", "3d-games": "3d-games", "shaders": "shaders", "multiplayer": "multiplayer",
 };
 
 // helper: парсит "4 wks" / "4 нед." / "Ongoing" → число недель

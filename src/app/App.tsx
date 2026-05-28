@@ -52,6 +52,8 @@ import { TestimonialsCarousel } from "./components/utils/TestimonialsCarousel.ts
 import { FAQAccordion } from "./components/utils/FAQAccordion.tsx";
 import { PricingTable } from "./components/utils/PricingTable.tsx";
 import { MiniQuiz } from "./components/utils/MiniQuiz.tsx";
+import { BootstrapInfo } from "./components/utils/BootstrapInfo.tsx";
+
 
 
 // --- ДАННЫЕ ПЕРЕВОДОВ ---
@@ -477,21 +479,133 @@ mini: {
 
           ]
 
-        }
+        },
+        backend: {
+          title: "Backend Developer",
+          colorClass: "emerald",
+          phases: [
+            {
+              phase: "Fundamentals",
+              skills: [
+                { id: "node", title: "Node.js & Express", description: "Server-side JavaScript, REST APIs, middleware.", resources: ["Node.js docs", "Express guide", "The Net Ninja"], duration: "5 wks", tag: "Must" },
+                { id: "db-basics", title: "Databases Basics", description: "SQL vs NoSQL, schemas, queries, indexes.", resources: ["PostgreSQL Tutorial", "MongoDB University", "SQLBolt"], duration: "4 wks", tag: "Must" },
+              ]
+            },
+            {
+              phase: "Backend Skills",
+              skills: [
+                { id: "auth", title: "Auth & Security", description: "JWT, OAuth, sessions, hashing passwords.", resources: ["Auth0 Blog", "OWASP Guide", "JWT.io"], duration: "3 wks", tag: "Core" },
+                { id: "apis", title: "REST & GraphQL", description: "API design patterns, versioning, GraphQL basics.", resources: ["REST API Design", "GraphQL.org", "Apollo Tutorial"], duration: "4 wks", tag: "Core" },
+              ]
+            },
+            {
+              phase: "Production",
+              skills: [
+                { id: "docker", title: "Docker & Containers", description: "Containerization, Docker Compose, deployment.", resources: ["Docker Docs", "Docker Mastery", "Play with Docker"], duration: "3 wks", tag: "Pro" },
+                { id: "cloud", title: "Cloud (AWS/GCP)", description: "EC2, S3, Lambda, deploying to production.", resources: ["AWS Free Tier", "GCP Codelabs", "Cloud Guru"], duration: "5 wks", tag: "Pro" },
+              ]
+            }
+          ]
+        },
+
+        mobile: {
+          title: "Mobile Developer",
+          colorClass: "amber",
+          phases: [
+            {
+              phase: "Fundamentals",
+              skills: [
+                { id: "rn-basics", title: "React Native Basics", description: "Components, navigation, state management on mobile.", resources: ["RN Docs", "Expo Docs", "Academind RN"], duration: "5 wks", tag: "Must" },
+                { id: "mobile-ui", title: "Mobile UI/UX", description: "iOS HIG, Material Design, gestures, animations.", resources: ["Apple HIG", "Material Design", "Mobbin"], duration: "3 wks", tag: "Must" },
+              ]
+            },
+            {
+              phase: "Native Features",
+              skills: [
+                { id: "native-api", title: "Native APIs", description: "Camera, GPS, push notifications, biometrics.", resources: ["RN Camera", "Expo Notifications", "RN Maps"], duration: "4 wks", tag: "Core" },
+                { id: "state-mobile", title: "State & Storage", description: "Redux/Zustand, AsyncStorage, SQLite mobile.", resources: ["Zustand docs", "AsyncStorage", "WatermelonDB"], duration: "3 wks", tag: "Core" },
+              ]
+            },
+            {
+              phase: "Publishing",
+              skills: [
+                { id: "appstore", title: "App Store Publishing", description: "Build configs, signing, App Store / Play Store submission.", resources: ["Apple Developer", "Google Play Console", "EAS Build"], duration: "2 wks", tag: "Pro" },
+                { id: "perf-mobile", title: "Mobile Performance", description: "Bundle size, render optimization, native modules.", resources: ["RN Performance", "Flipper", "Hermes engine"], duration: "3 wks", tag: "Pro" },
+              ]
+            }
+          ]
+        },
+
+        devops: {
+          title: "DevOps Engineer",
+          colorClass: "orange",
+          phases: [
+            {
+              phase: "Fundamentals",
+              skills: [
+                { id: "linux-devops", title: "Linux & Bash", description: "Shell scripting, processes, permissions, networking.", resources: ["Linux Journey", "Bash Academy", "OverTheWire"], duration: "4 wks", tag: "Must" },
+                { id: "git-devops", title: "Git & CI/CD Basics", description: "Advanced Git, GitHub Actions, GitLab CI.", resources: ["Pro Git book", "GitHub Actions", "GitLab CI Docs"], duration: "3 wks", tag: "Must" },
+              ]
+            },
+            {
+              phase: "Infrastructure",
+              skills: [
+                { id: "k8s", title: "Kubernetes", description: "Pods, deployments, services, ingress, Helm charts.", resources: ["K8s.io tutorials", "KodeKloud", "Helm docs"], duration: "6 wks", tag: "Core" },
+                { id: "terraform", title: "Terraform & IaC", description: "Infrastructure as Code, providers, state management.", resources: ["HashiCorp Learn", "Terraform Up & Running", "Pluralsight"], duration: "4 wks", tag: "Core" },
+              ]
+            },
+            {
+              phase: "Production",
+              skills: [
+                { id: "monitoring", title: "Monitoring & Logs", description: "Prometheus, Grafana, ELK stack, alerting.", resources: ["Prometheus Docs", "Grafana Tutorials", "Elastic Guide"], duration: "4 wks", tag: "Pro" },
+                { id: "aws-devops", title: "AWS / Cloud Pro", description: "ECS, EKS, CloudFormation, cost optimization.", resources: ["AWS Solutions Architect", "A Cloud Guru", "Cloud Resume"], duration: "6 wks", tag: "Pro" },
+              ]
+            }
+          ]
+        },
+
+        gamedev: {
+          title: "Game Developer",
+          colorClass: "rose",
+          phases: [
+            {
+              phase: "Fundamentals",
+              skills: [
+                { id: "csharp", title: "C# & Unity Basics", description: "Programming fundamentals through Unity engine.", resources: ["Unity Learn", "Brackeys YouTube", "C# Microsoft Docs"], duration: "6 wks", tag: "Must" },
+                { id: "game-math", title: "Math for Games", description: "Vectors, matrices, trigonometry, physics basics.", resources: ["3Blue1Brown", "Real-Time Rendering", "Math for Games"], duration: "4 wks", tag: "Must" },
+              ]
+            },
+            {
+              phase: "Game Design",
+              skills: [
+                { id: "2d-games", title: "2D Game Development", description: "Sprites, animations, collisions, tilemaps.", resources: ["Unity 2D", "GDQuest Godot", "Pixel art assets"], duration: "5 wks", tag: "Core" },
+                { id: "3d-games", title: "3D Game Development", description: "Models, lighting, materials, cameras, physics.", resources: ["Unity 3D", "Unreal Engine Docs", "Blender Guru"], duration: "8 wks", tag: "Core" },
+              ]
+            },
+            {
+              phase: "Specialization",
+              skills: [
+                { id: "shaders", title: "Shaders & Graphics", description: "HLSL/GLSL, shader graph, post-processing effects.", resources: ["Catlike Coding", "Book of Shaders", "Ronja Shader Tutorials"], duration: "6 wks", tag: "Pro" },
+                { id: "multiplayer", title: "Multiplayer & Networking", description: "Mirror, Netcode, server architecture, lag compensation.", resources: ["Mirror Networking", "Photon Docs", "Gaffer on Games"], duration: "5 wks", tag: "Pro" },
+              ]
+            }
+          ]
+        },
 
       },
 
       cards: [
-
-        { title: "Frontend Dev", desc: "Master of the visual realm. Create stunning UI/UX with code and design magic.", colorClass: "cyan", roadmapKey: "frontend" },
-
-        { title: "AI Engineer", desc: "Train neural networks. Speak to machines and build the artificial minds of tomorrow.", colorClass: "pink", roadmapKey: "ai" },
-
-        { title: "Cybersec", desc: "The digital guardian. Hack systems to patch them and protect data from dark hats.", colorClass: "purple", roadmapKey: "cybersec" },
-
-        { title: "Data Scientist", desc: "The modern alchemist. Turn raw data into predictive gold and uncover hidden truths.", colorClass: "blue", roadmapKey: "datascience" }
-
+        { title: "Frontend Dev",   desc: "Master of the visual realm...",  colorClass: "cyan",    roadmapKey: "frontend" },
+        { title: "AI Engineer",    desc: "Train neural networks...",       colorClass: "pink",    roadmapKey: "ai" },
+        { title: "Cybersec",       desc: "The digital guardian...",        colorClass: "purple",  roadmapKey: "cybersec" },
+        { title: "Data Scientist", desc: "The modern alchemist...",        colorClass: "blue",    roadmapKey: "datascience" },
+        // 🆕
+        { title: "Backend Dev",    desc: "Architect of the server side. APIs, databases, and the engine behind every app.",     colorClass: "emerald", roadmapKey: "backend" },
+        { title: "Mobile Dev",     desc: "Build iOS and Android apps that millions carry in their pockets every day.",          colorClass: "amber",   roadmapKey: "mobile" },
+        { title: "DevOps Engineer",desc: "Master of infrastructure. Automate everything, ship code fast and reliably.",         colorClass: "orange",  roadmapKey: "devops" },
+        { title: "Game Developer", desc: "Create worlds. Unity, Unreal, shaders — turn your imagination into playable reality.",colorClass: "rose",    roadmapKey: "gamedev" }
       ]
+
 
     },
       
@@ -979,20 +1093,131 @@ mini: {
 
           ]
 
+        },
+        backend: {
+          title: "Backend-разработчик",
+          colorClass: "emerald",
+          phases: [
+            {
+              phase: "Основы",
+              skills: [
+                { id: "node", title: "Node.js & Express", description: "Серверный JavaScript, REST API, middleware.", resources: ["Node.js docs", "Express guide", "The Net Ninja"], duration: "5 нед.", tag: "Must" },
+                { id: "db-basics", title: "Базы данных", description: "SQL vs NoSQL, схемы, запросы, индексы.", resources: ["PostgreSQL Tutorial", "MongoDB University", "SQLBolt"], duration: "4 нед.", tag: "Must" },
+              ]
+            },
+            {
+              phase: "Бэкенд-навыки",
+              skills: [
+                { id: "auth", title: "Авторизация & безопасность", description: "JWT, OAuth, сессии, хеширование паролей.", resources: ["Auth0 Blog", "OWASP Guide", "JWT.io"], duration: "3 нед.", tag: "Core" },
+                { id: "apis", title: "REST & GraphQL", description: "Проектирование API, версионирование, GraphQL.", resources: ["REST API Design", "GraphQL.org", "Apollo Tutorial"], duration: "4 нед.", tag: "Core" },
+              ]
+            },
+            {
+              phase: "Production",
+              skills: [
+                { id: "docker", title: "Docker & контейнеры", description: "Контейнеризация, Docker Compose, деплой.", resources: ["Docker Docs", "Docker Mastery", "Play with Docker"], duration: "3 нед.", tag: "Pro" },
+                { id: "cloud", title: "Облака (AWS/GCP)", description: "EC2, S3, Lambda, деплой в продакшн.", resources: ["AWS Free Tier", "GCP Codelabs", "Cloud Guru"], duration: "5 нед.", tag: "Pro" },
+              ]
+            }
+          ]
+        },
+
+        mobile: {
+          title: "Mobile-разработчик",
+          colorClass: "amber",
+          phases: [
+            {
+              phase: "Основы",
+              skills: [
+                { id: "rn-basics", title: "React Native основы", description: "Компоненты, навигация, управление состоянием на мобиле.", resources: ["RN Docs", "Expo Docs", "Academind RN"], duration: "5 нед.", tag: "Must" },
+                { id: "mobile-ui", title: "Mobile UI/UX", description: "iOS HIG, Material Design, жесты, анимации.", resources: ["Apple HIG", "Material Design", "Mobbin"], duration: "3 нед.", tag: "Must" },
+              ]
+            },
+            {
+              phase: "Нативные фичи",
+              skills: [
+                { id: "native-api", title: "Нативные API", description: "Камера, GPS, push-уведомления, биометрия.", resources: ["RN Camera", "Expo Notifications", "RN Maps"], duration: "4 нед.", tag: "Core" },
+                { id: "state-mobile", title: "State & хранилище", description: "Redux/Zustand, AsyncStorage, SQLite на мобиле.", resources: ["Zustand docs", "AsyncStorage", "WatermelonDB"], duration: "3 нед.", tag: "Core" },
+              ]
+            },
+            {
+              phase: "Публикация",
+              skills: [
+                { id: "appstore", title: "App Store публикация", description: "Сборка, подпись, отправка в App Store / Play Store.", resources: ["Apple Developer", "Google Play Console", "EAS Build"], duration: "2 нед.", tag: "Pro" },
+                { id: "perf-mobile", title: "Mobile производительность", description: "Размер бандла, оптимизация рендера, нативные модули.", resources: ["RN Performance", "Flipper", "Hermes engine"], duration: "3 нед.", tag: "Pro" },
+              ]
+            }
+          ]
+        },
+
+        devops: {
+          title: "DevOps Инженер",
+          colorClass: "orange",
+          phases: [
+            {
+              phase: "Основы",
+              skills: [
+                { id: "linux-devops", title: "Linux & Bash", description: "Shell-скрипты, процессы, права, сеть.", resources: ["Linux Journey", "Bash Academy", "OverTheWire"], duration: "4 нед.", tag: "Must" },
+                { id: "git-devops", title: "Git & CI/CD основы", description: "Продвинутый Git, GitHub Actions, GitLab CI.", resources: ["Pro Git book", "GitHub Actions", "GitLab CI Docs"], duration: "3 нед.", tag: "Must" },
+              ]
+            },
+            {
+              phase: "Инфраструктура",
+              skills: [
+                { id: "k8s", title: "Kubernetes", description: "Pods, deployments, services, ingress, Helm charts.", resources: ["K8s.io tutorials", "KodeKloud", "Helm docs"], duration: "6 нед.", tag: "Core" },
+                { id: "terraform", title: "Terraform & IaC", description: "Infrastructure as Code, провайдеры, управление state.", resources: ["HashiCorp Learn", "Terraform Up & Running", "Pluralsight"], duration: "4 нед.", tag: "Core" },
+              ]
+            },
+            {
+              phase: "Production",
+              skills: [
+                { id: "monitoring", title: "Мониторинг & логи", description: "Prometheus, Grafana, ELK stack, алертинг.", resources: ["Prometheus Docs", "Grafana Tutorials", "Elastic Guide"], duration: "4 нед.", tag: "Pro" },
+                { id: "aws-devops", title: "AWS / Cloud Pro", description: "ECS, EKS, CloudFormation, оптимизация затрат.", resources: ["AWS Solutions Architect", "A Cloud Guru", "Cloud Resume"], duration: "6 нед.", tag: "Pro" },
+              ]
+            }
+          ]
+        },
+
+        gamedev: {
+          title: "Game-разработчик",
+          colorClass: "rose",
+          phases: [
+            {
+              phase: "Основы",
+              skills: [
+                { id: "csharp", title: "C# & Unity основы", description: "Программирование через движок Unity.", resources: ["Unity Learn", "Brackeys YouTube", "C# Microsoft Docs"], duration: "6 нед.", tag: "Must" },
+                { id: "game-math", title: "Математика для игр", description: "Векторы, матрицы, тригонометрия, физика.", resources: ["3Blue1Brown", "Real-Time Rendering", "Math for Games"], duration: "4 нед.", tag: "Must" },
+              ]
+            },
+            {
+              phase: "Геймдизайн",
+              skills: [
+                { id: "2d-games", title: "2D разработка", description: "Спрайты, анимации, коллизии, тайлмапы.", resources: ["Unity 2D", "GDQuest Godot", "Pixel art assets"], duration: "5 нед.", tag: "Core" },
+                { id: "3d-games", title: "3D разработка", description: "Модели, освещение, материалы, камеры, физика.", resources: ["Unity 3D", "Unreal Engine Docs", "Blender Guru"], duration: "8 нед.", tag: "Core" },
+              ]
+            },
+            {
+              phase: "Специализация",
+              skills: [
+                { id: "shaders", title: "Шейдеры & графика", description: "HLSL/GLSL, shader graph, пост-процессинг.", resources: ["Catlike Coding", "Book of Shaders", "Ronja Shader Tutorials"], duration: "6 нед.", tag: "Pro" },
+                { id: "multiplayer", title: "Мультиплеер", description: "Mirror, Netcode, серверная архитектура.", resources: ["Mirror Networking", "Photon Docs", "Gaffer on Games"], duration: "5 нед.", tag: "Pro" },
+              ]
+            }
+          ]
         }
 
       },
 
-      cards: [
-
-        { title: "Frontend Dev", desc: "Мастер визуального мира. Создавай потрясающие интерфейсы с помощью кода и магии дизайна.", colorClass: "cyan", roadmapKey: "frontend" },
-
-        { title: "AI Engineer", desc: "Обучай нейросети. Общайся с машинами и создавай искусственный интеллект будущего.", colorClass: "pink", roadmapKey: "ai" },
-
-        { title: "Cybersec", desc: "Цифровой страж. Вскрывай системы, чтобы защитить их и спасти данные от хакеров.", colorClass: "purple", roadmapKey: "cybersec" },
-
-        { title: "Data Scientist", desc: "Современный алхимик. Превращай сырые данные в золото прогнозов и находи скрытые истины.", colorClass: "blue", roadmapKey: "datascience" }
-
+       cards: [
+        { title: "Frontend Dev",    desc: "Мастер визуального мира...",       colorClass: "cyan",    roadmapKey: "frontend" },
+        { title: "AI Engineer",     desc: "Обучай нейросети...",              colorClass: "pink",    roadmapKey: "ai" },
+        { title: "Cybersec",        desc: "Цифровой страж...",                colorClass: "purple",  roadmapKey: "cybersec" },
+        { title: "Data Scientist",  desc: "Современный алхимик...",           colorClass: "blue",    roadmapKey: "datascience" },
+        // 🆕
+        { title: "Backend Dev",     desc: "Архитектор серверной части. API, базы данных и движок за каждым приложением.",   colorClass: "emerald", roadmapKey: "backend" },
+        { title: "Mobile Dev",      desc: "Создавай iOS и Android приложения, которые миллионы носят в карманах.",           colorClass: "amber",   roadmapKey: "mobile" },
+        { title: "DevOps",          desc: "Хозяин инфраструктуры. Автоматизируй всё, доставляй код быстро и надёжно.",        colorClass: "orange",  roadmapKey: "devops" },
+        { title: "Game Dev",        desc: "Создавай миры. Unity, Unreal, шейдеры — превращай воображение в играбельную реальность.", colorClass: "rose", roadmapKey: "gamedev" }
       ]
 
     }
@@ -1852,15 +2077,20 @@ const Content = () => {
       <Hero onStartQuiz={() => setShowQuiz(true)} />                   
       <CompaniesStrip />          
       <StatsSection />            
-      <RolesSection />            
+      <RolesSection /> 
+      <BentoShowcase />           
       <TechMarquee />             
-      <BentoShowcase />         
-      <MiniQuiz />               
+               
+      <MiniQuiz /> 
+                  
       <ProjectsShowcase />        
-      <TestimonialsCarousel />   
+      <TestimonialsCarousel /> 
+      <BootstrapInfo />  
       <StepsSection />           
       <PricingTable />           
-      <FAQAccordion />             
+      <FAQAccordion />  
+      
+                 
   </>
 )}
 

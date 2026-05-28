@@ -711,6 +711,7 @@ export const htmlCssLessons: Record<'EN' | 'RU', any> = {
         },
         type: "html-css-js"
       },
+  
 
     ]
   },
