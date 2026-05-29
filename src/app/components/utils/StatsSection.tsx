@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { motion, useInView } from "motion/react";
+import { motion, useInView } from "framer-motion";
 import { LanguageContext } from "../../App";
 
 interface StatItemProps {

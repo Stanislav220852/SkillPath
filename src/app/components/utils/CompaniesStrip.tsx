@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { LanguageContext } from "../../App";
 
 // Простые SVG-логотипы (стилизованные текстовые)

@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
 import { LanguageContext } from "../../App";
 

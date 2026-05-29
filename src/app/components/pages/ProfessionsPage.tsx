@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Terminal, Cpu, ShieldCheck, Database, ArrowLeft, Play, X,
   Code2, Brain, Lock, BarChart3, Coffee, Zap, ArrowRight,

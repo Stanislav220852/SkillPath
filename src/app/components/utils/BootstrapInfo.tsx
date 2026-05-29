@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { Calculator, TrendingUp, Clock, Briefcase, MapPin, Target } from "lucide-react";
 import { LanguageContext } from "../../App";
 

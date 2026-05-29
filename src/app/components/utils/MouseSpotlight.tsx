@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { motion, useMotionTemplate, useSpring } from "motion/react";
+import { motion, useMotionTemplate, useSpring } from "framer-motion";
 
 export const MouseSpotlight = () => {
   const springConfig = { damping: 30, stiffness: 500, mass: 1 };

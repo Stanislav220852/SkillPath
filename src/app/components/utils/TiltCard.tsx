@@ -1,6 +1,6 @@
 // ./components/utils/TiltCard.tsx
 import { useRef, ReactNode } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 interface TiltCardProps {
   children: ReactNode;

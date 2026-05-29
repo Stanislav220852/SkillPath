@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, RotateCcw, Sparkles, X } from "lucide-react";
 import { LanguageContext } from "../../App";
 

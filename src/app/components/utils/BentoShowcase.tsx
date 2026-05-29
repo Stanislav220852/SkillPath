@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import {
   Target, Route, Users, Award, Zap, BookOpen, TrendingUp, Sparkles,
 } from "lucide-react";

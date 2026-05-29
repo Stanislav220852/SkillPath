@@ -1,6 +1,6 @@
 // ./components/utils/MagneticButton.tsx
 import { useRef, ReactNode, MouseEvent } from "react";
-import { motion, useMotionValue, useSpring } from "motion/react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 
 interface MagneticButtonProps {
   children: ReactNode;

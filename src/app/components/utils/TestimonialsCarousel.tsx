@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Quote, ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
 import { LanguageContext } from "../../App";
 import React from "react";

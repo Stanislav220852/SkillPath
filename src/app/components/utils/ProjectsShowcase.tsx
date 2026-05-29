@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Heart, Code2, Eye } from "lucide-react";
 import { LanguageContext } from "../../App";
 
