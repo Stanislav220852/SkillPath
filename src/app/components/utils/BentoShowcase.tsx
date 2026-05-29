@@ -4,6 +4,7 @@ import {
   Target, Route, Users, Award, Zap, BookOpen, TrendingUp, Sparkles,
 } from "lucide-react";
 import { LanguageContext } from "../../App";
+import { HScroller } from "./HScroller.tsx";
 
 const bentoItems = [
   { id: 1, key: "aptitude", icon: Target,     className: "md:col-span-2 md:row-span-2", color: "cyan",    gradient: "from-cyan-500 to-blue-600",     lightBg: "bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200/60" },
@@ -27,18 +28,59 @@ const colorText: Record<string, string> = {
   fuchsia: "text-fuchsia-600 dark:text-fuchsia-400",
 };
 
+const BentoCard = ({ item, t, withSpan = true }: { item: any; t: any; withSpan?: boolean }) => {
+  const Icon = item.icon;
+  const tr = (t.bento.items as any)[item.key];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      className={`group relative overflow-hidden rounded-3xl border p-6 flex flex-col justify-between transition-colors duration-300 h-full
+        ${withSpan ? item.className : ""}
+        ${item.lightBg}
+        dark:bg-none dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-xl
+        dark:from-transparent dark:to-transparent
+        hover:shadow-lg
+      `}
+    >
+      <div
+        className={`absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 blur-2xl transition-opacity duration-500`}
+      />
+
+      <div className="relative z-10">
+        <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/10 border border-black/5 dark:border-white/10 flex items-center justify-center mb-4 shadow-sm">
+          <Icon className={`w-5 h-5 ${colorText[item.color]}`} />
+        </div>
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+          {tr.t}
+        </h3>
+        <p className="text-sm text-slate-600 dark:text-white/60 leading-relaxed">
+          {tr.d}
+        </p>
+      </div>
+
+      <div className="relative z-10 mt-4">
+        <div className="h-1 w-12 rounded-full bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-white/20 group-hover:w-full transition-all duration-500 opacity-60" />
+      </div>
+    </motion.div>
+  );
+};
+
 export const BentoShowcase = () => {
   const { t } = useContext(LanguageContext);
 
   return (
-    <section className="py-24 relative z-10">
+    <section className="py-16 md:py-24 relative z-10">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-14">
+        <div className="text-center mb-10 md:mb-14">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white"
+            className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white"
           >
             {t.bento.title1}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 dark:from-cyan-400 dark:to-pink-400">
@@ -47,48 +89,20 @@ export const BentoShowcase = () => {
           </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[minmax(140px,auto)]">
-          {bentoItems.map((item, idx) => {
-            const Icon = item.icon;
-            const tr = (t.bento.items as any)[item.key];
-            return (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.06, duration: 0.5 }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className={`group relative overflow-hidden rounded-3xl border p-6 flex flex-col justify-between transition-colors duration-300
-                  ${item.className}
-                  ${item.lightBg}
-                  dark:bg-none dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-xl
-                  dark:from-transparent dark:to-transparent
-                  hover:shadow-lg
-                `}
-              >
-                <div
-                  className={`absolute -top-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 blur-2xl transition-opacity duration-500`}
-                />
+        {/* Десктоп/планшет: bento-сетка */}
+        <div className="hidden md:grid grid-cols-4 gap-4 auto-rows-[minmax(140px,auto)]">
+          {bentoItems.map((item) => (
+            <BentoCard key={item.id} item={item} t={t} />
+          ))}
+        </div>
 
-                <div className="relative z-10">
-                  <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/10 border border-black/5 dark:border-white/10 flex items-center justify-center mb-4 shadow-sm">
-                    <Icon className={`w-5 h-5 ${colorText[item.color]}`} />
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
-                    {tr.t}
-                  </h3>
-                  <p className="text-sm text-slate-600 dark:text-white/60 leading-relaxed">
-                    {tr.d}
-                  </p>
-                </div>
-
-                <div className="relative z-10 mt-4">
-                  <div className="h-1 w-12 rounded-full bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-white/20 group-hover:w-full transition-all duration-500 opacity-60" />
-                </div>
-              </motion.div>
-            );
-          })}
+        {/* Мобилка: горизонтальная лента (свайп) */}
+        <div className="md:hidden">
+          <HScroller itemClassName="w-[260px]">
+            {bentoItems.map((item) => (
+              <BentoCard key={item.id} item={item} t={t} withSpan={false} />
+            ))}
+          </HScroller>
         </div>
       </div>
     </section>

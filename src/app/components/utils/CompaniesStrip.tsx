@@ -10,7 +10,7 @@ const companies = [
 export const CompaniesStrip = () => {
   const { t } = useContext(LanguageContext);
   return (
-    <section className="py-12 relative">
+    <section className="py-10 md:py-12 relative">
       <div className="container mx-auto px-6">
         <motion.p
           initial={{ opacity: 0 }}
@@ -20,7 +20,22 @@ export const CompaniesStrip = () => {
         >
           {t.companies.title}
         </motion.p>
-        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+
+        {/* Мобилка: горизонтальная лента логотипов (свайп) */}
+        <div className="flex md:hidden gap-8 overflow-x-auto pb-2 -mx-6 px-6 hscroll-hide snap-x" style={{ scrollbarWidth: "none" }}>
+          {companies.map((name) => (
+            <span
+              key={name}
+              className="flex-shrink-0 snap-start text-xl font-black text-slate-400 dark:text-white/30"
+              style={{ fontFamily: "system-ui" }}
+            >
+              {name}
+            </span>
+          ))}
+        </div>
+
+        {/* Десктоп: обычный wrap */}
+        <div className="hidden md:flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
           {companies.map((name, i) => (
             <motion.div
               key={name}
