@@ -28,6 +28,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      "motion/react": "framer-motion",
     },
   },
   assetsInclude: ['**/*.svg', '**/*.csv'],
