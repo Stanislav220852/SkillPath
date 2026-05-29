@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ArrowLeft, Play, CheckCircle, BookOpen, Code, 
+import {
+  ArrowLeft, Play, CheckCircle, BookOpen, Code,
   ChevronRight, Star, Trophy, Zap,
   Lightbulb, Eye, Copy, Check, RefreshCw, Menu, X
 } from 'lucide-react';
@@ -60,7 +60,7 @@ const detectLang = (code: string): string => {
 const HighlightedCode = ({ code, language }: { code: string; language?: string }) => {
   const lang = language || detectLang(code);
   const [copied, setCopied] = useState(false);
-  
+
   const highlighted = useMemo(() => {
     try {
       return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
@@ -81,7 +81,7 @@ const HighlightedCode = ({ code, language }: { code: string; language?: string }
         <span className="text-[10px] text-white/40 font-mono uppercase tracking-wider">{lang}</span>
         <button
           onClick={copy}
-          className="text-[10px] text-white/40 hover:text-white/80 transition-colors flex items-center gap-1 opacity-0 group-hover:opacity-100"
+          className="text-[10px] text-white/40 hover:text-white/80 transition-colors flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
         >
           {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
           {copied ? 'Copied!' : 'Copy'}
@@ -147,8 +147,7 @@ const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error,
         </div>
         <span className="text-[10px] text-white/30 uppercase tracking-wider font-bold">{lang}</span>
       </div>
-
-      <div className="relative" style={{ minHeight: '300px', maxHeight: '500px' }}>
+      <div className="relative min-h-[240px] max-h-[400px] md:min-h-[300px] md:max-h-[500px]">
         <pre ref={preRef} aria-hidden="true"
           className="absolute inset-0 m-0 p-4 overflow-auto pointer-events-none text-sm font-mono leading-6"
           style={{ tabSize: 2 }}>
@@ -161,7 +160,6 @@ const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error,
           style={{ color: 'transparent', caretColor: '#fff', tabSize: 2, WebkitTextFillColor: 'transparent' }}
         />
       </div>
-
       {(output || error) && (
         <div className={`border-t border-white/5 ${error ? 'bg-red-500/10' : 'bg-green-500/5'}`}>
           <div className="flex items-center gap-2 px-4 py-2 bg-black/20">
@@ -173,7 +171,6 @@ const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error,
           </pre>
         </div>
       )}
-
       <div className="p-3 bg-[#21252b] border-t border-white/5 flex items-center gap-2">
         <button onClick={() => onRun(code)} disabled={isRunning}
           className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50">
@@ -200,7 +197,6 @@ const PreviewFrame = ({ fullHtml, fallbackHtml }: { fullHtml?: string; fallbackH
     const wrappedHtml = isFullPage ? content : `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><style>body{font-family:system-ui;padding:16px;margin:0;color:#1e293b;background:#fff}</style></head>
 <body>${content}<script>window.addEventListener('error',function(e){const d=document.createElement('div');d.style.cssText='position:fixed;bottom:8px;left:8px;right:8px;padding:10px;background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;border-radius:8px;font-family:monospace;font-size:12px;z-index:9999';d.textContent='Runtime error: '+e.message;document.body.appendChild(d)})</script></body></html>`;
-
     try {
       iframeRef.current.srcdoc = wrappedHtml;
       setIframeError(null);
@@ -219,7 +215,7 @@ const PreviewFrame = ({ fullHtml, fallbackHtml }: { fullHtml?: string; fallbackH
           <span className="text-[10px] text-white/40 uppercase tracking-wider font-bold">Live</span>
         </div>
       </div>
-      <iframe ref={iframeRef} className="w-full h-[500px] bg-white" sandbox="allow-scripts allow-same-origin" title="Code Preview" />
+      <iframe ref={iframeRef} className="w-full h-[360px] md:h-[500px] bg-white" sandbox="allow-scripts allow-same-origin" title="Code Preview" />
       {iframeError && (
         <div className="p-3 bg-red-500/10 border-t border-red-500/20">
           <p className="text-xs text-red-400 font-mono">{iframeError}</p>
@@ -237,7 +233,6 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
   const [isRunning, setIsRunning] = useState(false);
   const [liveCode, setLiveCode] = useState(lesson.practice?.starterCode || '');
   const [debouncedCode, setDebouncedCode] = useState(liveCode);
-
   const isCompleted = completedLessons.includes(lesson.id);
   const isHtmlLesson = lesson.type === 'html-css-js';
 
@@ -296,7 +291,7 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
               </span>
             )}
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{lesson.title}</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{lesson.title}</h2>
         </div>
         {!isCompleted && (
           <button onClick={() => onCompleteLesson(lesson.id)}
@@ -311,8 +306,8 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
         {tabs.map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
             className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${
-              activeTab === tab.id 
-                ? 'bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm' 
+              activeTab === tab.id
+                ? 'bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm'
                 : 'text-slate-500 dark:text-white/40 hover:text-slate-700 dark:hover:text-white/60'
             }`}>
             <tab.icon className="w-4 h-4" />
@@ -323,7 +318,7 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
 
       <AnimatePresence mode="wait">
         {activeTab === 'theory' && (
-          <motion.div key="theory" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className={`${glassCard} p-6`}>
+          <motion.div key="theory" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className={`${glassCard} p-5 md:p-6`}>
             {lesson.theory?.sections?.map((section: any, i: number) => (
               <div key={i} className="mb-6 last:mb-0">
                 {section.type === 'heading' && (
@@ -359,7 +354,7 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
 
         {activeTab === 'practice' && (
           <motion.div key="practice" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
-            <div className={`${glassCard} p-6`}>
+            <div className={`${glassCard} p-5 md:p-6`}>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                 <Code className={`w-5 h-5 ${colorText[colorClass]}`} />
                 {lesson.practice?.title || t.practice}
@@ -381,7 +376,7 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
             </div>
 
             {isHtmlLesson && (
-              <div className={`${glassCard} p-6`}>
+              <div className={`${glassCard} p-5 md:p-6`}>
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                   <Eye className={`w-4 h-4 ${colorText[colorClass]}`} />
                   {t.livePreview}
@@ -405,7 +400,7 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
 // === LESSON NAVIGATOR — compact for 20+ lessons ===
 const LessonNavigator = ({ lessons, currentIndex, completedLessons, onSelect, colorClass }: any) => {
   return (
-    <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+    <div className="flex gap-2 mb-8 overflow-x-auto pb-2 -mx-5 px-5 md:mx-0 md:px-0">
       {lessons.map((lesson: any, i: number) => {
         const isCompleted = completedLessons.includes(lesson.id);
         const isCurrent = i === currentIndex;
@@ -439,7 +434,7 @@ const LessonNavigator = ({ lessons, currentIndex, completedLessons, onSelect, co
 export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
-  
+
   const lessons = lessonData[skillId] && lessonData[skillId][lang] ? lessonData[skillId][lang] : null;
 
   // Load completed from localStorage on mount
@@ -463,9 +458,9 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
 
   if (!lessons) {
     return (
-      <div className="min-h-screen pt-32 pb-20 px-6 relative">
+      <div className="min-h-screen pt-28 md:pt-32 pb-20 px-5 md:px-6 relative">
         <div className="container mx-auto max-w-4xl relative z-10">
-          <div className={`${glassCard} p-8 text-center`}>
+          <div className={`${glassCard} p-6 md:p-8 text-center`}>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
               {lang === 'RU' ? 'Уроки ещё не доступны' : 'Lessons not available yet'}
             </h2>
@@ -530,7 +525,7 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-20 px-6 relative">
+    <div className="min-h-screen pt-24 pb-20 px-5 md:px-6 relative">
       <div className={`absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-${colorClass}-500/10 dark:bg-${colorClass}-500/20 rounded-full blur-[120px] pointer-events-none`} />
 
       <div className="container mx-auto max-w-5xl relative z-10">
@@ -546,7 +541,7 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
               {skill.title}
             </span>
           </div>
-          <h1 className="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-2">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-2">
             {currentLesson.title}
           </h1>
           <p className="text-slate-600 dark:text-white/60">{skill.description}</p>
@@ -605,11 +600,9 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
             <ArrowLeft className="w-4 h-4" />
             {t.previousLesson}
           </button>
-
           <span className="text-sm text-slate-500 dark:text-white/40 font-bold">
             {currentLessonIndex + 1} / {totalLessons}
           </span>
-
           <button onClick={() => setCurrentLessonIndex(currentLessonIndex + 1)} disabled={currentLessonIndex === totalLessons - 1}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r ${colorGradient[colorClass]} text-white font-bold text-sm disabled:opacity-30 hover:opacity-90 transition-all`}>
             {t.nextLesson}
@@ -619,7 +612,7 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
 
         {completedLessons.length === totalLessons && totalLessons > 0 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            className={`mt-8 ${glassCard} p-8 text-center`}>
+            className={`mt-8 ${glassCard} p-6 md:p-8 text-center`}>
             <div className="text-5xl mb-4">🎉</div>
             <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{t.allLessonsComplete}</h3>
             <p className="text-slate-600 dark:text-white/60">{t.greatJob}</p>

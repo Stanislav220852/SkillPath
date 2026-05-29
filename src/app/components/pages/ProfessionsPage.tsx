@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Terminal, Cpu, ShieldCheck, Database, ArrowLeft, Play, X,
   Code2, Brain, Lock, BarChart3, Coffee, Zap, ArrowRight,
-  Server, Smartphone, Settings, Gamepad2  // 🆕 добавь это
+  Server, Smartphone, Settings, Gamepad2
 } from "lucide-react";
 import { LanguageContext } from "../../App";
 
@@ -35,7 +35,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       salaryMax: 150,
       color: "cyan",
       gradient: "from-cyan-500 to-blue-600",
-      videoId: "Tn6-PIqc4UM", // React intro
+      videoId: "Tn6-PIqc4UM",
       dayInLife: lang === "RU"
         ? ["Ревью кода коллег утром", "Реализация новых компонентов UI", "Митинги с дизайнерами", "Дебаг и оптимизация производительности"]
         : ["Morning code reviews", "Building new UI components", "Sync with designers", "Debugging and performance tuning"],
@@ -54,7 +54,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       salaryMax: 220,
       color: "pink",
       gradient: "from-pink-500 to-rose-600",
-      videoId: "aircAruvnKk", // 3Blue1Brown neural networks
+      videoId: "aircAruvnKk",
       dayInLife: lang === "RU"
         ? ["Анализ датасетов", "Эксперименты с архитектурами моделей", "Тренировка и валидация", "Деплой моделей в продакшн"]
         : ["Analyzing datasets", "Experimenting with model architectures", "Training & validation", "Deploying models to production"],
@@ -73,7 +73,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       salaryMax: 180,
       color: "purple",
       gradient: "from-purple-500 to-violet-600",
-      videoId: "U_P23SqJaDc", // cybersec intro
+      videoId: "U_P23SqJaDc",
       dayInLife: lang === "RU"
         ? ["Мониторинг угроз через SIEM", "Пентесты внутренних систем", "Расследование инцидентов", "Обучение сотрудников"]
         : ["Threat monitoring via SIEM", "Internal pentests", "Incident investigation", "Security training for staff"],
@@ -92,12 +92,12 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       salaryMax: 190,
       color: "blue",
       gradient: "from-blue-500 to-indigo-600",
-      videoId: "X3paOmcrTjQ", // data science intro
+      videoId: "X3paOmcrTjQ",
       dayInLife: lang === "RU"
         ? ["SQL-запросы и EDA", "Построение дашбордов", "Презентации стейкхолдерам", "Создание предиктивных моделей"]
         : ["SQL queries and EDA", "Building dashboards", "Presenting to stakeholders", "Creating predictive models"],
     },
-     {
+    {
       id: "backend",
       roadmapKey: "backend",
       title: lang === "RU" ? "Backend-разработчик" : "Backend Developer",
@@ -184,29 +184,29 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-20 px-6 relative overflow-hidden">
+    <div className="min-h-screen pt-28 md:pt-32 pb-20 px-5 md:px-6 relative overflow-hidden">
       {/* background blurs */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-500/10 dark:bg-pink-500/20 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* HEADER */}
-        <div className="text-center mb-16">
-          <h1 className="text-6xl font-black mb-6">
+        <div className="text-center mb-10 md:mb-16">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6">
             <span className="text-slate-900 dark:text-white">{t.profPage.title1}</span>{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 dark:from-cyan-400 dark:to-pink-400">
               {t.profPage.title2}
             </span>
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-xl max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 text-base md:text-xl max-w-2xl mx-auto">
             {t.profPage.subtitle}
           </p>
         </div>
 
         {/* TWO COLUMN LAYOUT */}
-        <div className="grid lg:grid-cols-[320px_1fr] gap-8">
-          {/* LEFT — list */}
-          <div className="lg:sticky lg:top-32 lg:self-start space-y-3">
+        <div className="grid lg:grid-cols-[320px_1fr] gap-6 lg:gap-8">
+          {/* LEFT — list: горизонтальная лента на мобилке, sticky-колонка на десктопе */}
+          <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-5 px-5 lg:mx-0 lg:px-0 lg:sticky lg:top-32 lg:self-start snap-x">
             {professions.map((p) => {
               const ItemIcon = p.icon;
               const isActive = p.id === activeId;
@@ -214,23 +214,22 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                 <button
                   key={p.id}
                   onClick={() => setActiveId(p.id)}
-                  className={`w-full text-left p-4 rounded-2xl border transition-all duration-300 flex items-center gap-3
+                  className={`flex-shrink-0 lg:flex-shrink min-w-[240px] lg:min-w-0 lg:w-full snap-start text-left p-4 rounded-2xl border transition-all duration-300 flex items-center gap-3
                     ${isActive
                       ? `bg-gradient-to-r ${p.gradient} border-transparent text-white shadow-lg`
                       : "bg-white/60 dark:bg-white/5 border-black/5 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 text-slate-700 dark:text-slate-200"
                     }`}
                 >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center
-                    ${isActive ? "bg-white/20" : `bg-${p.color}-500/10`}`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isActive ? "bg-white/20" : `bg-${p.color}-500/10`}`}>
                     <ItemIcon className={`w-5 h-5 ${isActive ? "text-white" : `text-${p.color}-500 dark:text-${p.color}-400`}`} />
                   </div>
-                  <div className="flex-1">
-                    <p className="font-bold text-sm">{p.title}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm truncate">{p.title}</p>
                     <p className={`text-xs ${isActive ? "text-white/80" : "text-slate-500 dark:text-slate-400"}`}>
                       ${p.salaryMin}k – ${p.salaryMax}k
                     </p>
                   </div>
-                  {isActive && <ArrowRight className="w-4 h-4" />}
+                  {isActive && <ArrowRight className="w-4 h-4 flex-shrink-0" />}
                 </button>
               );
             })}
@@ -244,52 +243,52 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="space-y-6"
+              className="space-y-5 md:space-y-6"
             >
               {/* Video preview */}
               <div className={`${glassCard} p-0 overflow-hidden relative aspect-video group cursor-pointer`}
                    onClick={() => setVideoOpen(true)}>
                 <div className={`absolute inset-0 bg-gradient-to-br ${active.gradient} opacity-30`} />
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 md:gap-4">
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-20 h-20 rounded-full bg-white/90 dark:bg-white/95 flex items-center justify-center shadow-2xl group-hover:shadow-cyan-500/50 transition-shadow"
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/90 dark:bg-white/95 flex items-center justify-center shadow-2xl group-hover:shadow-cyan-500/50 transition-shadow"
                   >
-                    <Play className="w-8 h-8 text-slate-900 ml-1" fill="currentColor" />
+                    <Play className="w-7 h-7 md:w-8 md:h-8 text-slate-900 ml-1" fill="currentColor" />
                   </motion.div>
-                  <p className="text-white font-bold text-lg drop-shadow-lg">
+                  <p className="text-white font-bold text-base md:text-lg drop-shadow-lg">
                     {t.profPage.watchVideo}
                   </p>
                 </div>
                 {/* big bg icon */}
-                <Icon className="absolute -bottom-8 -right-8 w-48 h-48 text-white/10" />
+                <Icon className="absolute -bottom-8 -right-8 w-40 h-40 md:w-48 md:h-48 text-white/10" />
               </div>
 
               {/* Title block */}
-              <div className={`${glassCard} p-8`}>
-                <div className="flex items-start gap-5 mb-5">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${active.gradient} flex items-center justify-center shadow-lg flex-shrink-0`}>
-                    <Icon className="w-8 h-8 text-white" />
+              <div className={`${glassCard} p-6 md:p-8`}>
+                <div className="flex items-start gap-4 md:gap-5 mb-5">
+                  <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br ${active.gradient} flex items-center justify-center shadow-lg flex-shrink-0`}>
+                    <Icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">{active.title}</h2>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{active.desc}</p>
+                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-2">{active.title}</h2>
+                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base">{active.desc}</p>
                   </div>
                 </div>
               </div>
 
               {/* Salary visual */}
-              <div className={`${glassCard} p-8`}>
+              <div className={`${glassCard} p-6 md:p-8`}>
                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
                   {t.profPage.salary}
                 </p>
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span className={`text-4xl font-black text-${active.color}-600 dark:text-${active.color}-400`}>
+                <div className="flex items-baseline gap-2 mb-4 flex-wrap">
+                  <span className={`text-3xl md:text-4xl font-black text-${active.color}-600 dark:text-${active.color}-400`}>
                     ${active.salaryMin}k
                   </span>
                   <span className="text-slate-400">–</span>
-                  <span className={`text-4xl font-black text-${active.color}-600 dark:text-${active.color}-400`}>
+                  <span className={`text-3xl md:text-4xl font-black text-${active.color}-600 dark:text-${active.color}-400`}>
                     ${active.salaryMax}k
                   </span>
                   <span className="text-sm text-slate-500 dark:text-slate-400 ml-2">/ year</span>
@@ -310,7 +309,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
               </div>
 
               {/* Skills tags */}
-              <div className={`${glassCard} p-8`}>
+              <div className={`${glassCard} p-6 md:p-8`}>
                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
                   {t.profPage.skills}
                 </p>
@@ -318,7 +317,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                   {active.skills.map((skill) => (
                     <span
                       key={skill}
-                      className={`px-4 py-2 rounded-full text-sm font-bold border bg-${active.color}-500/10 text-${active.color}-700 dark:text-${active.color}-300 border-${active.color}-500/20`}
+                      className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-bold border bg-${active.color}-500/10 text-${active.color}-700 dark:text-${active.color}-300 border-${active.color}-500/20`}
                     >
                       {skill}
                     </span>
@@ -327,8 +326,8 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
               </div>
 
               {/* Day in life + Tools */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className={`${glassCard} p-8`}>
+              <div className="grid md:grid-cols-2 gap-5 md:gap-6">
+                <div className={`${glassCard} p-6 md:p-8`}>
                   <div className="flex items-center gap-2 mb-4">
                     <Coffee className={`w-5 h-5 text-${active.color}-500 dark:text-${active.color}-400`} />
                     <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
@@ -345,7 +344,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                   </ul>
                 </div>
 
-                <div className={`${glassCard} p-8`}>
+                <div className={`${glassCard} p-6 md:p-8`}>
                   <div className="flex items-center gap-2 mb-4">
                     <Zap className={`w-5 h-5 text-${active.color}-500 dark:text-${active.color}-400`} />
                     <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
@@ -370,7 +369,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={goToRoadmap}
-                className={`w-full p-6 rounded-3xl bg-gradient-to-r ${active.gradient} text-white font-black text-lg flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl transition-shadow`}
+                className={`w-full p-5 md:p-6 rounded-3xl bg-gradient-to-r ${active.gradient} text-white font-black text-base md:text-lg flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl transition-shadow`}
               >
                 {t.profPage.openRoadmap}
                 <ArrowRight className="w-5 h-5" />
@@ -380,7 +379,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
         </div>
 
         {/* Back button */}
-        <div className="text-center mt-16">
+        <div className="text-center mt-12 md:mt-16">
           <button
             onClick={onBack}
             className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-bold"
@@ -398,18 +397,18 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setVideoOpen(false)}
-            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-6"
+            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 md:p-6"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl"
+              className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl"
             >
               <button
                 onClick={() => setVideoOpen(false)}
-                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors flex items-center justify-center text-white"
+                className="absolute top-3 right-3 md:top-4 md:right-4 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors flex items-center justify-center text-white"
               >
                 <X className="w-5 h-5" />
               </button>

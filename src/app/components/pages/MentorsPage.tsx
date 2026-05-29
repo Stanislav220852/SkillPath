@@ -176,16 +176,16 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-20 px-6 relative overflow-hidden">
+    <div className="min-h-screen pt-28 md:pt-32 pb-20 px-5 md:px-6 relative overflow-hidden">
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-500/10 dark:bg-pink-500/20 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* HEADER */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10 md:mb-12">
           <motion.h1
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            className="text-6xl font-black mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6"
           >
             <span className="text-slate-900 dark:text-white">
               {lang === "RU" ? "Найди своего " : "Find Your "}
@@ -194,7 +194,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
               {lang === "RU" ? "Ментора" : "Mentor"}
             </span>
           </motion.h1>
-          <p className="text-slate-600 dark:text-slate-400 text-xl max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 text-base md:text-xl max-w-2xl mx-auto">
             {lang === "RU"
               ? "Учись у инженеров из Yandex, Tinkoff, OpenAI и других топовых компаний"
               : "Learn from engineers at Yandex, Tinkoff, OpenAI and other top companies"}
@@ -202,7 +202,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
         </div>
 
         {/* SEARCH + FILTERS */}
-        <div className={`${glassCard} p-5 mb-10 flex flex-wrap items-center gap-3`}>
+        <div className={`${glassCard} p-4 md:p-5 mb-8 md:mb-10 flex flex-col md:flex-row md:flex-wrap md:items-center gap-3`}>
           <div className="relative flex-1 min-w-[200px]">
             <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
@@ -213,7 +213,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
               className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-500"
             />
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 pb-1 md:pb-0">
             {filters.map((f) => {
               const active = filter === f.id;
               const c = colorMap[f.color] || { gradient: "from-slate-600 to-slate-700", bg: "bg-slate-500/10", text: "text-slate-700 dark:text-slate-300", border: "border-slate-300" };
@@ -221,7 +221,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
                 <button
                   key={f.id}
                   onClick={() => setFilter(f.id)}
-                  className={`px-4 py-2 rounded-xl text-sm font-bold transition-all
+                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all
                     ${active
                       ? f.color === "slate"
                         ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900"
@@ -242,7 +242,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
             <p className="text-xl">{lang === "RU" ? "Никого не нашли 🤷" : "Nobody found 🤷"}</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             <AnimatePresence mode="popLayout">
               {filtered.map((m, i) => {
                 const c = colorMap[m.color];
@@ -340,7 +340,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
         )}
 
         {/* Back */}
-        <div className="text-center mt-16">
+        <div className="text-center mt-12 md:mt-16">
           <button
             onClick={onBack}
             className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-bold"
@@ -356,7 +356,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={() => setSelectedMentor(null)}
-            className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-md flex items-center justify-center p-6"
+            className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-md flex items-center justify-center p-4 md:p-6 overflow-y-auto"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -364,10 +364,10 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+              className="relative w-full max-w-2xl my-auto bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden"
             >
               {/* Top gradient banner */}
-              <div className={`h-32 bg-gradient-to-br ${colorMap[selectedMentor.color].gradient} relative`}>
+              <div className={`h-28 md:h-32 bg-gradient-to-br ${colorMap[selectedMentor.color].gradient} relative`}>
                 <button
                   onClick={() => setSelectedMentor(null)}
                   className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-white transition-colors"
@@ -376,14 +376,12 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
                 </button>
               </div>
 
-              <div className="p-8 -mt-16 relative">
-                <div className={`w-24 h-24 rounded-3xl bg-gradient-to-br ${colorMap[selectedMentor.color].gradient} flex items-center justify-center text-white font-black text-3xl shadow-2xl border-4 border-white dark:border-slate-900 mb-4`}>
+              <div className="p-6 md:p-8 -mt-16 relative">
+                <div className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-gradient-to-br ${colorMap[selectedMentor.color].gradient} flex items-center justify-center text-white font-black text-2xl md:text-3xl shadow-2xl border-4 border-white dark:border-slate-900 mb-4`}>
                   {selectedMentor.initials}
                 </div>
-
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white">{selectedMentor.name}</h2>
                 <p className="text-slate-600 dark:text-slate-400">{selectedMentor.role} · {selectedMentor.company}</p>
-
                 <div className="flex flex-wrap items-center gap-4 mt-3 text-sm">
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
@@ -399,7 +397,6 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
                     <span>{selectedMentor.languages.join(", ")}</span>
                   </div>
                 </div>
-
                 <p className="text-slate-700 dark:text-slate-300 leading-relaxed mt-5">{selectedMentor.bio}</p>
 
                 <div className="mt-5">
@@ -415,7 +412,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
                   <button className="py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-slate-700 dark:text-white/80 font-bold text-sm">
                     <MessageCircle className="w-4 h-4" />
                     {lang === "RU" ? "Написать" : "Message"}
