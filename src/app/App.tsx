@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createContext, useContext } from "react";
 
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { ThemeProvider, useTheme } from "next-themes";
 
