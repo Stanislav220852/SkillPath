@@ -62,7 +62,7 @@ const iconMap: Record<string, any> = {
 };
 
 const skillIdToLessonKey: Record<string, string> = {
-  "html-css": "html-css", "js-core": "js-core", "react": "react",
+   "html-css": "html-css", "js-core": "js-core", "react": "react", "typescript": "typescript",
   "python": "python", "math": "math", "sklearn": "sklearn", "dl": "dl",
   "nlp": "nlp", "mlops": "mlops", "networking": "networking", "linux": "linux",
   "pentest": "pentest", "webapp": "webapp", "siem": "siem", "certs": "certs",
