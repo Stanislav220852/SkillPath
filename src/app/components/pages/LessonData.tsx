@@ -20,6 +20,39 @@ import * as typescriptMod from './lessons/typescript.ts';
 import * as stateLessons from './lessons/state.ts';
 import * as testingLessons from './lessons/testing.ts';
 import * as deployLessons from './lessons/deploy.ts';
+import * as mathLessons from './lessons/math.ts';
+import * as sqlState from './lessons/sql_lessons.ts';
+import * as edaState from './lessons/eda_lessons.ts';
+import * as statisticsState from './lessons/statistics_lessons.ts';
+import * as mlState from './lessons/ml_lessons.ts';
+import * as biState from './lessons/bi_lessons.ts';
+import * as bigDataState from './lessons/big_data_lessons.ts';
+import * as nodejsState from './lessons/nodejs_express_lessons.ts';   
+import * as databasesState from './lessons/databases_lessons.ts';
+import * as authSecurityState from './lessons/auth_security_lessons.ts';
+import * as apiDesignState from './lessons/api_design_lessons.ts';
+import * as dockerState from './lessons/docker_lessons.ts';
+import * as cloudState from './lessons/cloud_lessons.ts';
+import * as reactNativeState from './lessons/react_native_lessons.ts';
+import * as mobileUiUxState from './lessons/mobile_ui_ux_lessons.ts';
+import * as nativeApiState from './lessons/native_api_lessons.ts';
+import * as rnStateStorageState from './lessons/rn_state_storage_lessons.ts';
+import * as appPublishingState from './lessons/app_publishing_lessons.ts';
+import * as rnPerformanceState from './lessons/rn_performance_lessons.ts';
+import * as devopsLinuxState from './lessons/devops_linux_lessons.ts';
+import * as gitCicdState from './lessons/git_cicd_lessons.ts';
+import * as kubernetesState from './lessons/kubernetes_lessons.ts';
+import * as terraformIacState from './lessons/terraform_iac_lessons.ts';
+import * as monitoringLogsState from './lessons/monitoring_logs_lessons.ts';
+import * as awsCloudProState from './lessons/game_multiplayer_lessons.ts';
+import * as unityCSharpState from './lessons/unity_csharp_lessons.ts';
+import * as gameMathState from './lessons/game_math_lessons.ts';
+import * as game2dState from './lessons/game_2d_lessons.ts';
+import * as game3dState from './lessons/game_3d_lessons.ts';
+import * as shadersGraphicsState from './lessons/shaders_graphics_lessons.ts';
+import * as gameMultiplayerState from './lessons/game_multiplayer_lessons.ts';
+
+
 
 // Берёт курс из модуля независимо от имени экспорта (default или любой named).
 const pick = (mod: any) => {
@@ -40,5 +73,38 @@ export const lessonData: Record<string, Record<'EN' | 'RU', any>> = {
   'typescript': pick(typescriptMod),
   'state': pick(stateLessons),
   'testing': pick(testingLessons),
-  'deploy': pick(deployLessons)
+  'deploy': pick(deployLessons),
+  'math': pick(mathLessons),
+  'sql': pick(sqlState),
+  'eda': pick(edaState),
+  'stats': pick(statisticsState),
+  'ml-ds': pick(mlState),
+  'bi': pick(biState),
+  'bigdata': pick(bigDataState),
+  'node': pick(nodejsState),
+  'db-basics': pick(databasesState),
+  'auth': pick(authSecurityState),
+  'apis': pick(apiDesignState),
+  'docker': pick(dockerState),
+  'cloud':pick(cloudState),
+  'rn-basics': pick(reactNativeState),
+  'mobile-ui': pick(mobileUiUxState),
+  'native-api': pick(nativeApiState),
+  'state-mobile': pick(rnStateStorageState),
+  'appstore':pick(appPublishingState),
+  'perf-mobile':pick(rnPerformanceState),
+  'linux-devops':pick(devopsLinuxState),
+  'git-devops':pick(gitCicdState),
+  'k8s':pick(kubernetesState),
+  'terraform':pick(terraformIacState),
+  'monitoring':pick(monitoringLogsState),
+  'aws-devops':pick(awsCloudProState),
+  'csharp':pick(unityCSharpState),
+  'game-math':pick(gameMathState),
+  '2d-games':pick(game2dState),
+  '3d-games':pick(game3dState),
+  'shaders':pick(shadersGraphicsState),
+  'multiplayer':pick(gameMultiplayerState)
+
+
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, createContext, useContext } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeProvider, useTheme } from "next-themes";
 import {
@@ -38,6 +39,7 @@ import { FAQAccordion } from "./components/utils/FAQAccordion.tsx";
 import { PricingTable } from "./components/utils/PricingTable.tsx";
 import { MiniQuiz } from "./components/utils/MiniQuiz.tsx";
 import { BootstrapInfo } from "./components/utils/BootstrapInfo.tsx";
+
 
 // --- ДАННЫЕ ПЕРЕВОДОВ ---
 const translations = {
@@ -1567,6 +1569,7 @@ const Content = () => {
               <PricingTable />
               <FAQAccordion />
             </MobileShowMore>
+            z
           </>
         )}
       </main>
@@ -1590,7 +1593,9 @@ export default function App() {
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <LanguageContext.Provider value={{ lang, setLang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap }}>
         <Content />
+        
       </LanguageContext.Provider>
+      
     </ThemeProvider>
   );
 }
