@@ -59,7 +59,7 @@ export const StatsSection = () => {
   const stats = [
     { value: 12400, suffix: "+", label: t.stats.students },
     { value: 85,    suffix: "",  label: t.stats.mentors },
-    { value: 12,    suffix: "",  label: t.stats.profs },
+    { value: 8,    suffix: "",  label: t.stats.profs },
     { value: 94,    suffix: "%", label: t.stats.completion },
   ];
 
