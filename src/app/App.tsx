@@ -1288,7 +1288,7 @@ const StepsSection = () => {
 /* ────────────────────────────────────────────────────────────
    Navbar c МОБИЛЬНЫМ бургер-меню
 ──────────────────────────────────────────────────────────── */
-const Navbar = () => {
+const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
   const { t, setCurrentPage, setOpenRoadmap } = useContext(LanguageContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -1335,9 +1335,12 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-3">
           <LanguageToggle />
           <ThemeToggle />
-          <button className="px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white/10 border border-transparent dark:border-white/20 text-white font-bold text-sm hover:bg-slate-800 dark:hover:bg-white/20 transition-all backdrop-blur-md">
-            {t.nav.login}
-          </button>
+         <button
+  onClick={onLoginClick}
+  className="px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white/10 border border-transparent dark:border-white/20 text-white font-bold text-sm hover:bg-slate-800 dark:hover:bg-white/20 transition-all backdrop-blur-md"
+>
+  {t.nav.login}
+</button>
         </div>
 
         {/* Мобилка: язык/тема + бургер */}
@@ -1662,10 +1665,44 @@ const Footer = () => {
     </footer>
   );
 };
+const LoginModal = ({ onClose }: { onClose: () => void }) => {
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-md"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 200 }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative rounded-3xl overflow-hidden shadow-2xl"
+        >
+          <img
+            src='src\app\logo.jpg'  // 👈 сюда вставь свою картинку
+            alt="Login"
+            className="w-[500px] h-auto object-cover"
+          />
 
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/70"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
 const Content = () => {
   const [showQuiz, setShowQuiz] = useState(false);
-
+  const [showLogin, setShowLogin] = useState(false);
   const { lang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap } = useContext(LanguageContext);
   const isLearningPage = currentPage.startsWith('learning:');
   const learningSkillId = isLearningPage ? currentPage.split(':')[1] : null;
@@ -1674,7 +1711,7 @@ const Content = () => {
   return (
     <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-300">
       <MouseSpotlight />
-      <Navbar/>
+      <Navbar onLoginClick={() => setShowLogin(true)} />
 
       <main>
         {showQuiz ? (
@@ -1715,7 +1752,7 @@ const Content = () => {
               <PricingTable />
               <FAQAccordion />
             </MobileShowMore>
-            z
+            
           </>
         )}
       </main>
@@ -1725,7 +1762,11 @@ const Content = () => {
       {/* Глобальные мобильные помощники */}
       <ScrollToTop />
       {isHome && <MobileStickyCTA onStartQuiz={() => setShowQuiz(true)} />}
+      {showLogin && (
+      <LoginModal onClose={() => setShowLogin(false)} />
+    )}
     </div>
+    
   );
 };
 
