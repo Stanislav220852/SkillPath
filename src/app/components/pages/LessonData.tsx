@@ -52,6 +52,19 @@ import * as game3dState from './lessons/game_3d_lessons.ts';
 import * as shadersGraphicsState from './lessons/shaders_graphics_lessons.ts';
 import * as gameMultiplayerState from './lessons/game_multiplayer_lessons.ts';
 
+import * as pythonMlState from './lessons/python_ml_lessons.ts';
+import * as mathMlState from './lessons/math_ml_lessons.ts';
+import * as scikitLearnState from './lessons/scikit_learn_lessons.ts';
+import * as deepLearningState from './lessons/deep_learning_lessons.ts';
+import * as nlpLlmsState from './lessons/nlp_llms_lessons.ts';
+import * as mlopsState from './lessons/mlops_lessons.ts';
+import * as cybersecNetworkState from './lessons/cybersec_network_lessons.ts';
+import * as linuxCybersecState from './lessons/linux_cybersec_lessons.ts';
+import * as pentestCoreState from './lessons/pentest_core_lessons.ts';
+import * as webSecurityState from './lessons/web_security_lessons.ts';
+import * as siemSocState from './lessons/siem_soc_lessons.ts';
+import * as cybersecCertsState from './lessons/cybersec_certs_lessons.ts';
+
 
 
 // Берёт курс из модуля независимо от имени экспорта (default или любой named).
@@ -104,7 +117,20 @@ export const lessonData: Record<string, Record<'EN' | 'RU', any>> = {
   '2d-games':pick(game2dState),
   '3d-games':pick(game3dState),
   'shaders':pick(shadersGraphicsState),
-  'multiplayer':pick(gameMultiplayerState)
+  'multiplayer':pick(gameMultiplayerState),
+
+  'python':pick(pythonMlState),
+  'math-ml':pick(mathMlState),
+  'sklearn':pick(scikitLearnState),
+  'dl':pick(deepLearningState),
+  'nlp':pick(nlpLlmsState),
+  'mlops':pick(mlopsState),
+  'networking':pick(cybersecNetworkState),
+  'linux':pick(linuxCybersecState),
+  'pentest':pick(pentestCoreState),
+  'webapp':pick(webSecurityState),
+  'siem':pick(siemSocState),
+  'certs':pick(cybersecCertsState)
 
 
 };

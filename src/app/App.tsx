@@ -39,11 +39,29 @@ import { FAQAccordion } from "./components/utils/FAQAccordion.tsx";
 import { PricingTable } from "./components/utils/PricingTable.tsx";
 import { MiniQuiz } from "./components/utils/MiniQuiz.tsx";
 import { BootstrapInfo } from "./components/utils/BootstrapInfo.tsx";
+import { 
+  Instagram, 
+  Send, // для Telegram
+  Youtube, 
+  Github,
+  Mail,
+  Phone
+} from "lucide-react";
 
 
 // --- ДАННЫЕ ПЕРЕВОДОВ ---
 const translations = {
   EN: {
+    // EN
+footer: {
+  navigation: "Navigation",
+  contacts: "Contacts",
+  socials: "Social Media",
+  rights: "All rights reserved",
+  desc: "Empowering the next generation of tech creators.",
+},
+
+
     companies: {
       title: "Our graduates work at",
     },
@@ -85,6 +103,7 @@ const translations = {
         { name: "Premium", price: 49, yearPrice: 39,   desc: "Full career package",    features: ["Everything in Pro", "1-on-1 weekly mentor", "Interview prep program", "Job placement help", "Resume & LinkedIn review", "Lifetime access"], cta: "Go Premium" },
       ]
     },
+    
     mini: {
       title: "Find your",
       titleAccent: "perfect path",
@@ -492,6 +511,13 @@ const translations = {
         { name: "Premium", price: 49, yearPrice: 39,   desc: "Полный карьерный пакет", features: ["Всё из Pro", "1-на-1 с ментором еженедельно", "Программа подготовки к собесам", "Помощь с трудоустройством", "Ревью резюме и LinkedIn", "Доступ навсегда"], cta: "Перейти на Premium" },
       ]
     },
+    footer: {
+  navigation: "Навигация",
+  contacts: "Контакты",
+  socials: "Мы в соц. сетях",
+  rights: "Все права защищены",
+  desc: "Даем возможности новому поколению IT-создателей.",
+},
     mini: {
       title: "Найди свой",
       titleAccent: "идеальный путь",
@@ -1498,19 +1524,139 @@ const MobileShowMore = ({ children }: { children: React.ReactNode }) => {
 };
 
 const Footer = () => {
-  const { t } = useContext(LanguageContext);
+  const { t, setCurrentPage, lang } = useContext(LanguageContext);
+
+  const navItems = [
+    { label: t.nav.profs, page: "professions" },
+    { label: t.nav.roads, page: "roadmaps" },
+    { label: t.nav.mentors, page: "mentors" },
+  ];
+
   return (
-    <footer className="border-t border-black/5 dark:border-white/10 py-10 md:py-12 relative z-10 bg-black/[0.01] dark:bg-white/[0.02]">
-      <div className="container mx-auto px-6 text-center">
-        <div className="flex items-center justify-center gap-2 mb-6 text-slate-900 dark:text-white">
-          <Layers className={`w-6 h-6 ${neonCyan}`} />
-          <span className="text-2xl font-black tracking-tight">SkillPath</span>
-        </div>
-        <p className="text-slate-500 dark:text-white/50 mb-8 max-w-md mx-auto">{t.footer.desc}</p>
-        <div className="flex items-center justify-center gap-6 text-slate-400 dark:text-white/40">
-          <a href="#" className="hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors">Twitter</a>
-          <a href="#" className="hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Discord</a>
-          <a href="#" className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors">GitHub</a>
+    <footer className="bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white pt-16 pb-12 border-t-2 border-cyan-500/50 relative z-10 transition-colors duration-300">
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 items-start">
+          
+          {/* КОЛОНКА 1: ЛОГОТИП */}
+          <div className="space-y-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <Layers className="w-7 h-7 text-white" />
+              </div>
+              <span className="text-3xl font-black tracking-tighter uppercase italic">SkillPath</span>
+            </div>
+            <div className="space-y-2">
+              <p className="text-slate-500 dark:text-zinc-500 text-sm font-medium leading-relaxed max-w-xs">
+                {t.footer.desc}
+              </p>
+              <p className="text-slate-400 dark:text-zinc-600 text-xs uppercase tracking-[0.2em] pt-4">
+                © {new Date().getFullYear()} {t.footer.rights}
+              </p>
+            </div>
+          </div>
+
+          {/* КОЛОНКА 2: НАВИГАЦИЯ (С ЗАГОЛОВКОМ) */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] mb-8 text-cyan-600 dark:text-cyan-400">
+              {t.footer.navigation}
+            </h4>
+            <ul className="space-y-4">
+              {navItems.map((item) => (
+                <li key={item.page}>
+                  <button
+                    onClick={() => { setCurrentPage(item.page); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className="text-slate-600 dark:text-zinc-400 hover:text-cyan-500 dark:hover:text-white uppercase text-sm font-bold tracking-wider transition-all hover:translate-x-2 flex items-center gap-2"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* КОЛОНКА 3: КОНТАКТЫ (С ЗАГОЛОВКОМ) */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] mb-8 text-cyan-600 dark:text-cyan-400">
+              {t.footer.contacts}
+            </h4>
+            <div className="space-y-6">
+              <div className="flex gap-4 items-start">
+                <div className="mt-1 p-2 rounded-lg bg-black/5 dark:bg-white/5">
+                  <Mail className="w-5 h-5 text-cyan-500" />
+                </div>
+                <div>
+                  <p className="text-slate-400 dark:text-zinc-500 text-[10px] uppercase font-bold mb-1">Email</p>
+                  <a href="mailto:hello@skillpath.com" className="text-slate-700 dark:text-zinc-200 text-sm font-bold hover:text-cyan-500 transition-colors">
+                    HELLO@SKILLPATH.COM
+                  </a>
+                </div>
+              </div>
+              <div className="flex gap-4 items-start">
+                <div className="mt-1 p-2 rounded-lg bg-black/5 dark:bg-white/5">
+                  <Phone className="w-5 h-5 text-cyan-500" />
+                </div>
+                <div>
+                  <p className="text-slate-400 dark:text-zinc-500 text-[10px] uppercase font-bold mb-1">{lang === 'RU' ? 'Режим работы' : 'Working hours'}</p>
+                  <p className="text-slate-700 dark:text-zinc-200 text-sm font-bold uppercase">
+                    24/7 ONLINE • SUPPORT 09:00-21:00
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* КОЛОНКА 4: ТЕЛЕФОНЫ И СОЦСЕТИ */}
+          <div className="flex flex-col items-start lg:items-end space-y-8">
+            <div className="text-left lg:text-right space-y-2">
+              <a href="tel:+375255172137" className="block text-2xl font-black tracking-tighter hover:text-cyan-500 transition-colors">
+                +375 (25) 517-21-37
+              </a>
+              <a href="tel:+375291754670" className="block text-2xl font-black tracking-tighter hover:text-cyan-500 transition-colors">
+                +375 (29) 175-46-70
+              </a>
+            </div>
+            
+            <div className="space-y-4 w-full lg:w-auto">
+              <p className="text-slate-400 dark:text-zinc-500 text-xs uppercase font-bold tracking-widest lg:text-right">
+                {t.footer.socials}
+              </p>
+              <div className="flex gap-4 lg:justify-end">
+  {[
+    { 
+      icon: <Send size={20} />, 
+      color: "hover:bg-[#229ED9]", 
+      label: "Telegram",
+      url: "https://t.me/Fordmash" // <-- ВСТАВЬ ССЫЛКУ СЮДА
+    },
+    { 
+      icon: <Instagram size={20} />, 
+      color: "hover:bg-gradient-to-tr hover:from-[#F58529] hover:to-[#DD2A7B]", 
+      label: "Instagram",
+      url: "https://www.instagram.com/qwayaa?igsh=MTFkdng5NDhicHhwNQ==" // <-- ВСТАВЬ ССЫЛКУ СЮДА
+    },
+    { 
+      icon: <Github size={20} />, 
+      color: "hover:bg-[#333]", 
+      label: "Github",
+      url: "https://github.com/Stanislav220852" // <-- ВСТАВЬ ССЫЛКУ СЮДА
+    },
+    
+  ].map((social, i) => (
+    <a
+      key={i}
+      href={social.url} // <-- Здесь теперь используется ссылка из объекта выше
+      target="_blank"   // Открывает в новой вкладке
+      rel="noopener noreferrer" // Безопасность при открытии новых вкладок
+      aria-label={social.label}
+      className={`w-12 h-12 rounded-xl border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-slate-500 dark:text-zinc-400 transition-all duration-300 ${social.color} hover:text-white hover:border-transparent hover:-translate-y-1 shadow-sm`}
+    >
+      {social.icon}
+    </a>
+  ))}
+</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </footer>
@@ -1562,7 +1708,7 @@ const Content = () => {
             {/* ── Доп-контент: на мобилке сворачивается под «Показать больше» ── */}
             <MobileShowMore>
               <TechMarquee />
-              <ProjectsShowcase />
+              
               <TestimonialsCarousel />
               <BootstrapInfo />
               <StepsSection />

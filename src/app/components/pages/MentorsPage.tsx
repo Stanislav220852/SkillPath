@@ -1,8 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Star, Briefcase, Clock, MessageCircle, X, Check,
-  Award, Calendar, Globe, Linkedin, Github, Search,
+  Award, Calendar, Globe, Send, Trash2,Search
 } from "lucide-react";
 
 const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-3xl shadow-xl";
@@ -21,6 +21,7 @@ const buildMentors = (lang: "EN" | "RU") => [
     role: lang === "RU" ? "Senior Frontend Engineer" : "Senior Frontend Engineer",
     company: "Yandex",
     initials: "AS",
+    avatar: "/images/mentors/anna.jpg",
     color: "cyan",
     category: "frontend",
     experience: 8,
@@ -41,6 +42,7 @@ const buildMentors = (lang: "EN" | "RU") => [
     role: "AI / ML Engineer",
     company: "Tinkoff AI",
     initials: "DP",
+    avatar: "/images/mentors/dmitry.jpg",
     color: "pink",
     category: "ai",
     experience: 6,
@@ -61,6 +63,7 @@ const buildMentors = (lang: "EN" | "RU") => [
     role: lang === "RU" ? "Специалист по кибербезопасности" : "Cybersecurity Specialist",
     company: "Group-IB",
     initials: "MK",
+    avatar: "/images/mentors/mikhail.jpg",
     color: "purple",
     category: "cybersec",
     experience: 10,
@@ -81,6 +84,7 @@ const buildMentors = (lang: "EN" | "RU") => [
     role: "Lead Data Scientist",
     company: "Sberbank",
     initials: "EM",
+    avatar: "/images/mentors/elena.jpg",
     color: "blue",
     category: "datascience",
     experience: 7,
@@ -101,6 +105,7 @@ const buildMentors = (lang: "EN" | "RU") => [
     role: "Staff Frontend Engineer",
     company: "Avito",
     initials: "AV",
+    avatar: "/images/mentors/artyom.jpg",
     color: "cyan",
     category: "frontend",
     experience: 11,
@@ -121,6 +126,7 @@ const buildMentors = (lang: "EN" | "RU") => [
     role: "ML Research Engineer",
     company: "OpenAI",
     initials: "SL",
+    avatar: "/images/mentors/sofia.jpg",
     color: "pink",
     category: "ai",
     experience: 5,
@@ -137,6 +143,193 @@ const buildMentors = (lang: "EN" | "RU") => [
   },
 ];
 
+/* ─────────────────────────────────────────────
+   Avatar — фото с фолбэком на инициалы
+───────────────────────────────────────────── */
+const Avatar = ({ mentor, c, className = "", textClass = "" }: any) => {
+  const [error, setError] = useState(false);
+  if (mentor.avatar && !error) {
+    return (
+      <img
+        src={mentor.avatar}
+        alt={mentor.name}
+        onError={() => setError(true)}
+        className={`object-cover ${className}`}
+      />
+    );
+  }
+  return (
+    <div className={`bg-gradient-to-br ${c.gradient} flex items-center justify-center text-white font-black ${className} ${textClass}`}>
+      {mentor.initials}
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────
+   Демо-чат с авто-ответами + localStorage
+───────────────────────────────────────────── */
+const CHAT_KEY = "skillpath-mentor-chats-v1";
+
+const loadChat = (mentorId: number): any[] => {
+  try {
+    const raw = localStorage.getItem(CHAT_KEY);
+    if (!raw) return [];
+    return (JSON.parse(raw)[mentorId]) || [];
+  } catch { return []; }
+};
+
+const saveChat = (mentorId: number, messages: any[]) => {
+  try {
+    const raw = localStorage.getItem(CHAT_KEY);
+    const data = raw ? JSON.parse(raw) : {};
+    data[mentorId] = messages;
+    localStorage.setItem(CHAT_KEY, JSON.stringify(data));
+  } catch {}
+};
+
+const autoReplies = (lang: "EN" | "RU") => lang === "RU" ? [
+  "Привет! Рад знакомству 👋 Чем могу помочь?",
+  "Отличный вопрос! Расскажи подробнее о своих целях.",
+  "Понял тебя. Давай разберём это на ближайшей сессии — записывайся!",
+  "Я обычно отвечаю в течение пары часов. Можешь смело писать вопросы.",
+  "Звучит как хороший план. Какой у тебя сейчас уровень?",
+] : [
+  "Hi! Nice to meet you 👋 How can I help?",
+  "Great question! Tell me more about your goals.",
+  "Got it. Let's dig into this on our next session — book a slot!",
+  "I usually reply within a couple of hours. Feel free to ask anything.",
+  "Sounds like a good plan. What's your current level?",
+];
+
+const ChatWindow = ({ mentor, lang, onClose }: any) => {
+  const c = colorMap[mentor.color];
+  const [messages, setMessages] = useState<any[]>([]);
+  const [input, setInput] = useState("");
+  const [typing, setTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // загрузка истории
+  useEffect(() => {
+    const saved = loadChat(mentor.id);
+    if (saved.length) {
+      setMessages(saved);
+    } else {
+      // приветствие ментора
+      const greeting = lang === "RU"
+        ? `Привет! Я ${mentor.name.split(" ")[0]}. Спрашивай что угодно про ${mentor.role} 🚀`
+        : `Hey! I'm ${mentor.name.split(" ")[0]}. Ask me anything about ${mentor.role} 🚀`;
+      setMessages([{ from: "mentor", text: greeting, time: Date.now() }]);
+    }
+  }, [mentor.id]);
+
+  // сохранение + автоскролл
+  useEffect(() => {
+    if (messages.length) saveChat(mentor.id, messages);
+    requestAnimationFrame(() => {
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    });
+  }, [messages, typing]);
+
+  const send = () => {
+    const text = input.trim();
+    if (!text) return;
+    setMessages((prev) => [...prev, { from: "me", text, time: Date.now() }]);
+    setInput("");
+    setTyping(true);
+    setTimeout(() => {
+      const replies = autoReplies(lang);
+      const reply = replies[Math.floor(Math.random() * replies.length)];
+      setMessages((prev) => [...prev, { from: "mentor", text: reply, time: Date.now() }]);
+      setTyping(false);
+    }, 1100 + Math.random() * 900);
+  };
+
+  const clearChat = () => {
+    setMessages([]);
+    saveChat(mentor.id, []);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[300] bg-black/70 backdrop-blur-md flex items-center justify-center p-0 sm:p-6"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ type: "spring", stiffness: 300, damping: 28 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full sm:max-w-lg h-full sm:h-[600px] sm:max-h-[85vh] bg-white dark:bg-slate-900 sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-black/5 dark:border-white/10"
+      >
+        {/* HEADER */}
+        <div className={`px-4 py-3 flex items-center gap-3 bg-gradient-to-r ${c.gradient} text-white flex-shrink-0`}>
+          <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-white/40">
+            <Avatar mentor={mentor} c={c} className="w-10 h-10 text-sm" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-sm truncate">{mentor.name}</p>
+            <p className="text-[11px] text-white/80 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-300 inline-block" />
+              {lang === "RU" ? "в сети" : "online"}
+            </p>
+          </div>
+          <button onClick={clearChat} title={lang === "RU" ? "Очистить" : "Clear"}
+            className="p-2 rounded-full hover:bg-white/20 transition-colors">
+            <Trash2 className="w-4 h-4" />
+          </button>
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-white/20 transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* MESSAGES */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-950/50">
+          {messages.map((m, i) => (
+            <div key={i} className={`flex ${m.from === "me" ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-[75%] px-3.5 py-2 rounded-2xl text-sm leading-relaxed ${
+                m.from === "me"
+                  ? `bg-gradient-to-r ${c.gradient} text-white rounded-br-md`
+                  : "bg-white dark:bg-white/10 text-slate-800 dark:text-white rounded-bl-md border border-black/5 dark:border-white/10"
+              }`}>
+                {m.text}
+              </div>
+            </div>
+          ))}
+          {typing && (
+            <div className="flex justify-start">
+              <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-white dark:bg-white/10 border border-black/5 dark:border-white/10 flex gap-1">
+                {[0, 1, 2].map((d) => (
+                  <span key={d} className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: `${d * 0.15}s` }} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* INPUT */}
+        <div className="p-3 border-t border-black/5 dark:border-white/10 flex items-center gap-2 flex-shrink-0 bg-white dark:bg-slate-900">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") send(); }}
+            placeholder={lang === "RU" ? "Напишите сообщение..." : "Type a message..."}
+            className="flex-1 px-4 py-2.5 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-500 text-sm"
+          />
+          <button
+            onClick={send}
+            disabled={!input.trim()}
+            className={`w-10 h-10 rounded-full flex items-center justify-center text-white flex-shrink-0 transition-all disabled:opacity-40 bg-gradient-to-r ${c.gradient} hover:opacity-90`}
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 interface MentorsPageProps {
   onBack: () => void;
   lang: "EN" | "RU";
@@ -147,6 +340,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [selectedMentor, setSelectedMentor] = useState<any>(null);
+  const [chatMentor, setChatMentor] = useState<any>(null);
   const [bookedId, setBookedId] = useState<number | null>(null);
 
   const mentors = useMemo(() => buildMentors(lang), [lang]);
@@ -173,6 +367,11 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
   const handleBook = (id: number) => {
     setBookedId(id);
     setTimeout(() => setBookedId(null), 2500);
+  };
+
+  const openChat = (mentor: any) => {
+    setSelectedMentor(null);
+    setChatMentor(mentor);
   };
 
   return (
@@ -263,8 +462,8 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
 
                     {/* Avatar + info */}
                     <div className="flex items-start gap-4 mb-4 relative z-10">
-                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${c.gradient} flex items-center justify-center text-white font-black text-xl shadow-lg flex-shrink-0`}>
-                        {m.initials}
+                      <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg flex-shrink-0">
+                        <Avatar mentor={m} c={c} className="w-16 h-16 text-xl" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white truncate">{m.name}</h3>
@@ -309,28 +508,39 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
                           {lang === "RU" ? "Свободно: " : "Free: "}{m.nextSlot}
                         </p>
                       </div>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={(e) => { e.stopPropagation(); handleBook(m.id); }}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5
-                          ${bookedId === m.id
-                            ? "bg-green-500 text-white"
-                            : `bg-gradient-to-r ${c.gradient} text-white shadow-md hover:shadow-lg`
-                          }`}
-                      >
-                        {bookedId === m.id ? (
-                          <>
-                            <Check className="w-3.5 h-3.5" />
-                            {lang === "RU" ? "Запрошено!" : "Requested!"}
-                          </>
-                        ) : (
-                          <>
-                            <Calendar className="w-3.5 h-3.5" />
-                            {lang === "RU" ? "Записаться" : "Book"}
-                          </>
-                        )}
-                      </motion.button>
+                      <div className="flex items-center gap-2">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={(e) => { e.stopPropagation(); openChat(m); }}
+                          title={lang === "RU" ? "Написать" : "Message"}
+                          className="w-9 h-9 rounded-xl flex items-center justify-center bg-black/5 dark:bg-white/10 text-slate-600 dark:text-white/70 hover:bg-black/10 dark:hover:bg-white/20 transition-all"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={(e) => { e.stopPropagation(); handleBook(m.id); }}
+                          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5
+                            ${bookedId === m.id
+                              ? "bg-green-500 text-white"
+                              : `bg-gradient-to-r ${c.gradient} text-white shadow-md hover:shadow-lg`
+                            }`}
+                        >
+                          {bookedId === m.id ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              {lang === "RU" ? "Запрошено!" : "Requested!"}
+                            </>
+                          ) : (
+                            <>
+                              <Calendar className="w-3.5 h-3.5" />
+                              {lang === "RU" ? "Записаться" : "Book"}
+                            </>
+                          )}
+                        </motion.button>
+                      </div>
                     </div>
                   </motion.div>
                 );
@@ -377,8 +587,8 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
               </div>
 
               <div className="p-6 md:p-8 -mt-16 relative">
-                <div className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-gradient-to-br ${colorMap[selectedMentor.color].gradient} flex items-center justify-center text-white font-black text-2xl md:text-3xl shadow-2xl border-4 border-white dark:border-slate-900 mb-4`}>
-                  {selectedMentor.initials}
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-900 mb-4">
+                  <Avatar mentor={selectedMentor} c={colorMap[selectedMentor.color]} className="w-full h-full text-2xl md:text-3xl" />
                 </div>
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white">{selectedMentor.name}</h2>
                 <p className="text-slate-600 dark:text-slate-400">{selectedMentor.role} · {selectedMentor.company}</p>
@@ -413,7 +623,10 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-                  <button className="py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-slate-700 dark:text-white/80 font-bold text-sm">
+                  <button
+                    onClick={() => openChat(selectedMentor)}
+                    className="py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 text-slate-700 dark:text-white/80 font-bold text-sm"
+                  >
                     <MessageCircle className="w-4 h-4" />
                     {lang === "RU" ? "Написать" : "Message"}
                   </button>
@@ -430,6 +643,13 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* CHAT WINDOW */}
+      <AnimatePresence>
+        {chatMentor && (
+          <ChatWindow mentor={chatMentor} lang={lang} onClose={() => setChatMentor(null)} />
         )}
       </AnimatePresence>
     </div>
