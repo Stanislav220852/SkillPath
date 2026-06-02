@@ -10,7 +10,7 @@ import { lessonData } from './LessonData.tsx';
 import { useRoadmapProgress, useProgressVersion, getProgressPercent } from '../utils/useRoadmapProgress';
 import { AchievementToast } from '../utils/AchievementToast';
 
-const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
+const glassCard = "bg-white dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
 
 const tagColors: Record<string, string> = {
   "Must": "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
