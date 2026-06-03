@@ -446,7 +446,7 @@ const RoadmapCard = ({ icon: Icon, title, desc, colorClass, roadmapKey, onViewRo
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       whileHover={{ y: -8 }}
-      className={`${glassCard} p-8 text-center cursor-pointer group relative overflow-hidden`}
+      className={`${glassCard} p-8 text-center cursor-pointer group relative overflow-hidden flex flex-col`}
     >
       <div className={`absolute inset-0 bg-gradient-to-b from-${colorClass}-500/0 via-${colorClass}-500/0 to-${colorClass}-500/5 dark:to-${colorClass}-500/10 opacity-0 group-hover:opacity-100 transition-opacity`} />
 
@@ -485,7 +485,7 @@ const RoadmapCard = ({ icon: Icon, title, desc, colorClass, roadmapKey, onViewRo
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => onViewRoadmap(roadmapKey)}
-        className={`text-sm font-bold flex items-center gap-2 mx-auto px-5 py-2.5 rounded-full border border-${colorClass}-500/30 bg-${colorClass}-500/10 hover:bg-${colorClass}-500/20 transition-all text-${colorClass}-600 dark:text-${colorClass}-400 relative z-10`}
+        className={`mt-auto text-sm font-bold flex items-center gap-2 mx-auto px-5 py-2.5 rounded-full bg-gradient-to-r ${colorGradient[colorClass]} text-white shadow-lg ${colorGlow[colorClass]} hover:opacity-90 transition-all relative z-10`}
       >
         <span>{isStarted ? t.roadmaps.continueBtn : viewBtnText}</span>
         <ArrowRight className="w-4 h-4" />

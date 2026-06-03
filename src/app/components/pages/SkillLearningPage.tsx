@@ -15,6 +15,10 @@ const colorText: Record<string, string> = {
   pink: "text-pink-500 dark:text-pink-400",
   purple: "text-purple-500 dark:text-purple-400",
   blue: "text-blue-500 dark:text-blue-400",
+  emerald: "text-emerald-500 dark:text-emerald-400",
+  amber: "text-amber-500 dark:text-amber-400",
+  orange: "text-orange-500 dark:text-orange-400",
+  rose: "text-rose-500 dark:text-rose-400",
 };
 
 const colorGradient: Record<string, string> = {
@@ -22,6 +26,10 @@ const colorGradient: Record<string, string> = {
   pink: "from-pink-500 to-purple-600",
   purple: "from-purple-500 to-pink-600",
   blue: "from-blue-500 to-cyan-600",
+  emerald: "from-emerald-500 to-teal-600",
+  amber: "from-amber-500 to-orange-600",
+  orange: "from-orange-500 to-red-600",
+  rose: "from-rose-500 to-pink-600",
 };
 
 // === localStorage helpers ===
@@ -147,17 +155,20 @@ const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error,
         </div>
         <span className="text-[10px] text-white/30 uppercase tracking-wider font-bold">{lang}</span>
       </div>
-      <div className="relative min-h-[240px] max-h-[400px] md:min-h-[300px] md:max-h-[500px]">
+      <div className="relative min-h-[240px] max-h-[400px] md:min-h-[300px] md:max-h-[500px] overflow-hidden">
         <pre ref={preRef} aria-hidden="true"
-          className="absolute inset-0 m-0 p-4 overflow-auto pointer-events-none text-sm font-mono leading-6"
-          style={{ tabSize: 2 }}>
-          <code className={`hljs language-${lang}`} dangerouslySetInnerHTML={{ __html: highlighted }} />
-        </pre>
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+          className="absolute inset-0 m-0 p-4 overflow-auto pointer-events-none hljs"
+          style={{ fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace', fontSize: '14px', lineHeight: '1.6', tabSize: 2, whiteSpace: 'pre', wordWrap: 'normal', background: 'transparent' }}
+        />
         <textarea ref={textareaRef} value={code}
           onChange={(e) => setCode(e.target.value)} onScroll={handleScroll} onKeyDown={handleKeyDown}
           spellCheck={false}
-          className="absolute inset-0 p-4 bg-transparent font-mono text-sm leading-6 resize-none outline-none"
-          style={{ color: 'transparent', caretColor: '#fff', tabSize: 2, WebkitTextFillColor: 'transparent' }}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          className="absolute inset-0 w-full h-full p-4 bg-transparent resize-none outline-none"
+          style={{ fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace', fontSize: '14px', lineHeight: '1.6', tabSize: 2, color: 'transparent', caretColor: '#fff', WebkitTextFillColor: 'transparent', whiteSpace: 'pre', wordWrap: 'normal', overflowWrap: 'normal' }}
         />
       </div>
       {(output || error) && (
@@ -226,7 +237,7 @@ const PreviewFrame = ({ fullHtml, fallbackHtml }: { fullHtml?: string; fallbackH
 };
 
 // === LESSON VIEW ===
-const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompleteLesson, t }: any) => {
+const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompleteLesson, t, lang }: any) => {
   const [activeTab, setActiveTab] = useState('theory');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
@@ -264,11 +275,134 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
           fn(mockConsole);
           setOutput(logs.join('\n') || t.noOutput); setError('');
         } else {
-          setOutput(lesson.expectedOutput || t.simulatedOutput); setError('');
+          // Python / CSS / другие языки — умная симуляция
+          const trimmedCode = code.replace(/\s+/g, ' ').trim();
+          const trimmedSolution = (lesson.practice?.solution || '').replace(/\s+/g, ' ').trim();
+          const expectedOut = lesson.expectedOutput || lesson.practice?.expectedOutput || '';
+
+          if (!trimmedCode || trimmedCode === (lesson.practice?.starterCode || '').replace(/\s+/g, ' ').trim()) {
+            // Код не изменён — подсказка
+            setOutput(lang === 'RU'
+              ? '⚠️ Заполните пропуски в коде и нажмите «Запустить»'
+              : '⚠️ Fill in the blanks and click "Run Code"');
+            setError('');
+          } else if (trimmedSolution && (
+            trimmedCode === trimmedSolution ||
+            trimmedCode.includes(trimmedSolution) ||
+            trimmedSolution.includes(trimmedCode)
+          )) {
+            // Код совпадает с решением
+            setOutput(expectedOut
+              ? '✅ ' + expectedOut
+              : (lang === 'RU' ? '✅ Правильно! Код работает корректно.' : '✅ Correct! Code works as expected.'));
+            setError('');
+            onCompleteLesson(lesson.id);
+          } else {
+            // Код введён, но не совпадает — пытаемся симулировать вывод
+            // Для Python: ищем print() вызовы и "выполняем" их
+            if (lesson.type === 'python') {
+              const printMatches = [...code.matchAll(/print\s*\((.+?)\)/g)];
+              if (printMatches.length > 0) {
+                const simulated = printMatches.map(m => {
+                  let expr = m[1].trim();
+                  // Убираем f-строки и кавычки для простого вывода
+                  expr = expr.replace(/f?["'](.+?)["']/g, '$1');
+                  // Пытаемся вычислить простые выражения
+                  try {
+                    // Собираем переменные из кода
+                    const vars: Record<string, any> = {};
+                    const assignments = [...code.matchAll(/(\w+)\s*=\s*(.+)/g)];
+                    for (const a of assignments) {
+                      if (!a[2].includes('print') && !a[2].includes('input')) {
+                        try { vars[a[1]] = eval(a[2].trim()); } catch {}
+                      }
+                    }
+                    // Подставляем переменные в выражение
+                    let resolved = expr;
+                    for (const [k, v] of Object.entries(vars)) {
+                      resolved = resolved.replace(new RegExp('\\b' + k + '\\b', 'g'), JSON.stringify(v));
+                    }
+                    // Вычисляем
+                    const result = eval(resolved);
+                    return String(result);
+                  } catch {
+                    return expr;
+                  }
+                }).join('\n');
+
+                // Сравниваем с ожидаемым
+                const simTrimmed = simulated.replace(/\s+/g, ' ').trim().toLowerCase();
+                const expTrimmed = (expectedOut || '').replace(/\s+/g, ' ').trim().toLowerCase();
+                if (expTrimmed && (simTrimmed.includes(expTrimmed) || expTrimmed.includes(simTrimmed))) {
+                  setOutput('✅ ' + simulated);
+                  onCompleteLesson(lesson.id);
+                } else {
+                  setOutput(simulated + '\n\n' + (lang === 'RU'
+                    ? '⚠️ Проверьте — результат может отличаться от ожидаемого'
+                    : '⚠️ Check — result may differ from expected'));
+                }
+              } else {
+                setOutput(lang === 'RU'
+                  ? '⚠️ Не найден вызов print(). Добавьте вывод результата.'
+                  : '⚠️ No print() call found. Add output.');
+              }
+            } else if (lesson.type === 'css') {
+              // CSS — просто проверяем ключевые свойства
+              const keyProps = (lesson.practice?.checkFor || []) as string[];
+              const allPresent = keyProps.length === 0 || keyProps.every((prop: string) =>
+                code.toLowerCase().includes(prop.toLowerCase())
+              );
+              if (allPresent && trimmedCode !== (lesson.practice?.starterCode || '').replace(/\s+/g, ' ').trim()) {
+                setOutput(lang === 'RU' ? '✅ Стили применены корректно!' : '✅ Styles applied correctly!');
+                onCompleteLesson(lesson.id);
+              } else {
+                setOutput(lang === 'RU'
+                  ? '⚠️ Проверьте — убедитесь что добавили нужные CSS-свойства'
+                  : '⚠️ Check — make sure you added the required CSS properties');
+              }
+            } else {
+              // Bash / YAML / SQL / Config и другие — проверяем ключевые слова
+              const checkFor = (lesson.practice?.checkFor || []) as string[];
+              const codeLower = code.toLowerCase();
+
+              if (checkFor.length > 0) {
+                const matched = checkFor.filter((kw: string) => codeLower.includes(kw.toLowerCase()));
+                const pct = Math.round((matched.length / checkFor.length) * 100);
+
+                if (pct >= 80) {
+                  setOutput((expectedOut ? '✅ ' + expectedOut + '\n\n' : '') + (lang === 'RU'
+                    ? `✅ Отлично! ${matched.length}/${checkFor.length} ключевых элементов найдено.`
+                    : `✅ Great! ${matched.length}/${checkFor.length} key elements found.`));
+                  onCompleteLesson(lesson.id);
+                } else {
+                  setOutput((lang === 'RU'
+                    ? `⚠️ Найдено ${matched.length} из ${checkFor.length} ключевых элементов. Проверьте код.`
+                    : `⚠️ Found ${matched.length} of ${checkFor.length} key elements. Check your code.`)
+                    + (matched.length > 0 ? '\n✅ ' + matched.join(', ') : '')
+                    + '\n❌ ' + checkFor.filter((kw: string) => !codeLower.includes(kw.toLowerCase())).join(', '));
+                }
+              } else if (expectedOut) {
+                setOutput('✅ ' + expectedOut);
+                onCompleteLesson(lesson.id);
+              } else {
+                // Если код изменён от стартового — считаем выполненным
+                const starterTrimmed = (lesson.practice?.starterCode || '').replace(/\s+/g, ' ').trim();
+                if (trimmedCode !== starterTrimmed && trimmedCode.length > starterTrimmed.length + 10) {
+                  setOutput(lang === 'RU' ? '✅ Код выполнен!' : '✅ Code executed!');
+                  onCompleteLesson(lesson.id);
+                } else {
+                  setOutput(lang === 'RU'
+                    ? '⚠️ Допишите код — заполните пропуски'
+                    : '⚠️ Complete the code — fill in the blanks');
+                }
+              }
+            }
+            setError('');
+          }
         }
       } catch (e: any) { setError(e.message); setOutput(''); }
       setIsRunning(false);
-    }, 300);
+    }, 500);
   };
 
   const tabs = [
@@ -482,7 +616,25 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
   const currentLesson = skill.lessons[currentLessonIndex];
   const totalLessons = skill.lessons.length;
   const progress = totalLessons > 0 ? Math.round((completedLessons.length / totalLessons) * 100) : 0;
-  const colorClass = skillId === 'html-css' ? 'cyan' : skillId === 'js-core' || skillId === 'react' ? 'pink' : 'purple';
+  const skillColorMap: Record<string, string> = {
+    // frontend
+    'html-css': 'cyan', 'js-core': 'cyan', 'react': 'cyan', 'typescript': 'cyan', 'state': 'cyan', 'testing': 'cyan', 'deploy': 'cyan',
+    // ai
+    'python': 'pink', 'math': 'pink', 'sklearn': 'pink', 'dl': 'pink', 'math-ml': 'pink', 'nlp': 'pink', 'mlops': 'pink',
+    // cybersec
+    'networking': 'purple', 'linux': 'purple', 'pentest': 'purple', 'webapp': 'purple', 'siem': 'purple', 'certs': 'purple',
+    // datascience
+    'python-ds': 'blue', 'sql': 'blue', 'eda': 'blue', 'stats': 'blue', 'ml-ds': 'blue', 'bi': 'blue', 'bigdata': 'blue',
+    // backend
+    'node': 'cyan', 'db-basics': 'cyan', 'auth': 'cyan', 'apis': 'cyan', 'docker': 'cyan', 'cloud': 'cyan',
+    // mobile
+    'rn-basics': 'pink', 'mobile-ui': 'pink', 'native-api': 'pink', 'state-mobile': 'pink', 'appstore': 'pink', 'perf-mobile': 'pink',
+    // devops
+    'linux-devops': 'purple', 'git-devops': 'purple', 'k8s': 'purple', 'terraform': 'purple', 'monitoring': 'purple', 'aws-devops': 'purple',
+    // gamedev
+    'csharp': 'blue', 'game-math': 'blue', '2d-games': 'blue', '3d-games': 'blue', 'shaders': 'blue', 'multiplayer': 'blue',
+  };
+  const colorClass = skillColorMap[skillId || ''] || 'cyan';
 
   const handleCompleteLesson = (lessonId: string) => {
     if (!completedLessons.includes(lessonId)) {
@@ -590,7 +742,7 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
         <AnimatePresence mode="wait">
           <LessonView key={currentLesson.id} lesson={currentLesson} lessonIndex={currentLessonIndex}
             colorClass={colorClass} completedLessons={completedLessons}
-            onCompleteLesson={handleCompleteLesson} t={t} />
+            onCompleteLesson={handleCompleteLesson} t={t} lang={lang} />
         </AnimatePresence>
 
         {/* PREV / NEXT */}

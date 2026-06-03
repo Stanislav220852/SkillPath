@@ -2,9 +2,11 @@ import { useContext } from "react";
 import { motion } from "framer-motion";
 import {
   Target, Route, Users, Award, Zap, BookOpen, TrendingUp, Sparkles,
+  ChevronRight,
 } from "lucide-react";
 import { LanguageContext } from "../../App";
 import { HScroller } from "./HScroller.tsx";
+
 
 const bentoItems = [
   { id: 1, key: "aptitude", icon: Target,     className: "md:col-span-2 md:row-span-2", color: "cyan",    gradient: "from-cyan-500 to-blue-600",     lightBg: "bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200/60" },
@@ -17,6 +19,7 @@ const bentoItems = [
   { id: 8, key: "copilot",  icon: Sparkles,   className: "md:col-span-1 md:row-span-1", color: "fuchsia", gradient: "from-fuchsia-500 to-pink-600",  lightBg: "bg-gradient-to-br from-fuchsia-50 to-pink-50 border-fuchsia-200/60" },
 ];
 
+
 const colorText: Record<string, string> = {
   cyan:    "text-cyan-600 dark:text-cyan-400",
   pink:    "text-pink-600 dark:text-pink-400",
@@ -28,9 +31,12 @@ const colorText: Record<string, string> = {
   fuchsia: "text-fuchsia-600 dark:text-fuchsia-400",
 };
 
-const BentoCard = ({ item, t, withSpan = true }: { item: any; t: any; withSpan?: boolean }) => {
+
+const BentoCard = ({ item, t, withSpan = true, onStartQuiz, lang }: { item: any; t: any; withSpan?: boolean; onStartQuiz?: () => void; lang?: string }) => {
   const Icon = item.icon;
   const tr = (t.bento.items as any)[item.key];
+  const isAptitude = item.key === "aptitude";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -62,15 +68,31 @@ const BentoCard = ({ item, t, withSpan = true }: { item: any; t: any; withSpan?:
         </p>
       </div>
 
-      <div className="relative z-10 mt-4">
-        <div className="h-1 w-12 rounded-full bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-white/20 group-hover:w-full transition-all duration-500 opacity-60" />
-      </div>
+      {/* Кнопка «Пройти тест» — только для карточки aptitude */}
+      {isAptitude && onStartQuiz ? (
+        <div className="relative z-10 mt-6">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onStartQuiz}
+            className="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] transition-all w-fit"
+          >
+            {lang === "RU" ? "Пройти тест" : "Take the Test"}
+            <ChevronRight className="w-4 h-4" />
+          </motion.button>
+        </div>
+      ) : (
+        <div className="relative z-10 mt-4">
+          <div className="h-1 w-12 rounded-full bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-white/20 group-hover:w-full transition-all duration-500 opacity-60" />
+        </div>
+      )}
     </motion.div>
   );
 };
 
-export const BentoShowcase = () => {
-  const { t } = useContext(LanguageContext);
+
+export const BentoShowcase = ({ onStartQuiz }: { onStartQuiz?: () => void }) => {
+  const { t, lang } = useContext(LanguageContext);
 
   return (
     <section className="py-16 md:py-24 relative z-10">
@@ -92,7 +114,7 @@ export const BentoShowcase = () => {
         {/* Десктоп/планшет: bento-сетка */}
         <div className="hidden md:grid grid-cols-4 gap-4 auto-rows-[minmax(140px,auto)]">
           {bentoItems.map((item) => (
-            <BentoCard key={item.id} item={item} t={t} />
+            <BentoCard key={item.id} item={item} t={t} onStartQuiz={onStartQuiz} lang={lang} />
           ))}
         </div>
 
@@ -100,7 +122,7 @@ export const BentoShowcase = () => {
         <div className="md:hidden">
           <HScroller itemClassName="w-[260px]">
             {bentoItems.map((item) => (
-              <BentoCard key={item.id} item={item} t={t} withSpan={false} />
+              <BentoCard key={item.id} item={item} t={t} withSpan={false} onStartQuiz={onStartQuiz} lang={lang} />
             ))}
           </HScroller>
         </div>

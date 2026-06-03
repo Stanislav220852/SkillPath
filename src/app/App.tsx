@@ -45,7 +45,10 @@ import {
   Youtube, 
   Github,
   Mail,
-  Phone
+  Phone,
+   Server,       // ← добавить
+  Smartphone,   // ← добавить
+  Gamepad2
 } from "lucide-react";
 
 
@@ -69,10 +72,12 @@ footer: {
       title: "Real stories from",
       titleAccent: "our students",
       items: [
-        { name: "Alex Petrov",    role: "Junior Frontend @ Yandex",  text: "Switched from accounting to coding in 8 months. SkillPath made the path clear and structured.",                       before: "Accountant",     after: "$3k/mo" },
-        { name: "Maria Volkova",  role: "ML Engineer @ Tinkoff",     text: "I had zero math background. The roadmap broke everything into bite-sized pieces. Now I train models at a top bank.", before: "Marketing",      after: "$5k/mo" },
-        { name: "Daniel Kim",     role: "Pentester @ Group-IB",      text: "From watching Mr. Robot to actually hacking systems legally. Best decision of my career.",                          before: "Sysadmin",       after: "$4k/mo" },
-        { name: "Sofia Lebedeva", role: "Data Analyst @ Avito",      text: "I tried to learn alone for 2 years. With SkillPath I got a job in 6 months. The mentor changed everything.",         before: "Student",        after: "$3.5k/mo" },
+        { name: "Alex Petrov",    role: "Junior Frontend @ Yandex",  text: "Leaving accounting at 30 was terrifying. I thought coding was for math geniuses. But the course walks you step by step from basic tags to complex stuff. The community chat and clear roadmap kept me going. It really works!", before: "Accountant", after: "$3k/mo" },
+        { name: "Maria Volkova",  role: "ML Engineer @ Tinkoff",     text: "I had zero math background. The roadmap broke everything into bite-sized pieces. Now I train models at a top bank.", before: "Marketing", after: "$5k/mo" },
+        { name: "Daniel Kim",     role: "Pentester @ Group-IB",      text: "From watching Mr. Robot to actually hacking systems legally. Best decision of my career.", before: "Sysadmin", after: "$4k/mo" },
+        { name: "Sofia Lebedeva", role: "Data Analyst @ Avito",      text: "Spent 2 years watching random YouTube tutorials — total chaos. SkillPath gave me structure. My mentor was brutally honest with feedback and helped me build a real portfolio. Got hired at Avito in 6 months!", before: "Student", after: "$3.5k/mo" },
+        { name: "Igor Savchenko", role: "Backend Dev @ Ozon",        text: "After the army I thought it was too late for IT. A friend shared SkillPath, I took the test and got on the backend roadmap. Wrote my first API in 4 months, got an offer in 7. Mentors actually review your code. Best investment ever.", before: "Military", after: "$3.2k/mo" },
+        { name: "Anna Krylova",   role: "Mobile Dev @ VK",           text: "Joined SkillPath as a stay-at-home mom who didn't know what Git was. Studied at night while the baby slept. The mobile dev roadmap is incredible: every step is clear, projects are real. Now I work remotely at VK and finally have financial independence.", before: "Stay-at-home mom", after: "$3.8k/mo" },
       ]
     },
     faq: {
@@ -103,35 +108,46 @@ footer: {
         { name: "Premium", price: 49, yearPrice: 39,   desc: "Full career package",    features: ["Everything in Pro", "1-on-1 weekly mentor", "Interview prep program", "Job placement help", "Resume & LinkedIn review", "Lifetime access"], cta: "Go Premium" },
       ]
     },
-    
     mini: {
-      title: "Find your",
-      titleAccent: "perfect path",
-      subtitle: "Answer 3 quick questions",
-      questions: [
-        { q: "What gets you excited?", opts: [
-          { emoji: "🎨", text: "Beautiful design", v: "frontend" },
-          { emoji: "🤖", text: "Smart machines",   v: "ai" },
-          { emoji: "🛡", text: "Solving puzzles",  v: "cybersec" },
-          { emoji: "📊", text: "Finding patterns", v: "datascience" },
-        ]},
-        { q: "Your superpower?", opts: [
-          { emoji: "✨", text: "Visual taste",     v: "frontend" },
-          { emoji: "🧮", text: "Math & logic",     v: "ai" },
-          { emoji: "🔍", text: "Attention to detail", v: "cybersec" },
-          { emoji: "📈", text: "Spotting trends",  v: "datascience" },
-        ]},
-        { q: "Ideal Saturday?", opts: [
-          { emoji: "🖌", text: "Drawing concepts", v: "frontend" },
-          { emoji: "📚", text: "Reading research", v: "ai" },
-          { emoji: "🕵", text: "Solving mysteries", v: "cybersec" },
-          { emoji: "📉", text: "Analyzing data",   v: "datascience" },
-        ]},
-      ],
-      result: "You're best suited for",
-      cta: "See full roadmap",
-      retake: "Take again",
-    },
+  title: "Find your",
+  titleAccent: "perfect path",
+  subtitle: "Answer 5 quick questions",
+  questions: [
+    { q: "What gets you excited?", opts: [
+      { emoji: "🎨", text: "Beautiful design", v: "frontend" },
+      { emoji: "🤖", text: "Smart machines",   v: "ai" },
+      { emoji: "🛡", text: "Solving puzzles",  v: "cybersec" },
+      { emoji: "📊", text: "Finding patterns", v: "datascience" },
+    ]},
+    { q: "Your superpower?", opts: [
+      { emoji: "✨", text: "Visual taste",     v: "frontend" },
+      { emoji: "🧮", text: "Math & logic",     v: "ai" },
+      { emoji: "🔍", text: "Attention to detail", v: "cybersec" },
+      { emoji: "📈", text: "Spotting trends",  v: "datascience" },
+    ]},
+    { q: "Ideal Saturday?", opts: [
+      { emoji: "🖌", text: "Drawing concepts", v: "frontend" },
+      { emoji: "📚", text: "Reading research", v: "ai" },
+      { emoji: "🕵", text: "Solving mysteries", v: "cybersec" },
+      { emoji: "📉", text: "Analyzing data",   v: "datascience" },
+    ]},
+    { q: "Pick a tool you'd love to master:", opts: [
+      { emoji: "⚛️", text: "Figma & React",    v: "frontend" },
+      { emoji: "🧠", text: "PyTorch & TensorFlow", v: "ai" },
+      { emoji: "🔓", text: "Kali Linux & Burp Suite", v: "cybersec" },
+      { emoji: "📊", text: "SQL & Tableau",    v: "datascience" },
+    ]},
+    { q: "What kind of impact do you want?", opts: [
+      { emoji: "🌐", text: "Make the web beautiful", v: "frontend" },
+      { emoji: "🚀", text: "Build the future of AI", v: "ai" },
+      { emoji: "🛡️", text: "Protect people online",  v: "cybersec" },
+      { emoji: "💡", text: "Turn data into decisions", v: "datascience" },
+    ]},
+  ],
+  result: "You're best suited for",
+  cta: "See full roadmap",
+  retake: "Take again",
+},
     nav: {
       profs: "Professions",
       roads: "Roadmaps",
@@ -438,10 +454,10 @@ footer: {
         },
       },
       cards: [
-        { title: "Frontend Dev",   desc: "Master of the visual realm...",  colorClass: "cyan",    roadmapKey: "frontend" },
-        { title: "AI Engineer",    desc: "Train neural networks...",       colorClass: "pink",    roadmapKey: "ai" },
-        { title: "Cybersec",       desc: "The digital guardian...",        colorClass: "purple",  roadmapKey: "cybersec" },
-        { title: "Data Scientist", desc: "The modern alchemist...",        colorClass: "blue",    roadmapKey: "datascience" },
+        { title: "Frontend Dev", desc: "Master of the visual realm. Create stunning UI/UX with code and design magic.", colorClass: "cyan", roadmapKey: "frontend" },
+        { title: "AI Engineer", desc: "Train neural networks. Speak to machines and build the artificial minds of tomorrow.", colorClass: "pink", roadmapKey: "ai" },
+        { title: "Cybersec", desc: "The digital guardian. Hack systems to patch them and protect data from dark hats.", colorClass: "purple", roadmapKey: "cybersec" },
+        { title: "Data Scientist", desc: "The modern alchemist. Turn raw data into predictive gold and uncover hidden truths.", colorClass: "blue", roadmapKey: "datascience" },
         { title: "Backend Dev",    desc: "Architect of the server side. APIs, databases, and the engine behind every app.",     colorClass: "emerald", roadmapKey: "backend" },
         { title: "Mobile Dev",     desc: "Build iOS and Android apps that millions carry in their pockets every day.",          colorClass: "amber",   roadmapKey: "mobile" },
         { title: "DevOps Engineer",desc: "Master of infrastructure. Automate everything, ship code fast and reliably.",         colorClass: "orange",  roadmapKey: "devops" },
@@ -473,26 +489,28 @@ footer: {
     companies: {
       title: "Наши выпускники работают в",
     },
-    testimonials: {
+     testimonials: {
       title: "Реальные истории",
       titleAccent: "наших студентов",
       items: [
-        { name: "Алексей Петров",   role: "Junior Frontend @ Yandex",  text: "За 8 месяцев перешёл из бухгалтерии в код. SkillPath сделал путь понятным и структурированным.",                before: "Бухгалтер",    after: "$3k/мес" },
-        { name: "Мария Волкова",    role: "ML Engineer @ Tinkoff",     text: "У меня был ноль по математике. Роадмап разбил всё на маленькие шаги. Сейчас тренирую модели в банке.",          before: "Маркетолог",   after: "$5k/мес" },
-        { name: "Данил Ким",        role: "Pentester @ Group-IB",      text: "От просмотра Mr. Robot до реальных взломов систем легально. Лучшее решение в карьере.",                       before: "Сисадмин",     after: "$4k/мес" },
-        { name: "София Лебедева",   role: "Data Analyst @ Avito",      text: "Училась сама 2 года. С SkillPath нашла работу за 6 месяцев. Ментор изменил всё.",                           before: "Студентка",    after: "$3.5k/мес" },
+        { name: "Алексей Петров",   role: "Junior Frontend @ Yandex",  text: "Уходить из бухгалтерии в 30 лет было дико страшно, казалось, что код — это для гениев математики. Но курс построен так, что тебя ведут за руку от простых тегов до сложных штук. Было ли тяжело? Да, иногда хотелось всё бросить. Но поддержка в чате и чёткий план не дали слиться. Ребята, это реально работает!", before: "Бухгалтер", after: "$3k/мес" },
+        { name: "Мария Волкова",    role: "ML Engineer @ Tinkoff",     text: "У меня был ноль по математике. Роадмап разбил всё на маленькие шаги. Сейчас тренирую модели в банке.", before: "Маркетолог", after: "$5k/мес" },
+        { name: "Данил Ким",        role: "Pentester @ Group-IB",      text: "От просмотра Mr. Robot до реальных взломов систем легально. Лучшее решение в карьере.", before: "Сисадмин", after: "$4k/мес" },
+        { name: "София Лебедева",   role: "Data Analyst @ Avito",      text: "Два года пыталась учиться сама по роликам на YouTube. В итоге каша в голове и полное ощущение, что IT не для меня. В SkillPath пришла ради структуры. Ментор просто спас: разложил всё по полочкам, честно критиковал домашку и помог собрать нормальное портфолио. Через полгода я прошла собес в Авито!", before: "Студентка", after: "$3.5k/мес" },
+        { name: "Игорь Савченко",   role: "Backend Dev @ Ozon",        text: "После армии думал, что в IT уже поздно. Друг скинул SkillPath, я прошёл тест и попал на бэкенд-роадмап. Через 4 месяца написал первый API, через 7 — получил оффер. Менторы реально разбирают твой код, а не просто ставят оценку. Лучшая инвестиция в жизни.", before: "Военнослужащий", after: "$3.2k/мес" },
+        { name: "Анна Крылова",     role: "Mobile Dev @ VK",           text: "Пришла в SkillPath мамой в декрете, которая не знала, что такое Git. Училась по ночам, пока ребёнок спал. Роадмап по мобильной разработке — просто бомба: каждый шаг понятен, проекты реальные. Сейчас работаю удалённо в VK и наконец-то финансово независима.", before: "В декрете", after: "$3.8k/мес" },
       ]
     },
     faq: {
       title: "Частые",
       titleAccent: "вопросы",
       items: [
-        { q: "Сколько это стоит?",                   a: "Есть бесплатный план с базовыми роадмапами и Pro-план от $19/мес с менторами, сертификатами и проектами." },
-        { q: "Как быстро я найду работу?",           a: "Большинство студентов получают первый офер за 6-8 месяцев (10ч/неделя). Кто-то за 4, кто-то за год — это твой темп." },
-        { q: "Нужен ли опыт программирования?",      a: "Нет. 60% наших студентов начинали с нуля. Роадмапы созданы для абсолютных новичков с понятной прогрессией." },
-        { q: "Что если я застряну?",                 a: "У тебя будет личный ментор, 24/7 AI-копилот и активное Discord-сообщество из 5000+ студентов." },
-        { q: "Помогаете с трудоустройством?",        a: "Да — ревью резюме, mock-собесы, рекомендации в компании-партнёры (Yandex, Tinkoff, Сбер, Avito) и доска эксклюзивных вакансий." },
-        { q: "Можно ли сменить роадмап потом?",      a: "Абсолютно. Можно сменить когда угодно, пройденные навыки переносятся там где пересекаются." },
+        { q: "Сколько это стоит?", a: "Обучение полностью бесплатное. У вас будет доступ ко всем учебным материалам и практическим заданиям без скрытых платежей и подписок." },
+        { q: "Как быстро я найду работу?", a: "Всё зависит от вашего темпа и выбранного направления. В среднем наши студенты осваивают базу и собирают первое портфолио за 6–9 месяцев, после чего можно активно откликаться на вакансии." },
+        { q: "Нужен ли опыт программирования?", a: "Нет, наши программы рассчитаны на новичков. Мы начинаем с самых азов, а интерактивный тест на старте поможет выбрать направление, которое подходит именно вам." },
+        { q: "Что делать, если у меня возникнут трудности с заданием?", a: "Вы не останетесь одни. Вы всегда можете задать вопрос в нашем комьюнити или обратиться к менторам — практикующим IT-специалистам, которые помогут разобраться со сложной темой." },
+        { q: "Помогаете с трудоустройством?", a: "Да, мы помогаем оформить сильное портфолио, составить резюме и делимся советами, как успешно проходить собеседования в IT-компании." },
+        { q: "Можно ли переключиться на другое направление в процессе?", a: "Да, конечно. Если вы поймёте, что выбранная сфера вам не подходит, вы можете в любой момент открыть другой курс и начать изучать новую профессию." },
       ]
     },
     pricing: {
@@ -511,41 +529,14 @@ footer: {
         { name: "Premium", price: 49, yearPrice: 39,   desc: "Полный карьерный пакет", features: ["Всё из Pro", "1-на-1 с ментором еженедельно", "Программа подготовки к собесам", "Помощь с трудоустройством", "Ревью резюме и LinkedIn", "Доступ навсегда"], cta: "Перейти на Premium" },
       ]
     },
-    footer: {
+      footer: {
   navigation: "Навигация",
   contacts: "Контакты",
   socials: "Мы в соц. сетях",
   rights: "Все права защищены",
   desc: "Даем возможности новому поколению IT-создателей.",
 },
-    mini: {
-      title: "Найди свой",
-      titleAccent: "идеальный путь",
-      subtitle: "Ответь на 3 быстрых вопроса",
-      questions: [
-        { q: "Что тебя зажигает?", opts: [
-          { emoji: "🎨", text: "Красивый дизайн", v: "frontend" },
-          { emoji: "🤖", text: "Умные машины",    v: "ai" },
-          { emoji: "🛡", text: "Решать головоломки", v: "cybersec" },
-          { emoji: "📊", text: "Искать паттерны", v: "datascience" },
-        ]},
-        { q: "Твоя суперсила?", opts: [
-          { emoji: "✨", text: "Чувство вкуса",    v: "frontend" },
-          { emoji: "🧮", text: "Математика и логика", v: "ai" },
-          { emoji: "🔍", text: "Внимание к деталям", v: "cybersec" },
-          { emoji: "📈", text: "Видеть тренды",    v: "datascience" },
-        ]},
-        { q: "Идеальная суббота?", opts: [
-          { emoji: "🖌", text: "Рисовать концепты", v: "frontend" },
-          { emoji: "📚", text: "Читать исследования", v: "ai" },
-          { emoji: "🕵", text: "Расследовать тайны", v: "cybersec" },
-          { emoji: "📉", text: "Анализировать данные", v: "datascience" },
-        ]},
-      ],
-      result: "Тебе подходит",
-      cta: "Открыть роадмап",
-      retake: "Пройти ещё раз",
-    },
+    
     nav: {
       profs: "Профессии",
       roads: "Роадмапы",
@@ -564,10 +555,10 @@ footer: {
     },
     hero: {
       badge: "SkillPath Бета 2.0",
-      t1: "Выбери свой",
-      t2: "Класс Будущего",
+      t1: "Выбери своё",
+      t2: "Направление",
       t3: "В IT",
-      desc: "Интерактивный гид по IT-академии. Найди профессию, которая подходит именно тебе. Любишь ли ты создавать или проверять на прочность — начни свой путь здесь.",
+      desc: "Интерактивный гид по IT-академии. Найди профессию, которая подходит именно тебе. Начни свой путь здесь.",
       btnQuest: "Начать тест",
       btnRoles: "Все Роли"
     },
@@ -604,16 +595,16 @@ footer: {
     steps: {
       t: "Как начать свое",
       ts: "Приключение",
-      s1: { t: "Пройти тест", d: "Быстрый 5-минутный интерактивный квиз для анализа твоих интересов и стиля мышления." },
-      s2: { t: "Получить Roadmap", d: "Открой персональное дерево навыков с подборкой туториалов, квестов и мини-проектов." },
-      s3: { t: "Прокачаться", d: "Вступай в сообщества, находи менторов и создавай портфолио, чтобы показать свои скиллы." }
+      s1: { t: "Пройти профориентацию", d: "Быстрый тест для анализа твоих интересов, который поможет подобрать идеальное направление в IT." },
+      s2: { t: "Освоить базу", d: "Получи доступ к интерактивной программе обучения и пошагово изучай профессию на практике." },
+      s3: { t: "Выйти на рынок", d: "Нарабатывай сильное портфолио, общайся с менторами в сообществе и готовься к первым офферам." }
     },
     footer: {
       desc: "Даем возможности новому поколению строителей, хакеров и творцов. Начни свое IT-путешествие сегодня."
     },
     profPage: {
-      title1: "Tech",
-      title2: "Профессии",
+      title1: "Карьерный",
+      title2: "трек",
       subtitle: "Изучите все доступные карьерные пути в технологической индустрии",
       skills: "Ключевые навыки",
       salary: "Зарплатная вилка",
@@ -622,7 +613,7 @@ footer: {
       tools: "Популярные инструменты",
       juniorLabel: "Джуниор",
       seniorLabel: "Сеньор",
-      openRoadmap: "Открыть полный роадмап",
+      openRoadmap: "Открыть полный курс",
       selectProf: "Выберите профессию",
       back: "Назад",
     },
@@ -680,6 +671,7 @@ footer: {
             }
           ]
         },
+        
         ai: {
           title: "AI / ML Инженер",
           colorClass: "pink",
@@ -872,16 +864,56 @@ footer: {
         }
       },
       cards: [
-        { title: "Frontend Dev",    desc: "Мастер визуального мира...",       colorClass: "cyan",    roadmapKey: "frontend" },
-        { title: "AI Engineer",     desc: "Обучай нейросети...",              colorClass: "pink",    roadmapKey: "ai" },
-        { title: "Cybersec",        desc: "Цифровой страж...",                colorClass: "purple",  roadmapKey: "cybersec" },
-        { title: "Data Scientist",  desc: "Современный алхимик...",           colorClass: "blue",    roadmapKey: "datascience" },
+        { title: "Frontend Dev", desc: "Мастер визуального мира. Создавай потрясающие интерфейсы с помощью кода и магии дизайна.", colorClass: "cyan", roadmapKey: "frontend" },
+        { title: "AI Engineer", desc: "Обучай нейросети. Общайся с машинами и создавай искусственный интеллект будущего.", colorClass: "pink", roadmapKey: "ai" },
+        { title: "Cybersec", desc: "Цифровой страж. Вскрывай системы, чтобы защитить их и спасти данные от хакеров.", colorClass: "purple", roadmapKey: "cybersec" },
+        { title: "Data Scientist", desc: "Современный алхимик. Превращай сырые данные в золото прогнозов и находи скрытые истины.", colorClass: "blue", roadmapKey: "datascience" },
         { title: "Backend Dev",     desc: "Архитектор серверной части. API, базы данных и движок за каждым приложением.",   colorClass: "emerald", roadmapKey: "backend" },
         { title: "Mobile Dev",      desc: "Создавай iOS и Android приложения, которые миллионы носят в карманах.",           colorClass: "amber",   roadmapKey: "mobile" },
         { title: "DevOps",          desc: "Хозяин инфраструктуры. Автоматизируй всё, доставляй код быстро и надёжно.",        colorClass: "orange",  roadmapKey: "devops" },
         { title: "Game Dev",        desc: "Создавай миры. Unity, Unreal, шейдеры — превращай воображение в играбельную реальность.", colorClass: "rose", roadmapKey: "gamedev" }
-      ]
-    }
+   ]
+    },
+    mini: {
+  title: "Найди свой",
+  titleAccent: "идеальный путь",
+  subtitle: "Ответь на 5 быстрых вопросов",
+  questions: [
+    { q: "Что тебя зажигает?", opts: [
+      { emoji: "🎨", text: "Красивый дизайн", v: "frontend" },
+      { emoji: "🤖", text: "Умные машины",    v: "ai" },
+      { emoji: "🛡", text: "Решать головоломки", v: "cybersec" },
+      { emoji: "📊", text: "Искать паттерны", v: "datascience" },
+    ]},
+    { q: "Твоя суперсила?", opts: [
+      { emoji: "✨", text: "Чувство вкуса",    v: "frontend" },
+      { emoji: "🧮", text: "Математика и логика", v: "ai" },
+      { emoji: "🔍", text: "Внимание к деталям", v: "cybersec" },
+      { emoji: "📈", text: "Видеть тренды",    v: "datascience" },
+    ]},
+    { q: "Идеальная суббота?", opts: [
+      { emoji: "🖌", text: "Рисовать концепты", v: "frontend" },
+      { emoji: "📚", text: "Читать исследования", v: "ai" },
+      { emoji: "🕵", text: "Расследовать тайны", v: "cybersec" },
+      { emoji: "📉", text: "Анализировать данные", v: "datascience" },
+    ]},
+    { q: "Какой инструмент хочешь освоить?", opts: [
+      { emoji: "⚛️", text: "Figma и React",    v: "frontend" },
+      { emoji: "🧠", text: "PyTorch и TensorFlow", v: "ai" },
+      { emoji: "🔓", text: "Kali Linux и Burp Suite", v: "cybersec" },
+      { emoji: "📊", text: "SQL и Tableau",    v: "datascience" },
+    ]},
+    { q: "Какой след хочешь оставить?", opts: [
+      { emoji: "🌐", text: "Сделать веб красивым", v: "frontend" },
+      { emoji: "🚀", text: "Строить будущее ИИ", v: "ai" },
+      { emoji: "🛡️", text: "Защищать людей в сети", v: "cybersec" },
+      { emoji: "💡", text: "Превращать данные в решения", v: "datascience" },
+    ]},
+  ],
+  result: "Тебе подходит",
+  cta: "Открыть роадмап",
+  retake: "Пройти ещё раз",
+},
   },
 };
 
@@ -1131,8 +1163,25 @@ const RoleCard = ({ icon: Icon, title, desc, colorClass, roadmapKey }: {
 };
 
 const RolesSection = () => {
-  const { t } = useContext(LanguageContext);
-  return (
+  const { t, lang, setCurrentPage, setOpenRoadmap } = useContext(LanguageContext);
+  const [showAll, setShowAll] = useState(false);
+
+  // Иконки для каждого colorClass
+  const iconMap: Record<string, any> = {
+    cyan: Terminal,
+    pink: Cpu,
+    purple: ShieldAlert,
+    blue: Database,
+    emerald: Layers,
+    amber: Smartphone,
+    orange: Server,
+    rose: Gamepad2,
+  };
+
+  const cards = t.roadmaps.cards;
+  const visibleCards = showAll ? cards : cards.slice(0, 4);
+
+ return (
     <section id="roles" className="py-16 md:py-24 relative z-10">
       <div className="container mx-auto px-6">
         <div className="text-center mb-10 md:mb-16 max-w-2xl mx-auto">
@@ -1143,10 +1192,51 @@ const RolesSection = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
-          <RoleCard icon={Terminal} title={t.roles.f.t} desc={t.roles.f.d} colorClass="cyan" roadmapKey="frontend" />
-          <RoleCard icon={Cpu} title={t.roles.ai.t} desc={t.roles.ai.d} colorClass="pink" roadmapKey="ai" />
-          <RoleCard icon={ShieldAlert} title={t.roles.cs.t} desc={t.roles.cs.d} colorClass="purple" roadmapKey="cybersec" />
-          <RoleCard icon={Database} title={t.roles.ds.t} desc={t.roles.ds.d} colorClass="blue" roadmapKey="datascience" />
+          {visibleCards.map((card, i) => (
+            <RoleCard
+              key={card.roadmapKey}
+              icon={iconMap[card.colorClass] || Layers}
+              title={card.title}
+              desc={card.desc}
+              colorClass={card.colorClass}
+              roadmapKey={card.roadmapKey}
+            />
+          ))}
+        </div>
+
+        {/* Кнопки под карточками */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10 md:mt-14">
+          {!showAll && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowAll(true)}
+              className="px-8 py-3.5 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-800 dark:text-white font-bold text-sm flex items-center gap-2 hover:bg-black/10 dark:hover:bg-white/10 transition-all backdrop-blur-md"
+            >
+              {lang === "RU" ? "Показать ещё" : "Show more"}
+              <ChevronDown className="w-4 h-4" />
+            </motion.button>
+          )}
+
+          {showAll && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setCurrentPage('roadmaps');
+                setOpenRoadmap(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] transition-all"
+            >
+              {lang === "RU" ? "Все роадмапы" : "All Roadmaps"}
+              <ArrowRight className="w-4 h-4" />
+            </motion.button>
+          )}
         </div>
       </div>
     </section>
@@ -1288,8 +1378,8 @@ const StepsSection = () => {
 /* ────────────────────────────────────────────────────────────
    Navbar c МОБИЛЬНЫМ бургер-меню
 ──────────────────────────────────────────────────────────── */
-const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
-  const { t, setCurrentPage, setOpenRoadmap } = useContext(LanguageContext);
+const Navbar = ({ onLoginClick, onNavigate, onStartQuiz }: { onLoginClick: () => void; onNavigate?: () => void; onStartQuiz?: () => void }) => {
+  const { t, lang, setCurrentPage, setOpenRoadmap } = useContext(LanguageContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
   // блокируем скролл фона при открытом меню
@@ -1299,6 +1389,15 @@ const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
   }, [menuOpen]);
 
   const go = (page: string) => {
+    if (page === "quiz") {
+      setMenuOpen(false);
+      setOpenRoadmap(null);
+      setCurrentPage('home');
+      onStartQuiz?.();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    onNavigate?.();
     setCurrentPage(page);
     setOpenRoadmap(null);
     setMenuOpen(false);
@@ -1306,16 +1405,23 @@ const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
   };
 
   const navItems = [
-    { label: t.nav.profs, page: "professions" },
-    { label: t.nav.roads, page: "roadmaps" },
-    { label: t.nav.mentors, page: "mentors" },
+    { label: lang === "RU" ? "Профориентационное\nтестирование" : "Career\nAssessment", page: "quiz" },
+    { label: lang === "RU" ? "Профиль\nпрофессии" : "Profession\nProfiles", page: "professions" },
+    { label: lang === "RU" ? "Обучающие\nкурсы" : "Learning\nCourses", page: "roadmaps" },
+    { label: lang === "RU" ? "Наши\nменторы" : "Our\nMentors", page: "mentors" },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6">
+    <nav className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6 backdrop-blur-xl border-b border-black/5 dark:border-white/5 transition-all duration-300 bg-white/60 dark:bg-[#0b1120]/80 overflow-hidden">
+      {/* Animated gradient overlay — видно в светлой теме */}
+      <div className="absolute inset-0 -z-10 opacity-40 dark:opacity-20 animate-gradient-shift" style={{
+        backgroundImage: 'linear-gradient(90deg, rgba(34,211,238,0.3), rgba(168,85,247,0.3), rgba(236,72,153,0.3), rgba(34,211,238,0.3))',
+        backgroundSize: '300% 100%',
+        animation: 'gradientShift 8s ease infinite',
+      }} />
       <div className="container mx-auto flex items-center justify-between">
         <button
-          onClick={() => { setCurrentPage('home'); setOpenRoadmap(null); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+          onClick={() => { onNavigate?.(); setCurrentPage('home'); setOpenRoadmap(null); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           className="flex items-center gap-2 group hover:opacity-90 transition-opacity outline-none"
         >
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.3)] dark:shadow-[0_0_15px_rgba(34,211,238,0.5)] group-hover:scale-105 transition-transform">
@@ -1327,7 +1433,7 @@ const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
         {/* Десктоп-меню */}
         <div className="hidden md:flex items-center gap-8 px-8 py-3 rounded-full bg-white/60 dark:bg-white/5 border border-black/5 dark:border-white/10 backdrop-blur-md shadow-sm dark:shadow-none">
           {navItems.map((item) => (
-            <button key={item.page} onClick={() => go(item.page)} className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white transition-colors">{item.label}</button>
+            <button key={item.page} onClick={() => go(item.page)} className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white transition-colors text-center leading-tight whitespace-pre-line">{item.label}</button>
           ))}
         </div>
 
@@ -1335,12 +1441,6 @@ const Navbar = ({ onLoginClick }: { onLoginClick: () => void }) => {
         <div className="hidden md:flex items-center gap-3">
           <LanguageToggle />
           <ThemeToggle />
-         <button
-  onClick={onLoginClick}
-  className="px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white/10 border border-transparent dark:border-white/20 text-white font-bold text-sm hover:bg-slate-800 dark:hover:bg-white/20 transition-all backdrop-blur-md"
->
-  {t.nav.login}
-</button>
         </div>
 
         {/* Мобилка: язык/тема + бургер */}
@@ -1684,7 +1784,7 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
           className="relative rounded-3xl overflow-hidden shadow-2xl"
         >
           <img
-            src='src\app\logo.jpg'  // 👈 сюда вставь свою картинку
+            src='src\app\logo .jpg'  // 👈 сюда вставь свою картинку
             alt="Login"
             className="w-[500px] h-auto object-cover"
           />
@@ -1711,11 +1811,21 @@ const Content = () => {
   return (
     <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-300">
       <MouseSpotlight />
-      <Navbar onLoginClick={() => setShowLogin(true)} />
+      <Navbar onLoginClick={() => setShowLogin(true)} onNavigate={() => setShowQuiz(false)} onStartQuiz={() => setShowQuiz(true)} />
 
       <main>
         {showQuiz ? (
-          <Quiz onExit={() => { setShowQuiz(false); setCurrentPage('home'); }} lang={lang} />
+          <Quiz
+            onExit={() => { setShowQuiz(false); setCurrentPage('home'); }}
+            lang={lang}
+            onGoToRoadmap={(roadmapKey) => {
+              setShowQuiz(false);
+              setCurrentPage('roadmaps');
+              setOpenRoadmap(roadmapKey);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+
         ) : currentPage === 'professions' ? (
           <ProfessionsPage onBack={() => setCurrentPage('home')} lang={lang} t={t} />
         ) : currentPage === 'roadmaps' ? (
@@ -1739,7 +1849,7 @@ const Content = () => {
             <CompaniesStrip />
             <StatsSection />
             <RolesSection />
-            <BentoShowcase />
+            <BentoShowcase onStartQuiz={() => setShowQuiz(true)} />
             <MiniQuiz />
 
             {/* ── Доп-контент: на мобилке сворачивается под «Показать больше» ── */}
@@ -1749,7 +1859,7 @@ const Content = () => {
               <TestimonialsCarousel />
               <BootstrapInfo />
               <StepsSection />
-              <PricingTable />
+              <PricingTable onStartQuiz={() => setShowQuiz(true)} />
               <FAQAccordion />
             </MobileShowMore>
             

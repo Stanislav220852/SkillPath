@@ -25,8 +25,8 @@ export const MiniQuiz = () => {
   const progressRef = useRef<HTMLDivElement>(null);
 
   const totalQuestions = t.mini.questions.length;
-  const progressPercent = showResult 
-    ? 100 
+  const progressPercent = showResult
+    ? 100
     : Math.round((step / totalQuestions) * 100);
 
   // ============ jQuery UI Progressbar ============
@@ -35,11 +35,9 @@ export const MiniQuiz = () => {
     const $ = window.$;
 
     try {
-      // Инициализация только если ещё не создан
       if (!$(progressRef.current).hasClass("ui-progressbar")) {
         $(progressRef.current).progressbar({ value: 0 });
       }
-      // Обновляем значение
       $(progressRef.current).progressbar("value", progressPercent);
     } catch (e) {
       console.warn("jQuery progressbar error:", e);
@@ -155,15 +153,11 @@ export const MiniQuiz = () => {
             </motion.div>
           </AnimatePresence>
 
-          <div className="mt-6 pt-6 border-t border-black/5 dark:border-white/10 text-center">
-            <span className="text-[10px] text-slate-400 dark:text-white/30 uppercase tracking-widest font-bold">
-              ⚡ jQuery UI Progressbar
-            </span>
-          </div>
+          {/* Надпись УБРАНА — раньше тут было "⚡ jQuery UI Progressbar" */}
         </div>
       </div>
 
-      {/* RESULT MODAL — React-модалка для надёжности */}
+      {/* RESULT MODAL */}
       <AnimatePresence>
         {showResult && winner && (
           <motion.div

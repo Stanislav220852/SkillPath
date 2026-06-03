@@ -8,10 +8,14 @@ import {
 const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-3xl shadow-xl";
 
 const colorMap: Record<string, { gradient: string; bg: string; text: string; border: string }> = {
-  cyan:   { gradient: "from-cyan-500 to-blue-600",     bg: "bg-cyan-500/10",   text: "text-cyan-600 dark:text-cyan-400",   border: "border-cyan-500/30" },
-  pink:   { gradient: "from-pink-500 to-rose-600",     bg: "bg-pink-500/10",   text: "text-pink-600 dark:text-pink-400",   border: "border-pink-500/30" },
-  purple: { gradient: "from-purple-500 to-violet-600", bg: "bg-purple-500/10", text: "text-purple-600 dark:text-purple-400", border: "border-purple-500/30" },
-  blue:   { gradient: "from-blue-500 to-indigo-600",   bg: "bg-blue-500/10",   text: "text-blue-600 dark:text-blue-400",   border: "border-blue-500/30" },
+  cyan:    { gradient: "from-cyan-500 to-blue-600",     bg: "bg-cyan-500/10",    text: "text-cyan-600 dark:text-cyan-400",       border: "border-cyan-500/30" },
+  pink:    { gradient: "from-pink-500 to-rose-600",     bg: "bg-pink-500/10",    text: "text-pink-600 dark:text-pink-400",       border: "border-pink-500/30" },
+  purple:  { gradient: "from-purple-500 to-violet-600", bg: "bg-purple-500/10",  text: "text-purple-600 dark:text-purple-400",   border: "border-purple-500/30" },
+  blue:    { gradient: "from-blue-500 to-indigo-600",   bg: "bg-blue-500/10",    text: "text-blue-600 dark:text-blue-400",       border: "border-blue-500/30" },
+  emerald: { gradient: "from-emerald-500 to-teal-600",  bg: "bg-emerald-500/10", text: "text-emerald-600 dark:text-emerald-400", border: "border-emerald-500/30" },
+  amber:   { gradient: "from-amber-500 to-orange-600",  bg: "bg-amber-500/10",   text: "text-amber-600 dark:text-amber-400",     border: "border-amber-500/30" },
+  orange:  { gradient: "from-orange-500 to-red-600",    bg: "bg-orange-500/10",  text: "text-orange-600 dark:text-orange-400",   border: "border-orange-500/30" },
+  rose:    { gradient: "from-rose-500 to-pink-600",     bg: "bg-rose-500/10",    text: "text-rose-600 dark:text-rose-400",       border: "border-rose-500/30" },
 };
 
 const buildMentors = (lang: "EN" | "RU") => [
@@ -141,6 +145,91 @@ const buildMentors = (lang: "EN" | "RU") => [
     sessionsCompleted: 60,
     nextSlot: lang === "RU" ? "На следующей неделе" : "Next week",
   },
+  {
+    id: 7,
+    name: lang === "RU" ? "Иван Козлов" : "Ivan Kozlov",
+    role: lang === "RU" ? "Senior Backend Engineer" : "Senior Backend Engineer",
+    company: "Sber",
+    initials: "ИК",
+    avatar: "/images/mentors/ivan.jpg",
+    color: "emerald",
+    category: "backend",
+    experience: 9,
+    rating: 4.8,
+    reviews: 134,
+    pricePerHour: 85,
+    skills: ["Node.js", "Go", "PostgreSQL", "Docker"],
+    languages: lang === "RU" ? ["Русский", "English"] : ["Russian", "English"],
+    bio: lang === "RU"
+      ? "9 лет в бэкенд-разработке. Строю высоконагруженные системы. Помогаю освоить серверную архитектуру с нуля."
+      : "9 years in backend dev. Building high-load systems. I help you master server architecture from scratch.",
+    sessionsCompleted: 210,
+    nextSlot: lang === "RU" ? "Завтра в 11:00" : "Tomorrow at 11:00 AM",
+  },
+  {
+    id: 8,
+    name: lang === "RU" ? "Ольга Никитина" : "Olga Nikitina",
+    role: lang === "RU" ? "Mobile Lead" : "Mobile Lead",
+    company: "VK",
+    initials: "ОН",
+    avatar: "/images/mentors/olga.jpg",
+    color: "amber",
+    category: "mobile",
+    experience: 7,
+    rating: 4.9,
+    reviews: 98,
+    pricePerHour: 90,
+    skills: ["React Native", "Swift", "Kotlin", "Expo"],
+    languages: lang === "RU" ? ["Русский"] : ["Russian"],
+    bio: lang === "RU"
+      ? "Лид мобильной разработки. Помогаю запустить первое приложение и пройти ревью в App Store / Play Store."
+      : "Mobile dev lead. I help you ship your first app and pass App Store / Play Store review.",
+    sessionsCompleted: 150,
+    nextSlot: lang === "RU" ? "Послезавтра в 16:00" : "In 2 days at 4:00 PM",
+  },
+  {
+    id: 9,
+    name: lang === "RU" ? "Максим Орлов" : "Maxim Orlov",
+    role: "DevOps Engineer",
+    company: "Ozon",
+    initials: "МО",
+    avatar: "/images/mentors/maxim.jpg",
+    color: "orange",
+    category: "devops",
+    experience: 8,
+    rating: 4.7,
+    reviews: 76,
+    pricePerHour: 100,
+    skills: ["Kubernetes", "Terraform", "AWS", "CI/CD"],
+    languages: lang === "RU" ? ["Русский", "English"] : ["Russian", "English"],
+    bio: lang === "RU"
+      ? "DevOps в высоконагруженном e-commerce. Автоматизирую всё. Научу деплоить как профи."
+      : "DevOps in high-load e-commerce. I automate everything. I'll teach you to deploy like a pro.",
+    sessionsCompleted: 120,
+    nextSlot: lang === "RU" ? "Сегодня в 21:00" : "Today at 9:00 PM",
+  },
+  {
+    id: 10,
+    name: lang === "RU" ? "Кирилл Зайцев" : "Kirill Zaitsev",
+    role: lang === "RU" ? "Game Developer" : "Game Developer",
+    company: "Playrix",
+    initials: "КЗ",
+    avatar: "/images/mentors/kirill.jpg",
+    color: "rose",
+    category: "gamedev",
+    experience: 6,
+    rating: 4.9,
+    reviews: 63,
+    pricePerHour: 80,
+    skills: ["Unity", "C#", "Shaders", "3D Math"],
+    languages: lang === "RU" ? ["Русский", "English"] : ["Russian", "English"],
+    bio: lang === "RU"
+      ? "Делаю игры в Playrix. Помогу освоить Unity, шейдеры и геймдизайн. Создадим игру вместе!"
+      : "Making games at Playrix. I'll help you master Unity, shaders and game design. Let's build a game together!",
+    sessionsCompleted: 85,
+    nextSlot: lang === "RU" ? "На следующей неделе" : "Next week",
+  },
+
 ];
 
 /* ─────────────────────────────────────────────
@@ -362,6 +451,10 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
     { id: "ai",          label: lang === "RU" ? "AI/ML"        : "AI/ML",      color: "pink" },
     { id: "cybersec",    label: lang === "RU" ? "Кибербез"     : "Cybersec",   color: "purple" },
     { id: "datascience", label: lang === "RU" ? "Data Science" : "Data",       color: "blue" },
+    { id: "backend",     label: lang === "RU" ? "Backend"      : "Backend",    color: "emerald" },
+    { id: "mobile",      label: lang === "RU" ? "Mobile"       : "Mobile",     color: "amber" },
+    { id: "devops",      label: lang === "RU" ? "DevOps"       : "DevOps",     color: "orange" },
+    { id: "gamedev",     label: lang === "RU" ? "GameDev"      : "GameDev",    color: "rose" },
   ];
 
   const handleBook = (id: number) => {

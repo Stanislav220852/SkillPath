@@ -12,13 +12,14 @@ interface Question {
 interface QuizProps {
   onExit: () => void;
   lang: "RU" | "EN";
+  onGoToRoadmap?: (roadmapKey: string) => void;
 }
 
 
 const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
 
 
-export const Quiz: React.FC<QuizProps> = ({ onExit, lang }) => {
+export const Quiz: React.FC<QuizProps> = ({ onExit, lang, onGoToRoadmap }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
@@ -41,32 +42,214 @@ export const Quiz: React.FC<QuizProps> = ({ onExit, lang }) => {
         of: "из"
       },
       questions: [
-        {
-          question: "Какой тип проектов вам интереснее всего?",
-          options: ["Создание интерактивных веб-приложений", "Разработка умных систем и ботов", "Защита данных и систем от угроз", "Анализ больших объемов данных"]
-        },
-        {
-          question: "Что вас больше мотивирует в работе?",
-          options: ["Видеть результат своего труда в виде красивого интерфейса", "Создавать решения, которые думают и учатся", "Находить и закрывать уязвимости", "Находить закономерности в хаосе данных"]
-        },
-        {
-          question: "Какой подход к решению задач вам ближе?",
-          options: ["Визуальный и креативный", "Логический и математический", "Детективный и аналитический", "Исследовательский и статистический"]
-        },
-        {
-          question: "Что вы предпочитаете изучать в свободное время?",
-          options: ["Новые фреймворки и UI библиотеки", "Алгоритмы машинного обучения", "Методы взлома и защиты систем", "Статистику и визуализацию данных"]
-        },
-        {
-          question: "Какая рабочая среда вам комфортнее?",
-          options: ["Работа с дизайнерами и продакт-менеджерами", "Исследования и эксперименты с моделями", "Тестирование на проникновение", "Работа с базами данных и отчетами"]
-        }
-      ],
+{
+  question: "Что тебе интереснее всего?",
+  options: [
+    "Создавать красивые интерфейсы",
+    "Обучать нейросети",
+    "Искать уязвимости",
+    "Анализировать данные",
+    "Писать серверную логику",
+    "Создавать мобильные приложения",
+    "Настраивать инфраструктуру",
+    "Создавать игровые миры"
+  ]
+},
+{
+  question: "Что тебя больше вдохновляет?",
+  options: [
+    "UI и дизайн",
+    "Искусственный интеллект",
+    "Безопасность",
+    "Статистика",
+    "API и базы данных",
+    "iOS / Android",
+    "Автоматизация процессов",
+    "Графика и анимация"
+  ]
+},
+{
+  question: "Какой тип задач тебе ближе?",
+  options: [
+    "Креативные",
+    "Математические",
+    "Аналитические",
+    "Исследовательские",
+    "Архитектурные",
+    "Практичные",
+    "Системные",
+    "Творческие"
+  ]
+},
+{
+  question: "Где ты видишь себя?",
+  options: [
+    "В веб‑разработке",
+    "В AI стартапе",
+    "В киберотделе",
+    "В аналитике",
+    "В backend‑команде",
+    "В мобильной студии",
+    "В DevOps команде",
+    "В гейм‑индустрии"
+  ]
+},
+{
+  question: "Что тебе нравится изучать?",
+  options: [
+    "React / Vue",
+    "PyTorch",
+    "Kali Linux",
+    "Pandas",
+    "Node.js",
+    "React Native",
+    "Docker",
+    "Unity"
+  ]
+},
+{
+  question: "Какая работа кажется крутой?",
+  options: [
+    "Frontend Developer",
+    "ML Engineer",
+    "Pentester",
+    "Data Scientist",
+    "Backend Developer",
+    "Mobile Developer",
+    "DevOps Engineer",
+    "Game Developer"
+  ]
+},
+{
+  question: "Какой инструмент ближе?",
+  options: [
+    "Figma",
+    "Jupyter Notebook",
+    "Wireshark",
+    "Excel",
+    "PostgreSQL",
+    "Xcode",
+    "AWS",
+    "Unreal Engine"
+  ]
+},
+{
+  question: "Что приносит кайф?",
+  options: [
+    "Красивый UI",
+    "Работающий алгоритм",
+    "Закрытая уязвимость",
+    "График с инсайтом",
+    "Стабильный сервер",
+    "Запущенное приложение",
+    "Автоматизированный деплой",
+    "Играбельный уровень"
+  ]
+},
+{
+  question: "Что тебе проще?",
+  options: [
+    "Верстка",
+    "Математика",
+    "Логика атак",
+    "Статистика",
+    "Архитектура API",
+    "UI для мобильных",
+    "Настройка серверов",
+    "Работа с 3D"
+  ]
+},
+{
+  question: "Какой формат нравится?",
+  options: [
+    "Веб‑проекты",
+    "AI проекты",
+    "CTF соревнования",
+    "Data проекты",
+    "Backend сервисы",
+    "Мобильные приложения",
+    "Облачные системы",
+    "Игры"
+  ]
+},
+{
+  question: "Что кажется сложным, но интересным?",
+  options: [
+    "CSS анимации",
+    "Нейросети",
+    "Этичный хакинг",
+    "A/B тесты",
+    "Микросервисы",
+    "Push уведомления",
+    "Kubernetes",
+    "Шейдеры"
+  ]
+},
+{
+  question: "Что ближе к характеру?",
+  options: [
+    "Креатив",
+    "Интеллект",
+    "Настороженность",
+    "Аналитика",
+    "Структурность",
+    "Практичность",
+    "Контроль",
+    "Воображение"
+  ]
+},
+{
+  question: "Что хочешь создавать?",
+  options: [
+    "Сайты",
+    "ИИ системы",
+    "Безопасные системы",
+    "Отчёты",
+    "Серверы",
+    "Приложения",
+    "Инфраструктуру",
+    "Игры"
+  ]
+},
+{
+  question: "Какой стиль работы?",
+  options: [
+    "Работа с дизайном",
+    "Исследования",
+    "Защита",
+    "Анализ",
+    "Архитектура",
+    "UX мобильный",
+    "Автоматизация",
+    "Геймдизайн"
+  ]
+},
+{
+  question: "Кем хочешь стать через 3 года?",
+  options: [
+    "Senior Frontend",
+    "AI Lead",
+    "Security Expert",
+    "Data Lead",
+    "Backend Architect",
+    "Mobile Lead",
+    "Cloud Engineer",
+    "Game Director"
+  ]
+}
+],
       descriptions: {
         "Frontend Dev": "Вы прирожденный Frontend Developer! Вас вдохновляет создание красивых и функциональных интерфейсов, которые радуют пользователей.",
         "AI Engineer": "Вы идеальный AI Engineer! Вам нравится создавать умные системы и работать с передовыми технологиями искусственного интеллекта.",
         "Cybersec": "Вы прирожденный специалист по кибербезопасности! Вам нравится находить уязвимости и защищать системы от угроз.",
-        "Data Scientist": "Вы идеальный Data Scientist! Вам нравится находить инсайты в данных и создавать предсказательные модели."
+        "Data Scientist": "Вы идеальный Data Scientist! Вам нравится находить инсайты в данных и создавать предсказательные модели.",
+        "Backend Dev": "Вы Backend‑разработчик! Вам нравится создавать масштабируемые API, работать с базами данных и строить надёжную серверную архитектуру, которая является сердцем любого приложения.",
+
+        "Mobile Dev": "Вы Mobile‑разработчик! Вам нравится создавать приложения, которыми люди пользуются каждый день на своих смартфонах.",
+
+        "DevOps Engineer": "Вы DevOps‑инженер! Вам по душе автоматизация, облачные технологии и построение надёжной инфраструктуры для быстрого и стабильного выпуска продуктов.",
+
+        "Game Developer": "Вы Game‑разработчик! Вам нравится создавать игровые миры, продумывать механику и превращать идеи в интерактивные впечатления."
       }
     },
     EN: {
@@ -83,32 +266,211 @@ export const Quiz: React.FC<QuizProps> = ({ onExit, lang }) => {
         of: "of"
       },
       questions: [
-        {
-          question: "What type of projects interest you the most?",
-          options: ["Creating interactive web applications", "Developing smart systems and bots", "Protecting data and systems from threats", "Analyzing large volumes of data"]
-        },
-        {
-          question: "What motivates you most at work?",
-          options: ["Seeing the result in a beautiful interface", "Creating solutions that think and learn", "Finding and fixing vulnerabilities", "Finding patterns in data chaos"]
-        },
-        {
-          question: "What problem-solving approach is closer to you?",
-          options: ["Visual and creative", "Logical and mathematical", "Detective and analytical", "Research and statistical"]
-        },
-        {
-          question: "What do you prefer to study in your free time?",
-          options: ["New frameworks and UI libraries", "Machine learning algorithms", "Methods of hacking and system defense", "Statistics and data visualization"]
-        },
-        {
-          question: "Which work environment is more comfortable for you?",
-          options: ["Working with designers and product managers", "Research and experimentation with models", "Penetration testing", "Working with databases and reports"]
-        }
-      ],
+{
+  question: "What excites you the most?",
+  options: [
+    "Designing beautiful interfaces",
+    "Training neural networks",
+    "Finding system vulnerabilities",
+    "Analyzing data patterns",
+    "Building server logic",
+    "Creating mobile apps",
+    "Managing cloud infrastructure",
+    "Building game worlds"
+  ]
+},
+{
+  question: "What motivates you at work?",
+  options: [
+    "Seeing a polished UI",
+    "Making machines learn",
+    "Securing systems",
+    "Finding insights in data",
+    "Designing APIs",
+    "Launching mobile apps",
+    "Automating deployments",
+    "Creating immersive gameplay"
+  ]
+},
+{
+  question: "What type of thinking suits you?",
+  options: [
+    "Creative and visual",
+    "Logical and mathematical",
+    "Analytical and investigative",
+    "Statistical and research-based",
+    "Architectural and structural",
+    "Practical and user-focused",
+    "System-oriented",
+    "Imaginative and artistic"
+  ]
+},
+{
+  question: "Where do you see yourself working?",
+  options: [
+    "Web development team",
+    "AI startup",
+    "Cybersecurity department",
+    "Data analytics team",
+    "Backend engineering team",
+    "Mobile development studio",
+    "DevOps/cloud team",
+    "Game development studio"
+  ]
+},
+{
+  question: "Which technology sounds most exciting?",
+  options: [
+    "React / Vue",
+    "PyTorch / TensorFlow",
+    "Kali Linux",
+    "Pandas / NumPy",
+    "Node.js / Django",
+    "React Native / Swift",
+    "Docker / Kubernetes",
+    "Unity / Unreal Engine"
+  ]
+},
+{
+  question: "What kind of project would you start today?",
+  options: [
+    "A personal website",
+    "An AI chatbot",
+    "A penetration testing lab",
+    "A data dashboard",
+    "A REST API service",
+    "A mobile productivity app",
+    "A cloud automation script",
+    "A 2D or 3D game"
+  ]
+},
+{
+  question: "Which tool feels closest to you?",
+  options: [
+    "Figma",
+    "Jupyter Notebook",
+    "Wireshark",
+    "Excel / Tableau",
+    "PostgreSQL",
+    "Xcode / Android Studio",
+    "AWS Console",
+    "Blender / Unity Editor"
+  ]
+},
+{
+  question: "What gives you the most satisfaction?",
+  options: [
+    "A perfectly styled layout",
+    "A model that predicts accurately",
+    "A vulnerability patched",
+    "A graph that reveals insight",
+    "A stable backend system",
+    "An app published to stores",
+    "A successful CI/CD pipeline",
+    "A playable level"
+  ]
+},
+{
+  question: "What feels easier for you?",
+  options: [
+    "Styling components",
+    "Solving math problems",
+    "Understanding attack logic",
+    "Interpreting statistics",
+    "Designing APIs",
+    "Optimizing mobile UX",
+    "Configuring servers",
+    "Working with 3D environments"
+  ]
+},
+{
+  question: "Which environment do you prefer?",
+  options: [
+    "Collaborating with designers",
+    "Researching and experimenting",
+    "Testing system defenses",
+    "Exploring datasets",
+    "Building scalable services",
+    "Designing mobile flows",
+    "Managing infrastructure",
+    "Designing gameplay mechanics"
+  ]
+},
+{
+  question: "What sounds challenging but exciting?",
+  options: [
+    "Advanced CSS animations",
+    "Deep learning models",
+    "Ethical hacking",
+    "A/B testing",
+    "Microservices architecture",
+    "Push notifications system",
+    "Kubernetes clusters",
+    "Shader programming"
+  ]
+},
+{
+  question: "Which trait describes you best?",
+  options: [
+    "Creative",
+    "Intelligent",
+    "Cautious",
+    "Analytical",
+    "Structured",
+    "User-oriented",
+    "Control-focused",
+    "Imaginative"
+  ]
+},
+{
+  question: "What do you want to build?",
+  options: [
+    "Web platforms",
+    "AI-powered systems",
+    "Secure infrastructures",
+    "Data-driven reports",
+    "High-performance servers",
+    "Mobile ecosystems",
+    "Automated systems",
+    "Interactive games"
+  ]
+},
+{
+  question: "What type of learning do you enjoy?",
+  options: [
+    "UI frameworks",
+    "Machine learning research",
+    "Security practices",
+    "Data modeling",
+    "Backend frameworks",
+    "Mobile UI/UX",
+    "Cloud architecture",
+    "Game engines"
+  ]
+},
+{
+  question: "Who do you want to become in 3 years?",
+  options: [
+    "Senior Frontend Developer",
+    "AI Lead Engineer",
+    "Security Expert",
+    "Data Science Lead",
+    "Backend Architect",
+    "Mobile Lead Developer",
+    "Cloud / DevOps Engineer",
+    "Game Director"
+  ]
+}
+],
       descriptions: {
         "Frontend Dev": "You are a natural Frontend Developer! You are inspired by creating beautiful and functional interfaces that delight users.",
         "AI Engineer": "You are a perfect AI Engineer! You enjoy creating smart systems and working with cutting-edge AI technologies.",
         "Cybersec": "You are a born Cybersecurity Specialist! You enjoy finding vulnerabilities and protecting systems from threats.",
-        "Data Scientist": "You are an ideal Data Scientist! You enjoy finding insights in data and creating predictive models."
+        "Data Scientist": "You are an ideal Data Scientist! You enjoy finding insights in data and creating predictive models.",
+        "Backend Dev": "You are a Backend Developer! You enjoy building scalable APIs, databases, and the engine behind every application.",
+        "Mobile Dev": "You are a Mobile Developer! You love creating apps that people use every day on their phones.",
+        "DevOps Engineer": "You are a DevOps Engineer! You thrive on automation, cloud systems, and building reliable infrastructure.",
+        "Game Developer": "You are a Game Developer! You enjoy creating immersive worlds, gameplay mechanics, and interactive experiences."
       }
     }
   };
@@ -118,12 +480,16 @@ export const Quiz: React.FC<QuizProps> = ({ onExit, lang }) => {
   const questions = currentContent.questions;
 
 
-  const categoryScores = {
-    "Frontend Dev": 0,
-    "AI Engineer": 0,
-    "Cybersec": 0,
-    "Data Scientist": 0
-  };
+  const categories = [
+  "Frontend Dev",
+  "AI Engineer",
+  "Cybersec",
+  "Data Scientist",
+  "Backend Dev",
+  "Mobile Dev",
+  "DevOps Engineer",
+  "Game Developer"
+];
 
 
   const resultColors: Record<string, string> = {
@@ -168,13 +534,16 @@ export const Quiz: React.FC<QuizProps> = ({ onExit, lang }) => {
 
 
   if (showResults) {
-    const categories = ["Frontend Dev", "AI Engineer", "Cybersec", "Data Scientist"];
-    const score = categories.reduce((acc, role) => {
-      const roleScore = Object.entries(answers).filter(([_, answerIdx]) => {
-        return categories[Number(answerIdx)] === role;
-      }).length;
-      return { ...acc, [role]: roleScore };
-    }, {} as Record<string, number>);
+    const score: Record<string, number> = {};
+
+categories.forEach((cat) => (score[cat] = 0));
+
+Object.values(answers).forEach((answerIndex) => {
+  const role = categories[answerIndex];
+  if (role) {
+    score[role]++;
+  }
+});
 
 
     const topRole = Object.entries(score).sort(([, a], [, b]) => b - a)[0][0];
@@ -205,10 +574,43 @@ export const Quiz: React.FC<QuizProps> = ({ onExit, lang }) => {
         btn: "from-green-500 to-emerald-600",
         text: "text-green-500",
         shadow: "shadow-[0_0_20px_rgba(34,197,94,0.3)]"
-      }
+      },
+      "Backend Dev": {
+  grad: "from-emerald-400 to-green-500",
+  btn: "from-emerald-500 to-green-600",
+  text: "text-emerald-500",
+  shadow: "shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+},
+"Mobile Dev": {
+  grad: "from-amber-400 to-orange-500",
+  btn: "from-amber-500 to-orange-600",
+  text: "text-amber-500",
+  shadow: "shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+},
+"DevOps Engineer": {
+  grad: "from-orange-400 to-red-500",
+  btn: "from-orange-500 to-red-600",
+  text: "text-orange-500",
+  shadow: "shadow-[0_0_20px_rgba(249,115,22,0.3)]"
+},
+"Game Developer": {
+  grad: "from-rose-400 to-pink-500",
+  btn: "from-rose-500 to-pink-600",
+  text: "text-rose-500",
+  shadow: "shadow-[0_0_20px_rgba(244,63,94,0.3)]"
+}
     };
 
-
+    const roleToRoadmapKey: Record<string, string> = {
+      "Frontend Dev": "frontend",
+      "AI Engineer": "ai",
+      "Cybersec": "cybersec",
+      "Data Scientist": "datascience",
+      "Backend Dev": "backend",
+      "Mobile Dev": "mobile",
+      "DevOps Engineer": "devops",
+      "Game Developer": "gamedev",
+    };
     const activeStyle = barStyles[topRole];
 
 
@@ -286,18 +688,22 @@ export const Quiz: React.FC<QuizProps> = ({ onExit, lang }) => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={resetQuiz}
-              className={`px-10 py-4 rounded-full bg-gradient-to-r ${activeStyle.btn} text-white font-black flex items-center justify-center gap-2 shadow-lg transition-all`}
+              onClick={() => {
+                if (onGoToRoadmap) {
+                  onGoToRoadmap(roleToRoadmapKey[topRole] || "frontend");
+                }
+              }}
+              className={`px-10 py-4 rounded-full bg-gradient-to-r ${activeStyle.btn} text-white font-black flex items-center justify-center gap-2 shadow-lg ${activeStyle.shadow} transition-all`}
             >
-              <RotateCcw className="w-5 h-5" /> {currentContent.ui.retry}
+              <ChevronRight className="w-5 h-5" /> {lang === "RU" ? "Перейти к роадмапу" : "Go to Roadmap"}
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={onExit}
+              onClick={resetQuiz}
               className="px-10 py-4 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-800 dark:text-white font-bold flex items-center justify-center gap-2 backdrop-blur-md"
             >
-              <Home className="w-5 h-5" /> {currentContent.ui.home}
+              <RotateCcw className="w-5 h-5" /> {currentContent.ui.retry}
             </motion.button>
           </div>
         </motion.div>

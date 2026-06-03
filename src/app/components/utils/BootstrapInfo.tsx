@@ -20,6 +20,10 @@ const professions: ProfData[] = [
   { id: "fullstack", nameEN: "Fullstack Developer", nameRU: "Fullstack-разработчик", junior: 2000, mid: 4500, senior: 8500,  color: "blue",    demand: 95 },
   { id: "ai",        nameEN: "AI / ML Engineer",    nameRU: "AI / ML Инженер",       junior: 2500, mid: 5500, senior: 12000, color: "pink",    demand: 98 },
   { id: "mobile",    nameEN: "Mobile Developer",    nameRU: "Mobile-разработчик",    junior: 1700, mid: 4000, senior: 7500,  color: "purple",  demand: 80 },
+  { id: "cybersec",  nameEN: "Cybersecurity",       nameRU: "Кибербезопасность",     junior: 1600, mid: 4200, senior: 9000,  color: "purple",  demand: 85 },
+  { id: "datasci",   nameEN: "Data Scientist",      nameRU: "Data Scientist",        junior: 2000, mid: 5000, senior: 10000, color: "blue",    demand: 90 },
+  { id: "devops",    nameEN: "DevOps Engineer",     nameRU: "DevOps Инженер",        junior: 2200, mid: 5000, senior: 9500,  color: "emerald", demand: 93 },
+  { id: "gamedev",   nameEN: "Game Developer",      nameRU: "Game-разработчик",      junior: 1400, mid: 3500, senior: 7000,  color: "pink",    demand: 72 },
 ];
 
 const colorGradient: Record<string, string> = {
@@ -55,7 +59,7 @@ export const BootstrapInfo = () => {
   const [selectedProf, setSelectedProf] = useState<string>("frontend");
   const [hoursPerWeek, setHoursPerWeek] = useState<number>(15);
   const [level, setLevel] = useState<Level>("junior");
-  const [country, setCountry] = useState<string>("ru");
+  const [country, setCountry] = useState<string>("by");
 
   const monthsToReach = {
     junior: Math.ceil(6 * 10 / hoursPerWeek),
@@ -63,8 +67,8 @@ export const BootstrapInfo = () => {
     senior: Math.ceil(36 * 10 / hoursPerWeek),
   };
 
-  const countryMultiplier: Record<string, number> = { ru: 0.6, eu: 1.2, us: 2.0, asia: 0.9 };
-  const currencySymbol: Record<string, string> = { ru: "$", eu: "€", us: "$", asia: "$" };
+  const countryMultiplier: Record<string, number> = { by: 0.5, ru: 0.6, eu: 1.2, us: 2.0, asia: 0.9 };
+  const currencySymbol: Record<string, string> = { by: "BYN ", ru: "$", eu: "€", us: "$", asia: "$" };
 
   const prof = professions.find((p) => p.id === selectedProf)!;
   const baseSalary = prof[level];
@@ -221,7 +225,7 @@ export const BootstrapInfo = () => {
                   {t.chooseCountry}
                 </label>
                 <select
-                  className="form-select w-full px-4 py-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-800 dark:text-white font-medium focus:outline-none focus:border-cyan-500"
+                  className="form-select w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-black/10 dark:border-white/10 text-slate-800 dark:text-white font-medium focus:outline-none focus:border-cyan-500 [&>option]:bg-white [&>option]:dark:bg-slate-800 [&>option]:text-slate-800 [&>option]:dark:text-white"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                 >
@@ -229,6 +233,8 @@ export const BootstrapInfo = () => {
                   <option value="eu">🇪🇺 {lang === "RU" ? "Европа" : "Europe"} (×1.2)</option>
                   <option value="us">🇺🇸 {lang === "RU" ? "США" : "USA"} (×2.0)</option>
                   <option value="asia">🇸🇬 {lang === "RU" ? "Азия" : "Asia"} (×0.9)</option>
+                  <option value="by">🇧🇾 {lang === "RU" ? "Беларусь" : "Belarus"} (×0.5)</option>
+
                 </select>
               </div>
             </div>
@@ -308,11 +314,8 @@ export const BootstrapInfo = () => {
         </motion.div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between flex-wrap gap-2 mt-6">
+        <div className="mt-6">
           <p className="text-xs text-slate-500 dark:text-white/40">{t.disclaimer}</p>
-          <span className="text-[10px] text-slate-400 dark:text-white/30 uppercase tracking-widest font-bold">
-            ⚡ {t.poweredBy}
-          </span>
         </div>
       </div>
     </section>

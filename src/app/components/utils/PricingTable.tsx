@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
 import { LanguageContext } from "../../App";
 import { HScroller } from "./HScroller.tsx";
 
-const PlanCard = ({ plan, i, yearly, t }: { plan: any; i: number; yearly: boolean; t: any }) => {
+const PlanCard = ({ plan, i, yearly, t, onStartQuiz, onPaidClick }: { plan: any; i: number; yearly: boolean; t: any; onStartQuiz?: () => void; onPaidClick?: (msg: string) => void }) => {
   const price = yearly ? plan.yearPrice : plan.price;
   return (
     <motion.div
@@ -55,6 +55,13 @@ const PlanCard = ({ plan, i, yearly, t }: { plan: any; i: number; yearly: boolea
       <motion.button
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
+        onClick={() => {
+          if (plan.price === 0) {
+            onStartQuiz?.();
+          } else {
+            onPaidClick?.(plan.name);
+          }
+        }}
         className={`w-full py-3 rounded-2xl font-bold transition-all ${
           plan.popular
             ? "bg-white text-slate-900 hover:bg-white/90 shadow-lg"
@@ -67,7 +74,8 @@ const PlanCard = ({ plan, i, yearly, t }: { plan: any; i: number; yearly: boolea
   );
 };
 
-export const PricingTable = () => {
+export const PricingTable = ({ onStartQuiz }: { onStartQuiz?: () => void }) => {
+  const [toast, setToast] = useState<string | null>(null);
   const { t } = useContext(LanguageContext);
   const [yearly, setYearly] = useState(false);
 
@@ -111,7 +119,7 @@ export const PricingTable = () => {
         {/* Десктоп/планшет: сетка 3 колонки */}
         <div className="hidden md:grid grid-cols-3 gap-6 max-w-5xl mx-auto">
           {t.pricing.plans.map((plan: any, i: number) => (
-            <PlanCard key={plan.name} plan={plan} i={i} yearly={yearly} t={t} />
+            <PlanCard key={plan.name} plan={plan} i={i} yearly={yearly} t={t} onStartQuiz={onStartQuiz} onPaidClick={(msg: string) => { setToast(msg); setTimeout(() => setToast(null), 3000); }} />
           ))}
         </div>
 
@@ -119,11 +127,27 @@ export const PricingTable = () => {
         <div className="md:hidden pt-3">
           <HScroller itemClassName="w-[300px]">
             {t.pricing.plans.map((plan: any, i: number) => (
-              <PlanCard key={plan.name} plan={plan} i={i} yearly={yearly} t={t} />
+              <PlanCard key={plan.name} plan={plan} i={i} yearly={yearly} t={t} onStartQuiz={onStartQuiz} onPaidClick={(msg: string) => { setToast(msg); setTimeout(() => setToast(null), 3000); }} />
             ))}
           </HScroller>
         </div>
       </div>
+        <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] px-6 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold shadow-2xl shadow-cyan-500/40 flex items-center gap-3"
+          >
+            <Sparkles className="w-5 h-5" />
+            <div>
+              <p className="text-sm font-black">{toast} — coming soon! 🚀</p>
+              <p className="text-xs opacity-80">Оплата будет доступна в ближайшее время</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

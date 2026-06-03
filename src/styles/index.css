@@ -132,3 +132,9 @@
   transition: width 0.4s ease !important;
   box-shadow: 0 0 12px rgba(236, 72, 153, 0.5) !important;
 }
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
