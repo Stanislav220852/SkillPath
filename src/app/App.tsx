@@ -1838,26 +1838,19 @@ const Content = () => {
         ) : isLearningPage ? (
           <SkillLearningPage skillId={learningSkillId} onBack={() => setCurrentPage('roadmaps')} lang={lang} />
         ) : (
-          <>
-            {/* ── Ключевые секции: видны всегда ── */}
+           <>
             <Hero onStartQuiz={() => setShowQuiz(true)} />
             <CompaniesStrip />
             <StatsSection />
-            <RolesSection />
-            <BentoShowcase onStartQuiz={() => setShowQuiz(true)} />
-            <MiniQuiz />
-
-            {/* ── Доп-контент: на мобилке сворачивается под «Показать больше» ── */}
-            <MobileShowMore>
-              <TechMarquee />
-              
-              <TestimonialsCarousel />
-              <BootstrapInfo />
-              <StepsSection />
-              <PricingTable onStartQuiz={() => setShowQuiz(true)} />
-              <FAQAccordion />
-            </MobileShowMore>
-            
+            <div className="hidden md:block"><RolesSection /></div>
+            <div className="hidden md:block"><BentoShowcase onStartQuiz={() => setShowQuiz(true)} /></div>
+            <div className="hidden md:block"><MiniQuiz /></div>
+            <TechMarquee />
+            <TestimonialsCarousel />
+            <StepsSection />
+            <div className="hidden md:block"><BootstrapInfo /></div>
+            <div className="hidden md:block"><PricingTable onStartQuiz={() => setShowQuiz(true)} /></div>
+            <FAQAccordion />
           </>
         )}
       </main>

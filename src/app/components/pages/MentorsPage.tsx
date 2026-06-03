@@ -276,19 +276,28 @@ const saveChat = (mentorId: number, messages: any[]) => {
   } catch {}
 };
 
-const autoReplies = (lang: "EN" | "RU") => lang === "RU" ? [
-  "Привет! Рад знакомству 👋 Чем могу помочь?",
-  "Отличный вопрос! Расскажи подробнее о своих целях.",
-  "Понял тебя. Давай разберём это на ближайшей сессии — записывайся!",
-  "Я обычно отвечаю в течение пары часов. Можешь смело писать вопросы.",
-  "Звучит как хороший план. Какой у тебя сейчас уровень?",
-] : [
-  "Hi! Nice to meet you 👋 How can I help?",
-  "Great question! Tell me more about your goals.",
-  "Got it. Let's dig into this on our next session — book a slot!",
-  "I usually reply within a couple of hours. Feel free to ask anything.",
-  "Sounds like a good plan. What's your current level?",
-];
+const autoReplies = (lang: "EN" | "RU", mentorRole?: string) => {
+  const role = mentorRole || "IT";
+  return lang === "RU" ? [
+    `Привет! Рад знакомству 👋 Расскажи, какой у тебя опыт в ${role}?`,
+    "Отличный вопрос! Давай разберём подробнее. Какая у тебя конкретная цель — трудоустройство, проект или сертификация?",
+    "Понял тебя. Рекомендую начать с основ, я составлю для тебя план. Запишись на сессию — всё обсудим!",
+    "Я обычно отвечаю в течение пары часов. Кстати, ты уже прошёл профориентационный тест на SkillPath?",
+    "Звучит как хороший план! На первой сессии мы составим роадмап конкретно под твои цели. Нажми «Записаться» 👆",
+    "Хороший подход. Главное — регулярность. Даже 30 минут в день дают результат через пару месяцев.",
+    `Я работаю в ${role} уже давно, видел разные кейсы. Расскажи подробнее о своей ситуации.`,
+    "Не переживай, все с чего-то начинали. Важно не откуда стартуешь, а куда идёшь 🚀",
+  ] : [
+    `Hi! Nice to meet you 👋 Tell me about your experience in ${role}?`,
+    "Great question! Let's break it down. What's your specific goal — job, project, or certification?",
+    "Got it. I recommend starting with fundamentals, I'll create a plan for you. Book a session — we'll discuss!",
+    "I usually reply within a couple of hours. By the way, have you taken the career test on SkillPath?",
+    "Sounds like a good plan! On our first session we'll build a roadmap tailored to your goals. Hit 'Book' above 👆",
+    "Good approach. Consistency is key. Even 30 minutes a day shows results in a couple of months.",
+    `I've been working in ${role} for years, seen many cases. Tell me more about your situation.`,
+    "Don't worry, everyone starts somewhere. What matters is not where you start but where you're heading 🚀",
+  ];
+};
 
 const ChatWindow = ({ mentor, lang, onClose }: any) => {
   const c = colorMap[mentor.color];
@@ -326,7 +335,7 @@ const ChatWindow = ({ mentor, lang, onClose }: any) => {
     setInput("");
     setTyping(true);
     setTimeout(() => {
-      const replies = autoReplies(lang);
+      const replies = autoReplies(lang, mentor.role);
       const reply = replies[Math.floor(Math.random() * replies.length)];
       setMessages((prev) => [...prev, { from: "mentor", text: reply, time: Date.now() }]);
       setTyping(false);
@@ -424,13 +433,121 @@ interface MentorsPageProps {
   lang: "EN" | "RU";
   t: any;
 }
+const BookingModal = ({ mentor, lang, onClose, onConfirm }: { mentor: any; lang: string; onClose: () => void; onConfirm: (date: string, time: string) => void }) => {
+  const c = colorMap[mentor.color];
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
 
+  const today = new Date();
+  const dates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i);
+    return {
+      value: d.toISOString().split('T')[0],
+      label: d.toLocaleDateString(lang === "RU" ? "ru-RU" : "en-US", { weekday: 'short', day: 'numeric', month: 'short' }),
+      isToday: i === 0,
+    };
+  });
+
+  const times = ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "18:00", "19:00", "20:00"];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[250] bg-black/70 backdrop-blur-md flex items-center justify-center p-4"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+      >
+        <div className={`px-6 py-4 bg-gradient-to-r ${c.gradient} text-white flex items-center justify-between`}>
+          <div>
+            <p className="text-xs opacity-80 uppercase tracking-wider font-bold">{lang === "RU" ? "Запись к ментору" : "Book a Session"}</p>
+            <p className="font-black text-lg">{mentor.name}</p>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-white/20"><X className="w-5 h-5" /></button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          <div>
+            <p className="text-sm font-bold text-slate-700 dark:text-white/80 mb-3 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-cyan-500" />
+              {lang === "RU" ? "Выберите дату" : "Select a date"}
+            </p>
+            <div className="grid grid-cols-4 gap-2">
+              {dates.map((d) => (
+                <button
+                  key={d.value}
+                  onClick={() => setSelectedDate(d.value)}
+                  className={`p-2 rounded-xl text-xs font-bold text-center transition-all ${
+                    selectedDate === d.value
+                      ? `bg-gradient-to-r ${c.gradient} text-white shadow-lg`
+                      : "bg-black/5 dark:bg-white/5 text-slate-600 dark:text-white/60 hover:bg-black/10 dark:hover:bg-white/10"
+                  }`}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {selectedDate && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <p className="text-sm font-bold text-slate-700 dark:text-white/80 mb-3 flex items-center gap-2">
+                <Clock className="w-4 h-4 text-cyan-500" />
+                {lang === "RU" ? "Выберите время" : "Select a time"}
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {times.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => setSelectedTime(time)}
+                    className={`py-2.5 rounded-xl text-sm font-bold transition-all ${
+                      selectedTime === time
+                        ? `bg-gradient-to-r ${c.gradient} text-white shadow-lg`
+                        : "bg-black/5 dark:bg-white/5 text-slate-600 dark:text-white/60 hover:bg-black/10 dark:hover:bg-white/10"
+                    }`}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          <div className="pt-2 flex items-center justify-between text-sm text-slate-500 dark:text-white/50">
+            <span>{lang === "RU" ? "Стоимость:" : "Price:"}</span>
+            <span className={`text-lg font-black ${c.text}`}>${mentor.pricePerHour}/h</span>
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            disabled={!selectedDate || !selectedTime}
+            onClick={() => onConfirm(selectedDate, selectedTime)}
+            className={`w-full py-3.5 rounded-xl bg-gradient-to-r ${c.gradient} text-white font-bold flex items-center justify-center gap-2 shadow-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all`}
+          >
+            <Check className="w-4 h-4" />
+            {lang === "RU" ? "Подтвердить запись" : "Confirm Booking"}
+          </motion.button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
 export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [selectedMentor, setSelectedMentor] = useState<any>(null);
   const [chatMentor, setChatMentor] = useState<any>(null);
   const [bookedId, setBookedId] = useState<number | null>(null);
+  const [bookingMentor, setBookingMentor] = useState<any>(null);
+  const [bookingConfirmed, setBookingConfirmed] = useState<{ mentorId: number; date: string; time: string } | null>(null);
 
   const mentors = useMemo(() => buildMentors(lang), [lang]);
 
@@ -457,9 +574,17 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
     { id: "gamedev",     label: lang === "RU" ? "GameDev"      : "GameDev",    color: "rose" },
   ];
 
-  const handleBook = (id: number) => {
-    setBookedId(id);
-    setTimeout(() => setBookedId(null), 2500);
+  const handleBook = (mentor: any) => {
+    setBookingMentor(mentor);
+  };
+
+  const confirmBooking = (date: string, time: string) => {
+    if (!bookingMentor) return;
+    setBookingConfirmed({ mentorId: bookingMentor.id, date, time });
+    setBookedId(bookingMentor.id);
+    setBookingMentor(null);
+    setSelectedMentor(null);
+    setTimeout(() => { setBookedId(null); setBookingConfirmed(null); }, 4000);
   };
 
   const openChat = (mentor: any) => {
@@ -614,7 +739,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={(e) => { e.stopPropagation(); handleBook(m.id); }}
+                          onClick={(e) => { e.stopPropagation(); handleBook(m); }}
                           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5
                             ${bookedId === m.id
                               ? "bg-green-500 text-white"
@@ -726,7 +851,7 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => { handleBook(selectedMentor.id); setSelectedMentor(null); }}
+                    onClick={() => handleBook(selectedMentor)}
                     className={`py-3 rounded-xl bg-gradient-to-r ${colorMap[selectedMentor.color].gradient} text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg`}
                   >
                     <Calendar className="w-4 h-4" />
@@ -738,7 +863,35 @@ export const MentorsPage = ({ onBack, lang, t }: MentorsPageProps) => {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* BOOKING MODAL */}
+      <AnimatePresence>
+        {bookingMentor && (
+          <BookingModal
+            mentor={bookingMentor}
+            lang={lang}
+            onClose={() => setBookingMentor(null)}
+            onConfirm={confirmBooking}
+          />
+        )}
+      </AnimatePresence>
 
+      {/* BOOKING CONFIRMED TOAST */}
+      <AnimatePresence>
+        {bookingConfirmed && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[300] px-6 py-4 rounded-2xl bg-green-500 text-white font-bold shadow-2xl shadow-green-500/40 flex items-center gap-3"
+          >
+            <Check className="w-5 h-5" />
+            <div>
+              <p className="text-sm font-black">{lang === "RU" ? "Запись подтверждена!" : "Booking confirmed!"}</p>
+              <p className="text-xs opacity-80">{bookingConfirmed.date} · {bookingConfirmed.time}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* CHAT WINDOW */}
       <AnimatePresence>
         {chatMentor && (
