@@ -1412,13 +1412,7 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz }: { onLoginClick: () =>
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6 backdrop-blur-xl border-b border-black/5 dark:border-white/5 transition-all duration-300 bg-white/60 dark:bg-[#0b1120]/80 overflow-hidden">
-      {/* Animated gradient overlay — видно в светлой теме */}
-      <div className="absolute inset-0 -z-10 opacity-40 dark:opacity-20 animate-gradient-shift" style={{
-        backgroundImage: 'linear-gradient(90deg, rgba(34,211,238,0.3), rgba(168,85,247,0.3), rgba(236,72,153,0.3), rgba(34,211,238,0.3))',
-        backgroundSize: '300% 100%',
-        animation: 'gradientShift 8s ease infinite',
-      }} />
+    <nav className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6">
       <div className="container mx-auto flex items-center justify-between">
         <button
           onClick={() => { onNavigate?.(); setCurrentPage('home'); setOpenRoadmap(null); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
@@ -1499,19 +1493,20 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz }: { onLoginClick: () =>
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.05 * i }}
                     onClick={() => go(item.page)}
-                    className="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-black/5 dark:bg-white/5 text-lg font-bold text-slate-800 dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-all"
+                    className="flex items-center justify-between w-full px-5 py-4 rounded-2xl bg-black/5 dark:bg-white/5 text-base font-bold text-slate-800 dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-all"
                   >
-                    {item.label}
-                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                    <span className="text-left leading-tight">{item.label.replace(/\n/g, ' ')}</span>
+                    <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
                   </motion.button>
                 ))}
               </div>
 
               <button
-                onClick={() => setMenuOpen(false)}
-                className="mt-auto w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base shadow-lg shadow-cyan-500/30"
+                onClick={() => { setMenuOpen(false); go('quiz'); }}
+                className="mt-auto w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2"
               >
-                {t.nav.login}
+                {lang === "RU" ? "Пройти тест" : "Take the Test"}
+                <ChevronRight className="w-5 h-5" />
               </button>
             </motion.div>
           </>
