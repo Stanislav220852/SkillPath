@@ -1842,14 +1842,14 @@ const Content = () => {
             <Hero onStartQuiz={() => setShowQuiz(true)} />
             <CompaniesStrip />
             <StatsSection />
-            <div className="hidden md:block"><RolesSection /></div>
+            
             <div className="hidden md:block"><BentoShowcase onStartQuiz={() => setShowQuiz(true)} /></div>
-            <div className="hidden md:block"><MiniQuiz /></div>
+        
             <TechMarquee />
             <TestimonialsCarousel />
             <StepsSection />
             <div className="hidden md:block"><BootstrapInfo /></div>
-            <div className="hidden md:block"><PricingTable onStartQuiz={() => setShowQuiz(true)} /></div>
+            
             <FAQAccordion />
           </>
         )}

@@ -27,8 +27,20 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       title: lang === "RU" ? "Frontend-разработчик" : "Frontend Developer",
       icon: Terminal,
       desc: lang === "RU"
-        ? "Создавайте интерактивные пользовательские интерфейсы. Превращайте идеи дизайнеров в работающие сайты, которые видят миллионы людей."
-        : "Build interactive user interfaces. Turn designer mockups into live websites that millions of people use every day.",
+        ? `Frontend Developer — это специалист, который создаёт пользовательский интерфейс сайтов и веб-приложений.
+
+Именно Frontend-разработчик отвечает за всё, что пользователи видят и с чем взаимодействуют на экране: кнопки, формы, меню, анимации, страницы и другие элементы интерфейса. Он превращает макеты дизайнеров в полноценные работающие сайты и приложения, делая их удобными, быстрыми и привлекательными.
+
+Frontend-разработчик разрабатывает новые функции, улучшает пользовательский опыт, адаптирует сайты для мобильных устройств и следит за тем, чтобы интерфейс корректно работал в разных браузерах и на разных устройствах. Он тесно сотрудничает с дизайнерами, backend-разработчиками и менеджерами продукта, чтобы создавать качественные цифровые продукты.
+
+Для работы Frontend-разработчик использует современные веб-технологии, такие как HTML, CSS, JavaScript и популярные фреймворки. Его задача — сделать так, чтобы пользователи могли легко и комфортно взаимодействовать с сайтом или приложением.`
+        : `A Frontend Developer is a specialist who creates the user interface of websites and web applications.
+
+Frontend Developers are responsible for everything users see and interact with on their screens: buttons, forms, menus, animations, pages, and other interface elements. They transform designers’ mockups into fully functional websites and applications, making them intuitive, fast, and visually appealing.
+
+Frontend Developers build new features, improve user experience, adapt websites for mobile devices, and ensure that interfaces work correctly across different browsers and devices. They work closely with designers, backend developers, and product managers to create high-quality digital products.
+
+To do this, Frontend Developers use modern web technologies such as HTML, CSS, JavaScript, and popular frameworks. Their goal is to make websites and applications easy, efficient, and enjoyable for users to interact with.`,
       skills: ["HTML", "CSS", "JavaScript", "React", "TypeScript", "Tailwind", "Next.js"],
       tools: ["VS Code", "Figma", "Chrome DevTools", "Git", "Vercel"],
       salaryMin: 80,
@@ -46,8 +58,20 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       title: lang === "RU" ? "AI/ML Инженер" : "AI/ML Engineer",
       icon: Cpu,
       desc: lang === "RU"
-        ? "Обучайте нейросети, создавайте чат-ботов, рекомендательные системы и генеративный AI. Самая горячая профессия 2025."
-        : "Train neural networks, build chatbots, recommendation systems and generative AI. The hottest career of 2025.",
+        ? `AI/ML Engineer — это специалист, который создаёт и внедряет системы искусственного интеллекта и машинного обучения.
+
+AI/ML Инженер разрабатывает модели, которые способны анализировать данные, распознавать изображения и речь, понимать текст, делать прогнозы и автоматически решать сложные задачи. Именно такие специалисты стоят за современными чат-ботами, голосовыми помощниками, рекомендательными системами и генеративными AI-моделями.
+
+В своей работе AI/ML Инженер обучает нейронные сети на больших объёмах данных, тестирует их качество, улучшает точность предсказаний и внедряет готовые решения в реальные продукты. Например, он может создать систему, которая рекомендует фильмы и товары пользователям, распознаёт объекты на фотографиях или помогает автоматизировать общение с клиентами.
+
+Для работы используются программирование, математика, анализ данных и современные инструменты искусственного интеллекта. AI/ML Инженер находится на переднем крае технологических инноваций и участвует в создании продуктов, которые меняют способы работы, обучения и общения миллионов людей.`
+        : `An AI/ML Engineer is a specialist who designs and deploys artificial intelligence and machine learning systems.
+
+AI/ML Engineers develop models that can analyze data, recognize images and speech, understand text, make predictions, and automatically solve complex problems. These professionals are behind modern chatbots, voice assistants, recommendation engines, and generative AI applications.
+
+In their work, AI/ML Engineers train neural networks on large datasets, evaluate model performance, improve prediction accuracy, and integrate AI solutions into real-world products. For example, they may build systems that recommend movies and products, identify objects in photos, or automate customer interactions.
+
+To accomplish this, they use programming, mathematics, data analysis, and advanced artificial intelligence tools. AI/ML Engineers work at the forefront of technological innovation, helping create products that transform how millions of people work, learn, and communicate.`,
       skills: ["Python", "PyTorch", "TensorFlow", "LangChain", "Hugging Face", "Math", "SQL"],
       tools: ["Jupyter", "Colab", "Weights & Biases", "MLflow", "Docker"],
       salaryMin: 100,
@@ -65,8 +89,20 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       title: lang === "RU" ? "Кибербезопасность" : "Cybersecurity Specialist",
       icon: ShieldCheck,
       desc: lang === "RU"
-        ? "Защищайте компании от хакеров, взламывайте системы легально, находите уязвимости и зарабатывайте через bug bounty."
-        : "Defend companies from hackers, hack systems legally, find vulnerabilities and earn through bug bounty programs.",
+        ? `Специалист по кибербезопасности — это эксперт, который защищает компании, продукты и пользователей от хакерских атак, утечек данных и других цифровых угроз.
+
+Он анализирует безопасность систем, ищет уязвимости в приложениях и инфраструктуре, расследует инциденты и разрабатывает меры защиты. Именно специалисты по кибербезопасности помогают предотвращать взломы, кражу данных и финансовые потери компаний.
+
+В своей работе они проводят тестирование безопасности, мониторят подозрительную активность, настраивают защитные системы и проверяют, насколько надёжно защищены корпоративные сети и сервисы. Некоторые специалисты занимаются этичным хакингом и легально взламывают системы, чтобы обнаружить слабые места раньше злоумышленников.
+
+Для работы используются сетевые технологии, операционные системы, программирование и специализированные инструменты безопасности. `
+        : `A Cybersecurity Specialist is a professional who protects companies, products, and users from cyberattacks, data breaches, and other digital threats.
+
+They analyze system security, identify vulnerabilities in applications and infrastructure, investigate security incidents, and develop protection strategies. Cybersecurity professionals play a critical role in preventing hacks, data theft, and financial losses for organizations.
+
+In their daily work, they perform security assessments, monitor suspicious activity, configure security solutions, and evaluate how well corporate networks and services are protected. Some specialists focus on ethical hacking, legally testing systems to discover weaknesses before malicious attackers can exploit them.
+
+To do this, they use networking technologies, operating systems, programming skills, and specialized security tools. `,
       skills: ["Linux", "Networking", "Python", "Kali", "Burp Suite", "OWASP", "Cryptography"],
       tools: ["Wireshark", "Metasploit", "Nmap", "Splunk", "TryHackMe"],
       salaryMin: 90,
@@ -84,8 +120,20 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       title: lang === "RU" ? "Data Scientist" : "Data Scientist",
       icon: Database,
       desc: lang === "RU"
-        ? "Превращайте сырые данные в бизнес-решения. A/B тесты, дашборды, предсказания продаж и поведения пользователей."
-        : "Turn raw data into business decisions. A/B tests, dashboards, sales forecasts and user behavior predictions.",
+        ? `Data Scientist — это специалист, который помогает компаниям принимать решения на основе данных.
+
+Каждый день бизнес собирает огромные объёмы информации: данные о клиентах, покупках, посещениях сайта, рекламе, продажах и работе продуктов. Data Scientist анализирует эти данные, находит скрытые закономерности и превращает цифры в понятные выводы, которые помогают компании расти и зарабатывать больше.
+
+Он изучает поведение пользователей, выявляет причины успехов и проблем, прогнозирует будущие результаты и предлагает решения для улучшения бизнес-показателей. Например, может определить, какие товары будут пользоваться спросом, почему клиенты перестают пользоваться сервисом или как увеличить продажи с помощью изменений в продукте.
+
+Для этого Data Scientist использует методы анализа данных, статистику, программирование и технологии машинного обучения.`
+        : `A Data Scientist is a professional who helps companies make data-driven decisions.
+
+Every day, businesses collect vast amounts of information, including data about customers, purchases, website visits, advertising campaigns, sales, and product performance. Data Scientists analyze this data, uncover hidden patterns, and turn raw numbers into meaningful insights that help companies grow and increase profitability.
+
+They study user behavior, identify the causes of successes and challenges, forecast future outcomes, and recommend solutions to improve business performance. For example, they can predict which products will be in demand, understand why customers stop using a service, or determine how product changes can drive higher sales.
+
+To accomplish this, Data Scientists use data analysis techniques, statistics, programming, and machine learning technologies.`,
       skills: ["Python", "SQL", "Pandas", "Statistics", "Tableau", "Spark", "scikit-learn"],
       tools: ["Jupyter", "PowerBI", "Snowflake", "Airflow", "dbt"],
       salaryMin: 95,
@@ -103,8 +151,20 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       title: lang === "RU" ? "Backend-разработчик" : "Backend Developer",
       icon: Server,
       desc: lang === "RU"
-        ? "Создавайте серверы, API и базы данных. Невидимая часть веба, которая держит все приложения."
-        : "Build servers, APIs and databases. The invisible part of the web that powers every application.",
+        ? `Backend Developer — это специалист, который разрабатывает серверную часть сайтов и приложений.
+
+Backend-разработчик отвечает за логику работы продукта, обработку данных, взаимодействие с базами данных и интеграцию внешних сервисов. Именно его код обеспечивает работу авторизации, платежей, личных кабинетов, уведомлений и других функций, которые пользователи используют каждый день.
+
+В своей работе Backend Developer создаёт API, проектирует базы данных, оптимизирует производительность системы и обеспечивает её надёжность и безопасность. Он тесно взаимодействует с frontend-разработчиками, мобильными разработчиками и другими членами команды, чтобы все части продукта работали как единое целое.
+
+Для работы используются языки программирования, серверные технологии, базы данных и облачные платформы. Backend-разработчик играет ключевую роль в создании масштабируемых и стабильных цифровых продуктов, способных обслуживать тысячи и миллионы пользователей одновременно.`
+        : `A Backend Developer is a specialist who builds the server-side infrastructure of websites and applications.
+
+Backend Developers are responsible for application logic, data processing, database interactions, and integrations with external services. Their code powers essential features such as authentication, payments, user accounts, notifications, and many other functions that users rely on every day.
+
+In their work, Backend Developers create APIs, design databases, optimize system performance, and ensure reliability and security. They collaborate closely with frontend developers, mobile developers, and other team members to make sure all parts of a product work seamlessly together.
+
+To accomplish this, they use programming languages, server technologies, databases, and cloud platforms. Backend Developers play a critical role in building scalable and reliable digital products capable of serving thousands or even millions of users simultaneously.`,
       skills: ["Node.js", "Python", "PostgreSQL", "MongoDB", "REST", "GraphQL", "Docker"],
       tools: ["Postman", "DBeaver", "Docker", "AWS", "Linux"],
       salaryMin: 90,
@@ -122,8 +182,20 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       title: lang === "RU" ? "Mobile-разработчик" : "Mobile Developer",
       icon: Smartphone,
       desc: lang === "RU"
-        ? "Создавайте приложения для iOS и Android. Миллионы людей будут носить ваши продукты в карманах."
-        : "Build iOS and Android applications. Millions will carry your products in their pockets every day.",
+        ? `Mobile Developer — это специалист, который создаёт приложения для смартфонов и планшетов на платформах iOS и Android.
+
+Mobile-разработчик разрабатывает пользовательские интерфейсы, реализует бизнес-логику приложений, интегрирует серверные сервисы и обеспечивает стабильную работу продукта на мобильных устройствах. Именно такие специалисты создают приложения для банков, социальных сетей, онлайн-магазинов, сервисов доставки и других популярных цифровых продуктов.
+
+В своей работе Mobile-разработчик проектирует новые функции, оптимизирует производительность приложений, тестирует их на различных устройствах и следит за качеством пользовательского опыта. Он тесно сотрудничает с дизайнерами, backend-разработчиками и менеджерами продукта, чтобы создавать удобные и современные мобильные решения.
+
+Для работы используются языки программирования, мобильные фреймворки и инструменты разработки для iOS и Android. Mobile-разработчик участвует в создании приложений, которыми ежедневно пользуются миллионы людей по всему миру.`
+        : `A Mobile Developer is a specialist who builds applications for smartphones and tablets on iOS and Android platforms.
+
+Mobile Developers create user interfaces, implement application logic, integrate backend services, and ensure that products run smoothly across mobile devices. These professionals are responsible for developing apps used in banking, social media, e-commerce, food delivery, and many other digital services.
+
+In their work, Mobile Developers design new features, optimize application performance, test products on different devices, and focus on delivering a high-quality user experience. They collaborate closely with designers, backend developers, and product managers to build modern and user-friendly mobile solutions.
+
+To accomplish this, they use programming languages, mobile frameworks, and development tools for iOS and Android. Mobile Developers help create applications that millions of people use every day around the world.`,
       skills: ["React Native", "Swift", "Kotlin", "Expo", "Firebase", "Redux"],
       tools: ["Xcode", "Android Studio", "Figma", "TestFlight", "Sentry"],
       salaryMin: 95,
@@ -141,8 +213,20 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       title: lang === "RU" ? "DevOps Инженер" : "DevOps Engineer",
       icon: Settings,
       desc: lang === "RU"
-        ? "Автоматизируйте инфраструктуру. CI/CD пайплайны, Kubernetes, облака. Делайте деплой одним кликом."
-        : "Automate infrastructure. CI/CD pipelines, Kubernetes, cloud platforms. Deploy with one click.",
+        ? `DevOps Engineer — это специалист, который отвечает за автоматизацию, надёжность и бесперебойную работу IT-инфраструктуры.
+
+DevOps Инженер помогает командам быстрее разрабатывать, тестировать и выпускать программные продукты. Он настраивает процессы автоматической сборки и доставки кода, управляет серверами, облачными платформами и следит за стабильностью работы сервисов.
+
+В своей работе DevOps Инженер создаёт CI/CD-пайплайны, автоматизирует развёртывание приложений, настраивает контейнеризацию и оркестрацию сервисов, а также занимается мониторингом и устранением технических проблем. Благодаря его работе новые версии продуктов могут выпускаться быстро, безопасно и без простоев.
+
+Для работы используются Linux, Docker, Kubernetes, облачные платформы и инструменты автоматизации. DevOps Инженер играет важную роль в создании масштабируемой инфраструктуры, способной поддерживать современные цифровые продукты и миллионы пользователей.`
+        : `A DevOps Engineer is a specialist responsible for automation, reliability, and the smooth operation of IT infrastructure.
+
+DevOps Engineers help teams build, test, and release software products more efficiently. They manage servers, cloud platforms, and deployment processes while ensuring that services remain stable, secure, and highly available.
+
+In their daily work, DevOps Engineers create CI/CD pipelines, automate application deployments, configure containerization and orchestration platforms, and monitor systems to identify and resolve technical issues. Their work enables organizations to deliver new product updates quickly, safely, and with minimal downtime.
+
+To accomplish this, they use Linux, Docker, Kubernetes, cloud platforms, and infrastructure automation tools. DevOps Engineers play a key role in building scalable infrastructure capable of supporting modern digital products and millions of users worldwide.`,
       skills: ["Linux", "Docker", "Kubernetes", "Terraform", "AWS", "Jenkins", "Bash"],
       tools: ["Grafana", "Prometheus", "GitLab CI", "Ansible", "Helm"],
       salaryMin: 110,
@@ -160,8 +244,20 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
       title: lang === "RU" ? "Game-разработчик" : "Game Developer",
       icon: Gamepad2,
       desc: lang === "RU"
-        ? "Создавайте миры. Unity, Unreal, шейдеры, физика — превращайте воображение в играбельную реальность."
-        : "Create worlds. Unity, Unreal, shaders, physics — turn imagination into playable reality.",
+        ? `Game-разработчик — это специалист, который создаёт видеоигры, превращая идеи и концепции в интерактивные игровые миры.
+
+Game-разработчик работает над игровой логикой, механиками, персонажами, физикой объектов и другими элементами, которые делают игру увлекательной и интересной для игроков. Он участвует в разработке как небольших мобильных игр, так и масштабных проектов для ПК, консолей и других платформ.
+
+В своей работе Game-разработчик реализует игровые механики, оптимизирует производительность, интегрирует графику и анимации, а также тесно сотрудничает с художниками, дизайнерами уровней и другими членами команды. Его задача — создать качественный игровой опыт, который будет удерживать внимание игроков и дарить яркие эмоции.
+
+Для работы используются игровые движки, языки программирования, инструменты 3D-графики и современные технологии разработки. Game-разработчик участвует в создании проектов, которыми ежедневно наслаждаются миллионы игроков по всему миру.`
+        : `A Game Developer is a specialist who creates video games, transforming ideas and concepts into interactive digital worlds.
+
+Game Developers work on gameplay logic, mechanics, characters, physics systems, and other elements that make games engaging and enjoyable. They contribute to projects ranging from small mobile games to large-scale titles for PC, consoles, and other platforms.
+
+In their work, Game Developers implement gameplay features, optimize performance, integrate graphics and animations, and collaborate closely with artists, level designers, and other team members. Their goal is to create high-quality gaming experiences that captivate players and deliver memorable experiences.
+
+To accomplish this, they use game engines, programming languages, 3D graphics tools, and modern development technologies. Game Developers help create products enjoyed by millions of players around the world every day.`,
       skills: ["C#", "Unity", "Unreal", "C++", "Blender", "Shaders", "Math"],
       tools: ["Unity Editor", "Visual Studio", "Blender", "Photoshop", "Git LFS"],
       salaryMin: 75,
@@ -273,7 +369,9 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                   </div>
                   <div>
                     <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-2">{active.title}</h2>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base">{active.desc}</p>
+                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base whitespace-pre-line">
+  {active.desc}
+</p>
                   </div>
                 </div>
               </div>
