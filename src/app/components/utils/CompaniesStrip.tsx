@@ -16,7 +16,7 @@ export const CompaniesStrip = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center text-xs font-bold uppercase tracking-[0.3em] text-slate-500 dark:text-white/40 mb-8"
+          className="text-center text-xs font-bold uppercase tracking-[0.3em] text-[#002A54]/50 dark:text-white/40 mb-8"
         >
           {t.companies.title}
         </motion.p>
@@ -26,7 +26,7 @@ export const CompaniesStrip = () => {
           {companies.map((name) => (
             <span
               key={name}
-              className="flex-shrink-0 snap-start text-xl font-black text-slate-400 dark:text-white/30"
+              className="flex-shrink-0 snap-start text-xl font-black text-[#002A54]/30 dark:text-white/30"
               style={{ fontFamily: "system-ui" }}
             >
               {name}
@@ -44,7 +44,7 @@ export const CompaniesStrip = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
               whileHover={{ scale: 1.1, opacity: 1 }}
-              className="text-xl md:text-2xl font-black text-slate-400 dark:text-white/30 hover:text-slate-700 dark:hover:text-white/70 transition-all cursor-default"
+              className="text-xl md:text-2xl font-black text-[#002A54]/30 dark:text-white/30 hover:text-[#002A54]/70 dark:hover:text-white/70 transition-all cursor-default"
               style={{ fontFamily: "system-ui" }}
             >
               {name}

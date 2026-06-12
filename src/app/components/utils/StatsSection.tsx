@@ -41,14 +41,14 @@ function AnimatedStat({ value, suffix = "", label, delay = 0 }: StatItemProps) {
       transition={{ delay, duration: 0.6, ease: "easeOut" }}
       className="text-center relative group"
     >
-      <div className="text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white mb-2">
+      <div className="text-5xl lg:text-6xl font-black tracking-tight text-[#00000F] dark:text-white mb-2">
         {count.toLocaleString()}
-        <span className="text-cyan-500 dark:text-cyan-400">{suffix}</span>
+        <span className="text-[#FF9800] dark:text-[#FF9800]">{suffix}</span>
       </div>
-      <div className="text-sm font-semibold text-slate-500 dark:text-white/50 uppercase tracking-widest">
+      <div className="text-sm font-semibold text-[#002A54]/60 dark:text-white/50 uppercase tracking-widest">
         {label}
       </div>
-      <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -z-10 w-24 h-24 bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -z-10 w-24 h-24 bg-[#8AA8FF]/10 dark:bg-[#8AA8FF]/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </motion.div>
   );
 }
@@ -65,7 +65,7 @@ export const StatsSection = () => {
 
   return (
     <section className="relative py-20 border-y border-black/5 dark:border-white/10 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-100/80 via-white to-white dark:from-white/[0.03] dark:via-transparent dark:to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FBFFFF]/80 via-white to-white dark:from-white/[0.03] dark:via-transparent dark:to-transparent pointer-events-none" />
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
           {stats.map((s, i) => (

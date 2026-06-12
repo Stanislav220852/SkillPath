@@ -689,6 +689,16 @@ Object.values(answers).forEach((answerIndex) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
+                // Сохраняем результат в БД если залогинен
+                if (typeof window !== 'undefined' && localStorage.getItem('skillpath_token')) {
+                  import('../../api').then(API => {
+                    API.submitQuiz(
+                      "main",
+                      roleToRoadmapKey[topRole] || topRole,
+                      score
+                    ).catch(() => {});
+                  });
+                }
                 if (onGoToRoadmap) {
                   onGoToRoadmap(roleToRoadmapKey[topRole] || "frontend");
                 }

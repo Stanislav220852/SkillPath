@@ -32,6 +32,7 @@ import { TiltCard } from "./components/utils/TiltCard.tsx";
 import { MagneticButton } from "./components/utils/MagneticButton.tsx";
 import { AnimatedGrid } from "./components/utils/AnimatedGrid.tsx";
 import { MentorsPage } from "./components/pages/MentorsPage.tsx";
+import { ProfilePage } from "./components/pages/ProfilePage.tsx";
 import { ProjectsShowcase } from "./components/utils/ProjectsShowcase.tsx";
 import { CompaniesStrip } from "./components/utils/CompaniesStrip.tsx";
 import { TestimonialsCarousel } from "./components/utils/TestimonialsCarousel.tsx";
@@ -50,6 +51,8 @@ import {
   Smartphone,   // ← добавить
   Gamepad2
 } from "lucide-react";
+import { AuthModal } from "./components/utils/AuthModal.tsx";
+import * as API from "./api"
 
 
 // --- ДАННЫЕ ПЕРЕВОДОВ ---
@@ -939,8 +942,8 @@ export const LanguageContext = createContext<LangCtx>({
 });
 
 const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
-const neonCyan = "text-cyan-500 dark:text-cyan-400 dark:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]";
-const neonPink = "text-pink-500 dark:drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]";
+const neonCyan = "text-[#8AA8FF] dark:text-[#8AA8FF] dark:drop-shadow-[0_0_8px_rgba(138,168,255,0.8)]";
+const neonPink = "text-[#FF9800] dark:drop-shadow-[0_0_8px_rgba(255,152,0,0.8)]";
 
 /* ────────────────────────────────────────────────────────────
    useMediaQuery — определяем мобилку для условного рендера
@@ -999,8 +1002,8 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
   return (
     <section className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center pt-28 md:pt-24 overflow-hidden pb-16 md:pb-20">
       <AnimatedGrid />
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-500/10 dark:bg-pink-500/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#8AA8FF]/10 dark:bg-[#8AA8FF]/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#FF9800]/10 dark:bg-[#FF9800]/20 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center z-10">
         <motion.div
@@ -1010,7 +1013,7 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
           className="space-y-6 md:space-y-8 text-center lg:text-left"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 backdrop-blur-md">
-            <Sparkles className="w-4 h-4 text-pink-500 dark:text-pink-400" />
+            <Sparkles className="w-4 h-4 text-[#FF9800] dark:text-[#FF9800]" />
             <TextScramble
               text={t.hero.badge}
               className="text-sm font-medium tracking-wide text-slate-600 dark:text-white/80"
@@ -1019,8 +1022,8 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
 
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-slate-900 dark:text-white">
             {t.hero.t1} <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 dark:from-cyan-400 dark:to-blue-500">{t.hero.t2}</span> <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 dark:from-pink-500 dark:to-purple-500">{t.hero.t3}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] to-[#002A54] dark:from-[#8AA8FF] dark:to-[#002A54]">{t.hero.t2}</span> <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9800] to-[#FF9800] dark:from-[#FF9800] dark:to-[#FF9800]">{t.hero.t3}</span>
           </h1>
 
           <p className="text-base md:text-lg text-slate-600 dark:text-white/60 max-w-xl mx-auto lg:mx-0 leading-relaxed">
@@ -1032,7 +1035,7 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onStartQuiz}
-              className="px-6 md:px-8 py-3.5 md:py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold tracking-wide shadow-[0_0_15px_rgba(34,211,238,0.3)] dark:shadow-[0_0_20px_rgba(34,211,238,0.4)] flex items-center gap-2 hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] dark:hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] transition-all"
+              className="px-6 md:px-8 py-3.5 md:py-4 rounded-full bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold tracking-wide shadow-[0_0_15px_rgba(138,168,255,0.3)] dark:shadow-[0_0_20px_rgba(138,168,255,0.4)] flex items-center gap-2 hover:shadow-[0_0_25px_rgba(138,168,255,0.5)] dark:hover:shadow-[0_0_30px_rgba(138,168,255,0.6)] transition-all"
             >
               {t.hero.btnQuest}
               <ChevronRight className="w-5 h-5" />
@@ -1071,11 +1074,11 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
               <div className="absolute bottom-4 left-4 right-4">
                 <div className="flex justify-between items-end">
                   <div>
-                    <p className="text-xs font-bold text-cyan-300 dark:text-cyan-400 uppercase tracking-wider mb-1">AI Engineer</p>
+                    <p className="text-xs font-bold text-[#8AA8FF] dark:text-[#8AA8FF] uppercase tracking-wider mb-1">AI Engineer</p>
                     <p className="text-sm text-white font-medium">Lvl 1 Novice</p>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center backdrop-blur-md border border-cyan-500/50">
-                    <Cpu className="w-4 h-4 text-cyan-300 dark:text-cyan-400" />
+                  <div className="w-8 h-8 rounded-full bg-[#8AA8FF]/20 flex items-center justify-center backdrop-blur-md border border-[#8AA8FF]/50">
+                    <Cpu className="w-4 h-4 text-[#8AA8FF] dark:text-[#8AA8FF]" />
                   </div>
                 </div>
               </div>
@@ -1087,7 +1090,7 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
                   initial={{ width: 0 }}
                   animate={{ width: "45%" }}
                   transition={{ duration: 1.5, delay: 1 }}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-500 dark:from-cyan-400 dark:to-blue-500 h-full rounded-full"
+                  className="bg-gradient-to-r from-[#8AA8FF] to-[#002A54] dark:from-[#8AA8FF] dark:to-[#002A54] h-full rounded-full"
                 />
               </div>
               <p className="text-xs text-slate-500 dark:text-white/50 text-right">45% to Lvl 2</p>
@@ -1099,7 +1102,7 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             className={`absolute -left-12 top-20 z-30 p-4 ${glassCard} flex items-center gap-4`}
           >
-            <div className="w-12 h-12 rounded-xl bg-pink-100 dark:bg-pink-500/20 flex items-center justify-center border border-pink-200 dark:border-pink-500/30">
+            <div className="w-12 h-12 rounded-xl bg-[#FF9800]/10 dark:bg-[#FF9800]/20 flex items-center justify-center border border-[#FF9800]/20 dark:border-[#FF9800]/30">
               <Code2 className={`w-6 h-6 ${neonPink}`} />
             </div>
             <div>
@@ -1113,8 +1116,8 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
             className={`absolute -right-8 bottom-32 z-10 p-4 ${glassCard} flex items-center gap-4`}
           >
-            <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-500/20 flex items-center justify-center border border-purple-200 dark:border-purple-500/30">
-              <ShieldAlert className="w-6 h-6 text-purple-500 dark:text-purple-400 dark:drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
+            <div className="w-12 h-12 rounded-xl bg-[#002A54]/10 dark:bg-[#002A54]/20 flex items-center justify-center border border-[#002A54]/20 dark:border-[#002A54]/30">
+              <ShieldAlert className="w-6 h-6 text-[#002A54] dark:text-[#8AA8FF] dark:drop-shadow-[0_0_8px_rgba(138,168,255,0.8)]" />
             </div>
             <div>
               <p className="text-sm font-bold text-slate-800 dark:text-white">Cybersec</p>
@@ -1186,7 +1189,7 @@ const RolesSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-10 md:mb-16 max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 md:mb-6 text-slate-900 dark:text-white">
-            {t.roles.t} <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 dark:from-cyan-400 dark:to-pink-500">{t.roles.ts}</span>
+            {t.roles.t}             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] to-[#FF9800] dark:from-[#8AA8FF] dark:to-[#FF9800]">{t.roles.ts}</span>
           </h2>
           <p className="text-slate-600 dark:text-white/60">{t.roles.d}</p>
         </div>
@@ -1231,7 +1234,7 @@ const RolesSection = () => {
                 setOpenRoadmap(null);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] transition-all"
+              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(138,168,255,0.3)] hover:shadow-[0_0_25px_rgba(138,168,255,0.5)] transition-all"
             >
               {lang === "RU" ? "Все роадмапы" : "All Roadmaps"}
               <ArrowRight className="w-4 h-4" />
@@ -1247,14 +1250,14 @@ const StepsSection = () => {
   const { t } = useContext(LanguageContext);
   return (
     <section className="py-16 md:py-24 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[500px] bg-cyan-500/5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[500px] bg-[#8AA8FF]/5 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="container mx-auto px-6">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
           {/* LEFT — steps */}
           <div className="flex-1 space-y-6 md:space-y-8 w-full">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white text-center lg:text-left">
-              {t.steps.t} <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-500">{t.steps.ts}</span>
+              {t.steps.t} <br />              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9800] to-[#8AA8FF]">{t.steps.ts}</span>
             </h2>
 
             <div className="space-y-5 md:space-y-6">
@@ -1267,7 +1270,7 @@ const StepsSection = () => {
                   key={i}
                   className={`p-5 md:p-6 ${glassCard} flex gap-4 md:gap-6 items-start`}
                 >
-                  <div className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-blue-600 dark:from-cyan-400 dark:to-pink-500 drop-shadow-sm">
+                  <div className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-[#8AA8FF] to-[#002A54] dark:from-[#8AA8FF] dark:to-[#FF9800] drop-shadow-sm">
                     0{i+1}
                   </div>
                   <div>
@@ -1284,12 +1287,12 @@ const StepsSection = () => {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[480px] h-[480px] rounded-full border border-dashed border-cyan-500/20 dark:border-cyan-500/30"
+              className="absolute w-[480px] h-[480px] rounded-full border border-dashed border-[#8AA8FF]/20 dark:border-[#8AA8FF]/30"
             />
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[360px] h-[360px] rounded-full border border-dashed border-pink-500/20 dark:border-pink-500/30"
+              className="absolute w-[360px] h-[360px] rounded-full border border-dashed border-[#FF9800]/20 dark:border-[#FF9800]/30"
             />
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -1315,7 +1318,7 @@ const StepsSection = () => {
                 <div className="px-5 mb-4">
                   <div className="flex justify-between text-[9px] mb-1 font-bold">
                     <span className="text-slate-500 dark:text-white/60">Progress</span>
-                    <span className="text-cyan-600 dark:text-cyan-400">68%</span>
+                    <span className="text-[#8AA8FF] dark:text-[#8AA8FF]">68%</span>
                   </div>
                   <div className="h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
                     <motion.div
@@ -1323,7 +1326,7 @@ const StepsSection = () => {
                       whileInView={{ width: "68%" }}
                       viewport={{ once: true }}
                       transition={{ duration: 1.5, delay: 0.5 }}
-                      className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.6)]"
+                      className="h-full bg-gradient-to-r from-[#8AA8FF] to-[#002A54] rounded-full shadow-[0_0_10px_rgba(138,168,255,0.6)]"
                     />
                   </div>
                 </div>
@@ -1343,14 +1346,14 @@ const StepsSection = () => {
                       transition={{ delay: 0.8 + i * 0.1 }}
                       className={`flex items-center gap-2 p-2 rounded-lg ${
                         s.current
-                          ? "bg-pink-50 dark:bg-pink-500/10 border border-pink-500/30"
+                          ? "bg-[#FF9800]/10 dark:bg-[#FF9800]/10 border border-[#FF9800]/30"
                           : s.done
                             ? "bg-green-50 dark:bg-green-500/10"
                             : "bg-slate-50 dark:bg-white/5"
                       }`}
                     >
                       <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        s.done ? "bg-green-500" : s.current ? `bg-pink-500 animate-pulse` : "bg-slate-200 dark:bg-white/10"
+                        s.done ? "bg-green-500" : s.current ? `bg-[#FF9800] animate-pulse` : "bg-slate-200 dark:bg-white/10"
                       }`}>
                         {s.done && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>}
                       </div>
@@ -1361,7 +1364,7 @@ const StepsSection = () => {
                   ))}
                 </div>
                 <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl p-3 text-center shadow-lg shadow-cyan-500/30">
+                  <div className="bg-gradient-to-r from-[#8AA8FF] to-[#002A54] rounded-xl p-3 text-center shadow-lg shadow-[#8AA8FF]/30">
                     <p className="text-[10px] text-white/80 font-medium">Continue</p>
                     <p className="text-xs text-white font-black">TypeScript →</p>
                   </div>
@@ -1378,7 +1381,7 @@ const StepsSection = () => {
 /* ────────────────────────────────────────────────────────────
    Navbar c МОБИЛЬНЫМ бургер-меню
 ──────────────────────────────────────────────────────────── */
-const Navbar = ({ onLoginClick, onNavigate, onStartQuiz }: { onLoginClick: () => void; onNavigate?: () => void; onStartQuiz?: () => void }) => {
+const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLoginClick: () => void; onNavigate?: () => void; onStartQuiz?: () => void; currentUser?: any }) => {
   const { t, lang, setCurrentPage, setOpenRoadmap } = useContext(LanguageContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -1418,10 +1421,10 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz }: { onLoginClick: () =>
           onClick={() => { onNavigate?.(); setCurrentPage('home'); setOpenRoadmap(null); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           className="flex items-center gap-2 group hover:opacity-90 transition-opacity outline-none"
         >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.3)] dark:shadow-[0_0_15px_rgba(34,211,238,0.5)] group-hover:scale-105 transition-transform">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8AA8FF] to-[#002A54] flex items-center justify-center shadow-[0_0_15px_rgba(138,168,255,0.3)] dark:shadow-[0_0_15px_rgba(138,168,255,0.5)] group-hover:scale-105 transition-transform">
             <Layers className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-400 transition-colors">SkillPath</span>
+          <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-[#FF9800] transition-colors">SkillPath</span>
         </button>
 
         {/* Десктоп-меню */}
@@ -1432,9 +1435,25 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz }: { onLoginClick: () =>
         </div>
 
         {/* Десктоп-кнопки */}
-        <div className="hidden md:flex items-center gap-3">
+                <div className="hidden md:flex items-center gap-3">
           <LanguageToggle />
           <ThemeToggle />
+                    {currentUser ? (
+            <button
+              onClick={() => go("profile")}
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8AA8FF] to-[#002A54] flex items-center justify-center text-white text-xs font-black hover:scale-110 transition-transform"
+              title={currentUser.name}
+            >
+              {currentUser.name?.charAt(0)?.toUpperCase() || "U"}
+            </button>
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className="px-5 py-2 rounded-full bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold text-sm hover:opacity-90 transition-all"
+            >
+              {lang === "RU" ? "Войти" : "Sign In"}
+            </button>
+          )}
         </div>
 
         {/* Мобилка: язык/тема + бургер */}
@@ -1471,7 +1490,7 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz }: { onLoginClick: () =>
             >
               <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8AA8FF] to-[#002A54] flex items-center justify-center">
                     <Layers className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">SkillPath</span>
@@ -1503,7 +1522,7 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz }: { onLoginClick: () =>
 
               <button
                 onClick={() => { setMenuOpen(false); go('quiz'); }}
-                className="mt-auto w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2"
+                className="mt-auto w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold text-base shadow-lg shadow-[#8AA8FF]/30 flex items-center justify-center gap-2"
               >
                 {lang === "RU" ? "Пройти тест" : "Take the Test"}
                 <ChevronRight className="w-5 h-5" />
@@ -1536,7 +1555,7 @@ const ScrollToTop = () => {
           exit={{ opacity: 0, scale: 0.5 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll to top"
-          className="fixed bottom-5 right-5 z-40 p-3.5 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/40 hover:scale-110 transition-transform"
+          className="fixed bottom-5 right-5 z-40 p-3.5 rounded-full bg-gradient-to-br from-[#8AA8FF] to-[#002A54] text-white shadow-lg shadow-[#8AA8FF]/40 hover:scale-110 transition-transform"
         >
           <ArrowUp className="w-5 h-5" />
         </motion.button>
@@ -1568,7 +1587,7 @@ const MobileStickyCTA = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
         >
           <button
             onClick={onStartQuiz}
-            className="w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base shadow-xl shadow-cyan-500/30 flex items-center justify-center gap-2"
+            className="w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold text-base shadow-xl shadow-[#8AA8FF]/30 flex items-center justify-center gap-2"
           >
             {t.hero.btnQuest}
             <ChevronRight className="w-5 h-5" />
@@ -1631,14 +1650,14 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white pt-16 pb-12 border-t-2 border-cyan-500/50 relative z-10 transition-colors duration-300">
+    <footer className="bg-[#FBFFFF] dark:bg-[#00000F] text-slate-900 dark:text-white pt-16 pb-12 border-t-2 border-[#8AA8FF]/50 relative z-10 transition-colors duration-300">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 items-start">
           
           {/* КОЛОНКА 1: ЛОГОТИП */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8AA8FF] to-[#002A54] flex items-center justify-center shadow-lg shadow-[#8AA8FF]/20">
                 <Layers className="w-7 h-7 text-white" />
               </div>
               <span className="text-3xl font-black tracking-tighter uppercase italic">SkillPath</span>
@@ -1655,7 +1674,7 @@ const Footer = () => {
 
           {/* КОЛОНКА 2: НАВИГАЦИЯ (С ЗАГОЛОВКОМ) */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] mb-8 text-cyan-600 dark:text-cyan-400">
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] mb-8 text-[#002A54] dark:text-[#8AA8FF]">
               {t.footer.navigation}
             </h4>
             <ul className="space-y-4">
@@ -1663,7 +1682,7 @@ const Footer = () => {
                 <li key={item.page}>
                   <button
                     onClick={() => { setCurrentPage(item.page); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    className="text-slate-600 dark:text-zinc-400 hover:text-cyan-500 dark:hover:text-white uppercase text-sm font-bold tracking-wider transition-all hover:translate-x-2 flex items-center gap-2"
+                    className="text-slate-600 dark:text-zinc-400 hover:text-[#FF9800] dark:hover:text-white uppercase text-sm font-bold tracking-wider transition-all hover:translate-x-2 flex items-center gap-2"
                   >
                     {item.label}
                   </button>
@@ -1674,24 +1693,24 @@ const Footer = () => {
 
           {/* КОЛОНКА 3: КОНТАКТЫ (С ЗАГОЛОВКОМ) */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] mb-8 text-cyan-600 dark:text-cyan-400">
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] mb-8 text-[#002A54] dark:text-[#8AA8FF]">
               {t.footer.contacts}
             </h4>
             <div className="space-y-6">
               <div className="flex gap-4 items-start">
                 <div className="mt-1 p-2 rounded-lg bg-black/5 dark:bg-white/5">
-                  <Mail className="w-5 h-5 text-cyan-500" />
+                  <Mail className="w-5 h-5 text-[#8AA8FF]" />
                 </div>
                 <div>
                   <p className="text-slate-400 dark:text-zinc-500 text-[10px] uppercase font-bold mb-1">Email</p>
-                  <a href="mailto:hello@skillpath.com" className="text-slate-700 dark:text-zinc-200 text-sm font-bold hover:text-cyan-500 transition-colors">
+                  <a href="mailto:hello@skillpath.com" className="text-slate-700 dark:text-zinc-200 text-sm font-bold hover:text-[#FF9800] transition-colors">
                     HELLO@SKILLPATH.COM
                   </a>
                 </div>
               </div>
               <div className="flex gap-4 items-start">
                 <div className="mt-1 p-2 rounded-lg bg-black/5 dark:bg-white/5">
-                  <Phone className="w-5 h-5 text-cyan-500" />
+                  <Phone className="w-5 h-5 text-[#8AA8FF]" />
                 </div>
                 <div>
                   <p className="text-slate-400 dark:text-zinc-500 text-[10px] uppercase font-bold mb-1">{lang === 'RU' ? 'Режим работы' : 'Working hours'}</p>
@@ -1706,10 +1725,10 @@ const Footer = () => {
           {/* КОЛОНКА 4: ТЕЛЕФОНЫ И СОЦСЕТИ */}
           <div className="flex flex-col items-start lg:items-end space-y-8">
             <div className="text-left lg:text-right space-y-2">
-              <a href="tel:+375255172137" className="block text-2xl font-black tracking-tighter hover:text-cyan-500 transition-colors">
+              <a href="tel:+375255172137" className="block text-2xl font-black tracking-tighter hover:text-[#FF9800] transition-colors">
                 +375 (25) 517-21-37
               </a>
-              <a href="tel:+375291754670" className="block text-2xl font-black tracking-tighter hover:text-cyan-500 transition-colors">
+              <a href="tel:+375291754670" className="block text-2xl font-black tracking-tighter hover:text-[#FF9800] transition-colors">
                 +375 (29) 175-46-70
               </a>
             </div>
@@ -1798,47 +1817,94 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
 const Content = () => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(API.getSavedUser());
   const { lang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap } = useContext(LanguageContext);
-  const isLearningPage = currentPage.startsWith('learning:');
-  const learningSkillId = isLearningPage ? currentPage.split(':')[1] : null;
-  const isHome = currentPage === 'home' && !showQuiz;
+
+  useEffect(() => {
+    if (API.isLoggedIn()) {
+      API.getMe().then(setCurrentUser).catch(() => {
+        API.logout();
+        setCurrentUser(null);
+      });
+    }
+  }, []);
+
+  const isLearningPage = currentPage.startsWith("learning:");
+  const learningSkillId = isLearningPage ? currentPage.split(":")[1] : null;
+  const isHome = currentPage === "home" && !showQuiz;
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-[#FBFFFF] text-[#00000F] font-sans transition-colors duration-300 dark:bg-[#00000F] dark:text-white">
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_20%_10%,rgba(138,168,255,0.12),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(255,152,0,0.08),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent)]" />
       <MouseSpotlight />
-      <Navbar onLoginClick={() => setShowLogin(true)} onNavigate={() => setShowQuiz(false)} onStartQuiz={() => setShowQuiz(true)} />
 
-      <main>
+      <Navbar
+        onLoginClick={() => setShowLogin(true)}
+        onNavigate={() => setShowQuiz(false)}
+        onStartQuiz={() => setShowQuiz(true)}
+        currentUser={currentUser}
+      />
+
+      <main className="relative z-10">
         {showQuiz ? (
           <Quiz
-            onExit={() => { setShowQuiz(false); setCurrentPage('home'); }}
+            onExit={() => {
+              setShowQuiz(false);
+              setCurrentPage("home");
+            }}
             lang={lang}
             onGoToRoadmap={(roadmapKey) => {
               setShowQuiz(false);
-              setCurrentPage('roadmaps');
+              setCurrentPage("roadmaps");
               setOpenRoadmap(roadmapKey);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
           />
-
-        ) : currentPage === 'professions' ? (
-          <ProfessionsPage onBack={() => setCurrentPage('home')} lang={lang} t={t} />
-        ) : currentPage === 'roadmaps' ? (
-          <RoadmapsPage t={t} initialRoadmap={openRoadmap} onOpenRoadmap={(val: string | null) => {
-            if (val && val.startsWith('learn:')) {
-              const skillId = val.split(':')[1];
-              setCurrentPage('learning:' + skillId);
-              setOpenRoadmap(null);
-            } else {
-              setOpenRoadmap(val);
-            }
-          }} lang={lang} />
-        ) : currentPage === 'mentors' ? (
-          <MentorsPage onBack={() => setCurrentPage('home')} lang={lang} t={t} />
+        ) : currentPage === "professions" ? (
+          <ProfessionsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} />
+        ) : currentPage === "roadmaps" ? (
+          <RoadmapsPage
+            t={t}
+            initialRoadmap={openRoadmap}
+            onOpenRoadmap={(val: string | null) => {
+              if (val && val.startsWith("learn:")) {
+                const skillId = val.split(":")[1];
+                setCurrentPage("learning:" + skillId);
+                setOpenRoadmap(null);
+              } else {
+                setOpenRoadmap(val);
+              }
+            }}
+            lang={lang}
+          />
+        ) : currentPage === "mentors" ? (
+          <MentorsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} />
+        ) : currentPage === "profile" ? (
+          <ProfilePage
+            onBack={() => setCurrentPage("home")}
+            lang={lang}
+            currentUser={currentUser}
+            onLogout={() => {
+              API.logout();
+              setCurrentUser(null);
+              setCurrentPage("home");
+            }}
+            onNavigate={(page, roadmapKey) => {
+              if (page === "quiz") {
+                setShowQuiz(true);
+                setCurrentPage("home");
+              } else {
+                setShowQuiz(false);
+                setCurrentPage(page);
+                setOpenRoadmap(roadmapKey || null);
+              }
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
         ) : isLearningPage ? (
-          <SkillLearningPage skillId={learningSkillId} onBack={() => setCurrentPage('roadmaps')} lang={lang} />
+          <SkillLearningPage skillId={learningSkillId} onBack={() => setCurrentPage("roadmaps")} lang={lang} />
         ) : (
-           <>
+          <>
             <Hero onStartQuiz={() => setShowQuiz(true)} />
             <CompaniesStrip />
             <StatsSection />
@@ -1856,15 +1922,17 @@ const Content = () => {
       </main>
 
       {isHome && <Footer />}
-
-      {/* Глобальные мобильные помощники */}
       <ScrollToTop />
       {isHome && <MobileStickyCTA onStartQuiz={() => setShowQuiz(true)} />}
+
       {showLogin && (
-      <LoginModal onClose={() => setShowLogin(false)} />
-    )}
+        <AuthModal
+          onClose={() => setShowLogin(false)}
+          onSuccess={(user) => setCurrentUser(user)}
+          lang={lang}
+        />
+      )}
     </div>
-    
   );
 };
 

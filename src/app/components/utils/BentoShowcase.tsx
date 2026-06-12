@@ -9,26 +9,26 @@ import { HScroller } from "./HScroller.tsx";
 
 
 const bentoItems = [
-  { id: 1, key: "aptitude", icon: Target,     className: "md:col-span-2 md:row-span-2", color: "cyan",    gradient: "from-cyan-500 to-blue-600",     lightBg: "bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200/60" },
-  { id: 2, key: "roadmaps", icon: Route,      className: "md:col-span-1 md:row-span-1", color: "pink",    gradient: "from-pink-500 to-rose-600",     lightBg: "bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200/60" },
-  { id: 3, key: "mentors",  icon: Users,      className: "md:col-span-1 md:row-span-1", color: "purple",  gradient: "from-purple-500 to-violet-600", lightBg: "bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200/60" },
-  { id: 4, key: "certs",    icon: Award,      className: "md:col-span-1 md:row-span-1", color: "amber",   gradient: "from-amber-500 to-orange-600",  lightBg: "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200/60" },
-  { id: 5, key: "workshops",icon: Zap,        className: "md:col-span-1 md:row-span-1", color: "emerald", gradient: "from-emerald-500 to-teal-600",  lightBg: "bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200/60" },
-  { id: 6, key: "library",  icon: BookOpen,   className: "md:col-span-2 md:row-span-1", color: "blue",    gradient: "from-blue-500 to-indigo-600",   lightBg: "bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200/60" },
-  { id: 7, key: "career",   icon: TrendingUp, className: "md:col-span-1 md:row-span-1", color: "slate",   gradient: "from-slate-500 to-gray-600",    lightBg: "bg-gradient-to-br from-slate-50 to-gray-50 border-slate-200/60" },
-  { id: 8, key: "copilot",  icon: Sparkles,   className: "md:col-span-1 md:row-span-1", color: "fuchsia", gradient: "from-fuchsia-500 to-pink-600",  lightBg: "bg-gradient-to-br from-fuchsia-50 to-pink-50 border-fuchsia-200/60" },
+  { id: 1, key: "aptitude", icon: Target,     className: "md:col-span-2 md:row-span-2", color: "blue",     gradient: "from-[#8AA8FF] to-[#002A54]",     lightBg: "bg-gradient-to-br from-stone-50 to-white border-stone-200/60" },
+  { id: 2, key: "roadmaps", icon: Route,      className: "md:col-span-1 md:row-span-1", color: "orange",   gradient: "from-[#FF9800] to-[#e68900]",     lightBg: "bg-gradient-to-br from-stone-50 to-white border-stone-200/60" },
+  { id: 3, key: "mentors",  icon: Users,      className: "md:col-span-1 md:row-span-1", color: "navy",     gradient: "from-[#002A54] to-[#001a3a]",     lightBg: "bg-gradient-to-br from-stone-50 to-white border-stone-200/60" },
+  { id: 4, key: "certs",    icon: Award,      className: "md:col-span-1 md:row-span-1", color: "blue2",    gradient: "from-[#8AA8FF] to-[#002A54]",     lightBg: "bg-gradient-to-br from-stone-50 to-white border-stone-200/60" },
+  { id: 5, key: "workshops",icon: Zap,        className: "md:col-span-1 md:row-span-1", color: "orange2",  gradient: "from-[#FF9800] to-[#e68900]",     lightBg: "bg-gradient-to-br from-stone-50 to-white border-stone-200/60" },
+  { id: 6, key: "library",  icon: BookOpen,   className: "md:col-span-2 md:row-span-1", color: "blue3",    gradient: "from-[#8AA8FF] to-[#002A54]",     lightBg: "bg-gradient-to-br from-stone-50 to-white border-stone-200/60" },
+  { id: 7, key: "career",   icon: TrendingUp, className: "md:col-span-1 md:row-span-1", color: "navy2",    gradient: "from-[#002A54] to-[#001a3a]",     lightBg: "bg-gradient-to-br from-stone-50 to-white border-stone-200/60" },
+  { id: 8, key: "copilot",  icon: Sparkles,   className: "md:col-span-1 md:row-span-1", color: "orange3",  gradient: "from-[#FF9800] to-[#e68900]",     lightBg: "bg-gradient-to-br from-stone-50 to-white border-stone-200/60" },
 ];
 
 
 const colorText: Record<string, string> = {
-  cyan:    "text-cyan-600 dark:text-cyan-400",
-  pink:    "text-pink-600 dark:text-pink-400",
-  purple:  "text-purple-600 dark:text-purple-400",
-  amber:   "text-amber-600 dark:text-amber-400",
-  emerald: "text-emerald-600 dark:text-emerald-400",
-  blue:    "text-blue-600 dark:text-blue-400",
-  slate:   "text-slate-600 dark:text-slate-400",
-  fuchsia: "text-fuchsia-600 dark:text-fuchsia-400",
+  blue:    "text-[#002A54] dark:text-[#8AA8FF]",
+  orange:  "text-[#FF9800] dark:text-[#FF9800]",
+  navy:    "text-[#002A54] dark:text-[#8AA8FF]",
+  blue2:   "text-[#8AA8FF] dark:text-[#8AA8FF]",
+  orange2: "text-[#FF9800] dark:text-[#FF9800]",
+  blue3:   "text-[#002A54] dark:text-[#8AA8FF]",
+  navy2:   "text-[#002A54] dark:text-[#8AA8FF]",
+  orange3: "text-[#FF9800] dark:text-[#FF9800]",
 };
 
 
@@ -47,9 +47,9 @@ const BentoCard = ({ item, t, withSpan = true, onStartQuiz, lang }: { item: any;
       className={`group relative overflow-hidden rounded-3xl border p-6 flex flex-col justify-between transition-colors duration-300 h-full
         ${withSpan ? item.className : ""}
         ${item.lightBg}
-        dark:bg-none dark:bg-white/5 dark:border-white/10 dark:backdrop-blur-xl
+        dark:bg-none dark:bg-[#0d0e12]/80 dark:border-white/[0.07] dark:backdrop-blur-2xl
         dark:from-transparent dark:to-transparent
-        hover:shadow-lg
+        hover:shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]
       `}
     >
       <div
@@ -60,10 +60,10 @@ const BentoCard = ({ item, t, withSpan = true, onStartQuiz, lang }: { item: any;
         <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/10 border border-black/5 dark:border-white/10 flex items-center justify-center mb-4 shadow-sm">
           <Icon className={`w-5 h-5 ${colorText[item.color]}`} />
         </div>
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+        <h3 className="text-lg font-bold text-[#00000F] dark:text-white mb-1">
           {tr.t}
         </h3>
-        <p className="text-sm text-slate-600 dark:text-white/60 leading-relaxed">
+        <p className="text-sm text-[#002A54]/70 dark:text-white/60 leading-relaxed">
           {tr.d}
         </p>
       </div>
@@ -75,7 +75,7 @@ const BentoCard = ({ item, t, withSpan = true, onStartQuiz, lang }: { item: any;
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onStartQuiz}
-            className="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)] transition-all w-fit"
+            className="px-6 py-3 rounded-full bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#002A54] text-white font-bold text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(138,168,255,0.3)] hover:shadow-[0_0_25px_rgba(138,168,255,0.5)] transition-all w-fit"
           >
             {lang === "RU" ? "Пройти тест" : "Take the Test"}
             <ChevronRight className="w-4 h-4" />
@@ -83,7 +83,7 @@ const BentoCard = ({ item, t, withSpan = true, onStartQuiz, lang }: { item: any;
         </div>
       ) : (
         <div className="relative z-10 mt-4">
-          <div className="h-1 w-12 rounded-full bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-white/20 group-hover:w-full transition-all duration-500 opacity-60" />
+          <div className="h-1 w-12 rounded-full bg-gradient-to-r from-transparent via-[#8AA8FF] to-transparent dark:via-[#FF9800] group-hover:w-full transition-all duration-500 opacity-60" />
         </div>
       )}
     </motion.div>
@@ -102,10 +102,10 @@ export const BentoShowcase = ({ onStartQuiz }: { onStartQuiz?: () => void }) => 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white"
+            className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#00000F] dark:text-white"
           >
             {t.bento.title1}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 dark:from-cyan-400 dark:to-pink-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800]">
               {t.bento.title2}
             </span>
           </motion.h2>

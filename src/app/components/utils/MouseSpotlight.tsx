@@ -10,8 +10,8 @@ export const MouseSpotlight = () => {
   const background = useMotionTemplate`
     radial-gradient(
       650px circle at ${x}px ${y}px,
-      rgba(34,211,238,0.07) 0%,
-      rgba(236,72,153,0.04) 40%,
+      rgba(138,168,255,0.07) 0%,
+      rgba(255,152,0,0.04) 40%,
       transparent 80%
     )
   `;

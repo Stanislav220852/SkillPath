@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { LanguageContext } from "../../App";
 
-const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-3xl shadow-xl";
+const glassCard = "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-3xl shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
 
 interface ProfessionsPageProps {
   onBack: () => void;
@@ -186,19 +186,19 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
   return (
     <div className="min-h-screen pt-28 md:pt-32 pb-20 px-5 md:px-6 relative overflow-hidden">
       {/* background blurs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-500/10 dark:bg-pink-500/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#8AA8FF]/10 dark:bg-[#8AA8FF]/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#8AA8FF]/10 dark:bg-[#8AA8FF]/20 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* HEADER */}
         <div className="text-center mb-10 md:mb-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6">
-            <span className="text-slate-900 dark:text-white">{t.profPage.title1}</span>{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 dark:from-cyan-400 dark:to-pink-400">
+            <span className="text-stone-900 dark:text-white">{t.profPage.title1}</span>{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800] dark:from-[#8AA8FF] dark:via-[#002A54] dark:to-[#FF9800]">
               {t.profPage.title2}
             </span>
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-base md:text-xl max-w-2xl mx-auto">
+          <p className="text-stone-600 dark:text-stone-400 text-base md:text-xl max-w-2xl mx-auto">
             {t.profPage.subtitle}
           </p>
         </div>
@@ -217,7 +217,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                   className={`flex-shrink-0 lg:flex-shrink min-w-[240px] lg:min-w-0 lg:w-full snap-start text-left p-4 rounded-2xl border transition-all duration-300 flex items-center gap-3
                     ${isActive
                       ? `bg-gradient-to-r ${p.gradient} border-transparent text-white shadow-lg`
-                      : "bg-white/60 dark:bg-white/5 border-black/5 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 text-slate-700 dark:text-slate-200"
+                      : "bg-white/60 dark:bg-white/5 border-black/5 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 text-stone-700 dark:text-stone-200"
                     }`}
                 >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isActive ? "bg-white/20" : `bg-${p.color}-500/10`}`}>
@@ -225,7 +225,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-sm truncate">{p.title}</p>
-                    <p className={`text-xs ${isActive ? "text-white/80" : "text-slate-500 dark:text-slate-400"}`}>
+                    <p className={`text-xs ${isActive ? "text-white/80" : "text-stone-500 dark:text-stone-400"}`}>
                       ${p.salaryMin}k – ${p.salaryMax}k
                     </p>
                   </div>
@@ -253,9 +253,9 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/90 dark:bg-white/95 flex items-center justify-center shadow-2xl group-hover:shadow-cyan-500/50 transition-shadow"
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/90 dark:bg-white/95 flex items-center justify-center shadow-2xl group-hover:shadow-[#8AA8FF]/50 transition-shadow"
                   >
-                    <Play className="w-7 h-7 md:w-8 md:h-8 text-slate-900 ml-1" fill="currentColor" />
+                    <Play className="w-7 h-7 md:w-8 md:h-8 text-stone-900 ml-1" fill="currentColor" />
                   </motion.div>
                   <p className="text-white font-bold text-base md:text-lg drop-shadow-lg">
                     {t.profPage.watchVideo}
@@ -272,28 +272,28 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                     <Icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-2">{active.title}</h2>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base">{active.desc}</p>
+                    <h2 className="text-2xl md:text-3xl font-black text-stone-900 dark:text-white mb-2">{active.title}</h2>
+                    <p className="text-stone-600 dark:text-stone-400 leading-relaxed text-sm md:text-base">{active.desc}</p>
                   </div>
                 </div>
               </div>
 
               {/* Salary visual */}
               <div className={`${glassCard} p-6 md:p-8`}>
-                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
+                <p className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-widest mb-4">
                   {t.profPage.salary}
                 </p>
                 <div className="flex items-baseline gap-2 mb-4 flex-wrap">
                   <span className={`text-3xl md:text-4xl font-black text-${active.color}-600 dark:text-${active.color}-400`}>
                     ${active.salaryMin}k
                   </span>
-                  <span className="text-slate-400">–</span>
+                  <span className="text-stone-400">–</span>
                   <span className={`text-3xl md:text-4xl font-black text-${active.color}-600 dark:text-${active.color}-400`}>
                     ${active.salaryMax}k
                   </span>
-                  <span className="text-sm text-slate-500 dark:text-slate-400 ml-2">/ year</span>
+                  <span className="text-sm text-stone-500 dark:text-stone-400 ml-2">/ year</span>
                 </div>
-                <div className="relative h-3 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
+                <div className="relative h-3 bg-stone-200 dark:bg-white/10 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
@@ -301,7 +301,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                     className={`h-full bg-gradient-to-r ${active.gradient} rounded-full`}
                   />
                 </div>
-                <div className="flex justify-between mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <div className="flex justify-between mt-2 text-xs font-semibold text-stone-500 dark:text-stone-400">
                   <span>{t.profPage.juniorLabel}</span>
                   <span>Mid</span>
                   <span>{t.profPage.seniorLabel}</span>
@@ -310,7 +310,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
 
               {/* Skills tags */}
               <div className={`${glassCard} p-6 md:p-8`}>
-                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">
+                <p className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-widest mb-4">
                   {t.profPage.skills}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -330,13 +330,13 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                 <div className={`${glassCard} p-6 md:p-8`}>
                   <div className="flex items-center gap-2 mb-4">
                     <Coffee className={`w-5 h-5 text-${active.color}-500 dark:text-${active.color}-400`} />
-                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                    <p className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-widest">
                       {t.profPage.dayInLife}
                     </p>
                   </div>
                   <ul className="space-y-3">
                     {active.dayInLife.map((task, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300">
+                      <li key={i} className="flex items-start gap-3 text-sm text-stone-700 dark:text-stone-300">
                         <div className={`w-1.5 h-1.5 rounded-full bg-${active.color}-500 mt-2 flex-shrink-0`} />
                         {task}
                       </li>
@@ -347,7 +347,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                 <div className={`${glassCard} p-6 md:p-8`}>
                   <div className="flex items-center gap-2 mb-4">
                     <Zap className={`w-5 h-5 text-${active.color}-500 dark:text-${active.color}-400`} />
-                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                    <p className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-widest">
                       {t.profPage.tools}
                     </p>
                   </div>
@@ -355,7 +355,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
                     {active.tools.map((tool) => (
                       <span
                         key={tool}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10"
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-stone-100 dark:bg-white/5 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-white/10"
                       >
                         {tool}
                       </span>
@@ -382,7 +382,7 @@ export const ProfessionsPage = ({ onBack, lang, t }: ProfessionsPageProps) => {
         <div className="text-center mt-12 md:mt-16">
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors font-bold"
+            className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors font-bold"
           >
             <ArrowLeft className="w-5 h-5" /> {t.profPage.back}
           </button>

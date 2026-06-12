@@ -8,28 +8,28 @@ import {
 import { lessonData } from './LessonData.tsx';   
 import hljs from 'highlight.js';
 
-const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
+const glassCard = "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-[2rem] shadow-[0_8px_32px_rgba(124,94,32,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
 
 const colorText: Record<string, string> = {
-  cyan: "text-cyan-500 dark:text-cyan-400",
-  pink: "text-pink-500 dark:text-pink-400",
-  purple: "text-purple-500 dark:text-purple-400",
-  blue: "text-blue-500 dark:text-blue-400",
-  emerald: "text-emerald-500 dark:text-emerald-400",
-  amber: "text-amber-500 dark:text-amber-400",
-  orange: "text-orange-500 dark:text-orange-400",
-  rose: "text-rose-500 dark:text-rose-400",
+  cyan: "text-[#b8893a] dark:text-[#e6c272]",
+  pink: "text-[#b8893a] dark:text-[#e6c272]",
+  purple: "text-[#b8893a] dark:text-[#e6c272]",
+  blue: "text-[#b8893a] dark:text-[#e6c272]",
+  emerald: "text-[#b8893a] dark:text-[#e6c272]",
+  amber: "text-[#b8893a] dark:text-[#e6c272]",
+  orange: "text-[#b8893a] dark:text-[#e6c272]",
+  rose: "text-[#b8893a] dark:text-[#e6c272]",
 };
 
 const colorGradient: Record<string, string> = {
-  cyan: "from-cyan-500 to-blue-600",
-  pink: "from-pink-500 to-purple-600",
-  purple: "from-purple-500 to-pink-600",
-  blue: "from-blue-500 to-cyan-600",
-  emerald: "from-emerald-500 to-teal-600",
-  amber: "from-amber-500 to-orange-600",
-  orange: "from-orange-500 to-red-600",
-  rose: "from-rose-500 to-pink-600",
+  cyan: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
+  pink: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
+  purple: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
+  blue: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
+  emerald: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
+  amber: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
+  orange: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
+  rose: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
 };
 
 // === localStorage helpers ===
@@ -184,7 +184,7 @@ const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error,
       )}
       <div className="p-3 bg-[#21252b] border-t border-white/5 flex items-center gap-2">
         <button onClick={() => onRun(code)} disabled={isRunning}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50">
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#f3dfa8] via-[#e6c272] to-[#c89a3f] text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50">
           {isRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
           {isRunning ? t.running : t.runCode}
         </button>
@@ -425,7 +425,7 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
               </span>
             )}
           </div>
-          <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">{lesson.title}</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-stone-900 dark:text-white">{lesson.title}</h2>
         </div>
         {!isCompleted && (
           <button onClick={() => onCompleteLesson(lesson.id)}
@@ -441,8 +441,8 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
             className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${
               activeTab === tab.id
-                ? 'bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm'
-                : 'text-slate-500 dark:text-white/40 hover:text-slate-700 dark:hover:text-white/60'
+                ? 'bg-white dark:bg-white/10 text-stone-900 dark:text-white shadow-sm'
+                : 'text-stone-500 dark:text-white/40 hover:text-stone-700 dark:hover:text-white/60'
             }`}>
             <tab.icon className="w-4 h-4" />
             <span className="hidden sm:inline">{tab.label}</span>
@@ -456,25 +456,25 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
             {lesson.theory?.sections?.map((section: any, i: number) => (
               <div key={i} className="mb-6 last:mb-0">
                 {section.type === 'heading' && (
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-stone-900 dark:text-white mb-3 flex items-center gap-2">
                     <Lightbulb className={`w-4 h-4 ${colorText[colorClass]}`} />
                     {section.content}
                   </h3>
                 )}
                 {section.type === 'text' && (
-                  <p className="text-slate-600 dark:text-white/70 leading-relaxed mb-3">{section.content}</p>
+                  <p className="text-stone-600 dark:text-white/70 leading-relaxed mb-3">{section.content}</p>
                 )}
                 {section.type === 'code' && <HighlightedCode code={section.content} />}
                 {section.type === 'tip' && (
                   <div className={`flex gap-3 p-4 rounded-xl bg-${colorClass}-500/5 border border-${colorClass}-500/20 my-3`}>
                     <Zap className={`w-5 h-5 flex-shrink-0 mt-0.5 ${colorText[colorClass]}`} />
-                    <p className="text-sm text-slate-700 dark:text-white/80 leading-relaxed">{section.content}</p>
+                    <p className="text-sm text-stone-700 dark:text-white/80 leading-relaxed">{section.content}</p>
                   </div>
                 )}
                 {section.type === 'list' && (
                   <ul className="space-y-2 my-3">
                     {section.items?.map((item: string, j: number) => (
-                      <li key={j} className="flex items-start gap-2 text-slate-600 dark:text-white/70">
+                      <li key={j} className="flex items-start gap-2 text-stone-600 dark:text-white/70">
                         <span className={`w-1.5 h-1.5 rounded-full bg-${colorClass}-500 flex-shrink-0 mt-2`} />
                         <span className="text-sm leading-relaxed">{item}</span>
                       </li>
@@ -489,16 +489,16 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
         {activeTab === 'practice' && (
           <motion.div key="practice" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
             <div className={`${glassCard} p-5 md:p-6`}>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-stone-900 dark:text-white mb-3 flex items-center gap-2">
                 <Code className={`w-5 h-5 ${colorText[colorClass]}`} />
                 {lesson.practice?.title || t.practice}
               </h3>
               {lesson.practice?.description && (
-                <p className="text-sm text-slate-600 dark:text-white/70 mb-3">{lesson.practice.description}</p>
+                <p className="text-sm text-stone-600 dark:text-white/70 mb-3">{lesson.practice.description}</p>
               )}
               {lesson.practice?.task && (
                 <div className={`mb-4 p-3 rounded-xl bg-${colorClass}-500/5 border border-${colorClass}-500/20`}>
-                  <p className="text-sm font-medium text-slate-700 dark:text-white/80">
+                  <p className="text-sm font-medium text-stone-700 dark:text-white/80">
                     <span className={`font-bold ${colorText[colorClass]}`}>🎯 {t.taskLabel}: </span>
                     {lesson.practice.task}
                   </p>
@@ -511,7 +511,7 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
 
             {isHtmlLesson && (
               <div className={`${glassCard} p-5 md:p-6`}>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-bold text-stone-900 dark:text-white mb-3 flex items-center gap-2">
                   <Eye className={`w-4 h-4 ${colorText[colorClass]}`} />
                   {t.livePreview}
                 </h3>
@@ -547,7 +547,7 @@ const LessonNavigator = ({ lessons, currentIndex, completedLessons, onSelect, co
                 ? `bg-gradient-to-r ${colorGradient[colorClass]} text-white shadow-lg`
                 : isCompleted
                 ? 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20'
-                : 'bg-black/5 dark:bg-white/5 text-slate-600 dark:text-white/50 border border-black/5 dark:border-white/10 hover:border-black/10 dark:hover:border-white/20'
+                : 'bg-black/5 dark:bg-white/5 text-stone-600 dark:text-white/50 border border-black/5 dark:border-white/10 hover:border-black/10 dark:hover:border-white/20'
             }`}
           >
             {isCompleted ? (
@@ -595,14 +595,14 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
       <div className="min-h-screen pt-28 md:pt-32 pb-20 px-5 md:px-6 relative">
         <div className="container mx-auto max-w-4xl relative z-10">
           <div className={`${glassCard} p-6 md:p-8 text-center`}>
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-2xl font-bold text-stone-900 dark:text-white mb-4">
               {lang === 'RU' ? 'Уроки ещё не доступны' : 'Lessons not available yet'}
             </h2>
-            <p className="text-slate-600 dark:text-white/60 mb-6">
+            <p className="text-stone-600 dark:text-white/60 mb-6">
               {lang === 'RU' ? 'Уроки для этой темы скоро появятся.' : 'Lessons for this topic are coming soon.'}
             </p>
             <button onClick={onBack}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black/5 dark:bg-white/10 text-slate-700 dark:text-white font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-all">
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-black/5 dark:bg-white/10 text-stone-700 dark:text-white font-bold hover:bg-black/10 dark:hover:bg-white/20 transition-all">
               <ArrowLeft className="w-4 h-4" />
               {lang === 'RU' ? 'Назад к роадмапу' : 'Back to Roadmap'}
             </button>
@@ -678,14 +678,14 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-5 md:px-6 relative">
-      <div className={`absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-${colorClass}-500/10 dark:bg-${colorClass}-500/20 rounded-full blur-[120px] pointer-events-none`} />
+      <div className={`absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#e6c272]/10 dark:bg-[#e6c272]/20 rounded-full blur-[120px] pointer-events-none`} />
 
       <div className="container mx-auto max-w-5xl relative z-10">
         {/* HEADER */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4 flex-wrap">
             <button onClick={onBack}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 text-slate-600 dark:text-white/60 hover:bg-black/10 dark:hover:bg-white/20 transition-all text-sm font-medium">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/5 dark:bg-white/10 text-stone-600 dark:text-white/60 hover:bg-black/10 dark:hover:bg-white/20 transition-all text-sm font-medium">
               <ArrowLeft className="w-4 h-4" />
               {t.backToRoadmap}
             </button>
@@ -693,10 +693,10 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
               {skill.title}
             </span>
           </div>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-2">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-stone-900 dark:text-white mb-2">
             {currentLesson.title}
           </h1>
-          <p className="text-slate-600 dark:text-white/60">{skill.description}</p>
+          <p className="text-stone-600 dark:text-white/60">{skill.description}</p>
         </div>
 
         {/* BIG PROGRESS BAR with reset button */}
@@ -707,16 +707,16 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
                 <Trophy className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-black text-slate-900 dark:text-white">
+                <p className="text-sm font-black text-stone-900 dark:text-white">
                   {completedLessons.length} {t.lessonsCompleted} {totalLessons}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-white/50">{t.lessonsLabel}</p>
+                <p className="text-xs text-stone-500 dark:text-white/50">{t.lessonsLabel}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               {completedLessons.length > 0 && (
                 <button onClick={handleResetProgress}
-                  className="flex items-center gap-1 text-xs text-slate-400 hover:text-red-500 transition-colors font-bold">
+                  className="flex items-center gap-1 text-xs text-stone-400 hover:text-red-500 transition-colors font-bold">
                   <X className="w-3 h-3" /> {t.reset}
                 </button>
               )}
@@ -725,7 +725,7 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
           </div>
           <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-3 overflow-hidden">
             <motion.div animate={{ width: `${progress}%` }} transition={{ duration: 0.5, ease: "easeOut" }}
-              className={`h-full rounded-full bg-gradient-to-r ${colorGradient[colorClass]} shadow-[0_0_20px_currentColor]`} />
+              className={`h-full rounded-full bg-gradient-to-r ${colorGradient[colorClass]} shadow-[0_0_20px_rgba(230,194,114,0.4)]`} />
           </div>
         </div>
 
@@ -748,11 +748,11 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
         {/* PREV / NEXT */}
         <div className="flex items-center justify-between mt-8 gap-3 flex-wrap">
           <button onClick={() => setCurrentLessonIndex(currentLessonIndex - 1)} disabled={currentLessonIndex === 0}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/5 dark:bg-white/10 text-slate-600 dark:text-white/60 font-medium text-sm disabled:opacity-30 hover:bg-black/10 dark:hover:bg-white/20 transition-all">
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/5 dark:bg-white/10 text-stone-600 dark:text-white/60 font-medium text-sm disabled:opacity-30 hover:bg-black/10 dark:hover:bg-white/20 transition-all">
             <ArrowLeft className="w-4 h-4" />
             {t.previousLesson}
           </button>
-          <span className="text-sm text-slate-500 dark:text-white/40 font-bold">
+          <span className="text-sm text-stone-500 dark:text-white/40 font-bold">
             {currentLessonIndex + 1} / {totalLessons}
           </span>
           <button onClick={() => setCurrentLessonIndex(currentLessonIndex + 1)} disabled={currentLessonIndex === totalLessons - 1}
@@ -766,8 +766,8 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             className={`mt-8 ${glassCard} p-6 md:p-8 text-center`}>
             <div className="text-5xl mb-4">🎉</div>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{t.allLessonsComplete}</h3>
-            <p className="text-slate-600 dark:text-white/60">{t.greatJob}</p>
+            <h3 className="text-2xl font-black text-stone-900 dark:text-white mb-2">{t.allLessonsComplete}</h3>
+            <p className="text-stone-600 dark:text-white/60">{t.greatJob}</p>
             <button onClick={onBack}
               className={`mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${colorGradient[colorClass]} text-white font-bold`}>
               <ArrowLeft className="w-4 h-4" />

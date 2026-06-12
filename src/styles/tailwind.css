@@ -14,7 +14,7 @@
 @source inline("dark:border-{cyan,pink,purple,blue}-{800,700}");
 
 /* Shadow glows */
-@source inline("shadow-[0_0_20px_rgba(34,211,238,0.4)]");
-@source inline("shadow-[0_0_20px_rgba(236,72,153,0.4)]");
-@source inline("shadow-[0_0_20px_rgba(168,85,247,0.4)]");
-@source inline("shadow-[0_0_20px_rgba(59,130,246,0.4)]");
+@source inline("shadow-[0_0_20px_rgba(138,168,255,0.4)]");
+@source inline("shadow-[0_0_20px_rgba(255,152,0,0.4)]");
+@source inline("shadow-[0_0_20px_rgba(0,42,84,0.4)]");
+@source inline("shadow-[0_0_20px_rgba(138,168,255,0.2)]");

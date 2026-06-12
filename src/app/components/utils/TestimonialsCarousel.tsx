@@ -4,10 +4,10 @@ import { Quote, ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
 import { LanguageContext } from "../../App";
 
 const avatarGradients = [
-  "from-cyan-500 to-blue-600",
-  "from-pink-500 to-rose-600",
-  "from-purple-500 to-violet-600",
-  "from-amber-500 to-orange-600",
+  "from-[#8AA8FF] to-[#002A54]",
+  "from-[#FF9800] to-[#e68900]",
+  "from-[#002A54] to-[#8AA8FF]",
+  "from-[#FF9800] to-[#FF9800]",
 ];
 
 export const TestimonialsCarousel = () => {
@@ -37,13 +37,13 @@ export const TestimonialsCarousel = () => {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] bg-gradient-to-br from-cyan-500/5 via-pink-500/5 to-purple-500/5 dark:from-cyan-500/10 dark:via-pink-500/10 dark:to-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] bg-gradient-to-br from-[#8AA8FF]/5 via-[#002A54]/5 to-[#FF9800]/5 dark:from-[#8AA8FF]/10 dark:via-[#002A54]/10 dark:to-[#FF9800]/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-10 md:mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#00000F] dark:text-white">
             {t.testimonials.title}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 dark:from-cyan-400 dark:to-pink-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800] dark:from-[#8AA8FF] dark:via-[#002A54] dark:to-[#FF9800]">
               {t.testimonials.titleAccent}
             </span>
           </h2>
@@ -57,11 +57,11 @@ export const TestimonialsCarousel = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              className="bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-3xl p-6 md:p-12 shadow-xl relative"
+              className="bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-3xl p-6 md:p-12 shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative"
             >
-              <Quote className="absolute top-6 right-6 w-10 h-10 md:w-12 md:h-12 text-cyan-500/20 dark:text-cyan-400/20" />
+              <Quote className="absolute top-6 right-6 w-10 h-10 md:w-12 md:h-12 text-[#8AA8FF]/20 dark:text-[#8AA8FF]/20" />
 
-              <p className="text-base md:text-xl text-slate-700 dark:text-white/80 leading-relaxed mb-8">
+              <p className="text-base md:text-xl text-[#002A54]/80 dark:text-white/80 leading-relaxed mb-8">
                 "{current.text}"
               </p>
 
@@ -71,15 +71,15 @@ export const TestimonialsCarousel = () => {
                     {initials}
                   </div>
                   <div>
-                    <p className="font-black text-slate-900 dark:text-white">{current.name}</p>
-                    <p className="text-sm text-slate-500 dark:text-white/50">{current.role}</p>
+                    <p className="font-black text-[#00000F] dark:text-white">{current.name}</p>
+                    <p className="text-sm text-[#002A54]/50 dark:text-white/50">{current.role}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 dark:from-green-500/20 dark:to-emerald-500/20 px-4 py-2 rounded-2xl border border-green-500/20 self-start md:self-auto">
-                  <span className="text-xs font-bold text-slate-600 dark:text-white/60">{current.before}</span>
-                  <TrendingUp className="w-4 h-4 text-green-500" />
-                  <span className="text-sm font-black text-green-600 dark:text-green-400">{current.after}</span>
+                <div className="flex items-center gap-3 bg-gradient-to-r from-[#8AA8FF]/10 to-[#002A54]/10 dark:from-[#8AA8FF]/20 dark:to-[#002A54]/20 px-4 py-2 rounded-2xl border border-[#8AA8FF]/20 self-start md:self-auto">
+                  <span className="text-xs font-bold text-[#002A54]/60 dark:text-white/60">{current.before}</span>
+                  <TrendingUp className="w-4 h-4 text-[#FF9800]" />
+                  <span className="text-sm font-black text-[#FF9800] dark:text-[#FF9800]">{current.after}</span>
                 </div>
               </div>
             </motion.div>
@@ -90,7 +90,7 @@ export const TestimonialsCarousel = () => {
             <button
               onClick={() => setIdx((idx - 1 + items.length) % items.length)}
               aria-label="Previous"
-              className="w-10 h-10 rounded-full bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 transition-colors flex items-center justify-center text-slate-700 dark:text-white"
+              className="w-10 h-10 rounded-full bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 transition-colors flex items-center justify-center text-[#002A54] dark:text-white"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -100,14 +100,14 @@ export const TestimonialsCarousel = () => {
                   key={i}
                   onClick={() => setIdx(i)}
                   aria-label={`Go to slide ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${i === idx ? "w-8 bg-gradient-to-r from-cyan-500 to-pink-500" : "w-1.5 bg-slate-300 dark:bg-white/20"}`}
+                  className={`h-1.5 rounded-full transition-all ${i === idx ? "w-8 bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800]" : "w-1.5 bg-[#002A54]/20 dark:bg-white/20"}`}
                 />
               ))}
             </div>
             <button
               onClick={() => setIdx((idx + 1) % items.length)}
               aria-label="Next"
-              className="w-10 h-10 rounded-full bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 transition-colors flex items-center justify-center text-slate-700 dark:text-white"
+              className="w-10 h-10 rounded-full bg-white/60 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 transition-colors flex items-center justify-center text-[#002A54] dark:text-white"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

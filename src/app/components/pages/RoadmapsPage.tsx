@@ -10,43 +10,43 @@ import { lessonData } from './LessonData.tsx';
 import { useRoadmapProgress, useProgressVersion, getProgressPercent } from '../utils/useRoadmapProgress';
 import { AchievementToast } from '../utils/AchievementToast';
 
-const glassCard = "bg-white dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
+const glassCard = "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-[2rem] shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
 
 const tagColors: Record<string, string> = {
-  "Must": "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
-  "Core": "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
-  "Pro":  "bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/20",
+  "Must": "bg-[#8AA8FF]/10 text-[#002A54] dark:text-[#8AA8FF] border-[#8AA8FF]/20",
+  "Core": "bg-[#FF9800]/10 text-[#002A54] dark:text-[#FF9800] border-[#FF9800]/20",
+  "Pro":  "bg-[#FF9800]/10 text-[#002A54] dark:text-[#FF9800] border-[#FF9800]/20",
 };
 
 const colorBorder: Record<string, string> = { 
-  cyan: "border-cyan-500", pink: "border-pink-500", purple: "border-purple-500", blue: "border-blue-500",
-  emerald: "border-emerald-500", amber: "border-amber-500", orange: "border-orange-500", rose: "border-rose-500"
+  cyan: "border-[#8AA8FF]", pink: "border-[#8AA8FF]", purple: "border-[#8AA8FF]", blue: "border-[#8AA8FF]",
+  emerald: "border-[#8AA8FF]", amber: "border-[#8AA8FF]", orange: "border-[#8AA8FF]", rose: "border-[#8AA8FF]"
 };
 
 const colorBg: Record<string, string> = { 
-  cyan: "bg-cyan-500", pink: "bg-pink-500", purple: "bg-purple-500", blue: "bg-blue-500",
-  emerald: "bg-emerald-500", amber: "bg-amber-500", orange: "bg-orange-500", rose: "bg-rose-500"
+  cyan: "bg-[#8AA8FF]", pink: "bg-[#8AA8FF]", purple: "bg-[#8AA8FF]", blue: "bg-[#8AA8FF]",
+  emerald: "bg-[#8AA8FF]", amber: "bg-[#8AA8FF]", orange: "bg-[#8AA8FF]", rose: "bg-[#8AA8FF]"
 };
 
 const colorText: Record<string, string> = { 
-  cyan: "text-cyan-500 dark:text-cyan-400", pink: "text-pink-500 dark:text-pink-400", 
-  purple: "text-purple-500 dark:text-purple-400", blue: "text-blue-500 dark:text-blue-400",
-  emerald: "text-emerald-500 dark:text-emerald-400", amber: "text-amber-500 dark:text-amber-400", 
-  orange: "text-orange-500 dark:text-orange-400", rose: "text-rose-500 dark:text-rose-400"
+  cyan: "text-[#002A54] dark:text-[#8AA8FF]", pink: "text-[#002A54] dark:text-[#8AA8FF]", 
+  purple: "text-[#002A54] dark:text-[#8AA8FF]", blue: "text-[#002A54] dark:text-[#8AA8FF]",
+  emerald: "text-[#002A54] dark:text-[#8AA8FF]", amber: "text-[#002A54] dark:text-[#8AA8FF]", 
+  orange: "text-[#002A54] dark:text-[#8AA8FF]", rose: "text-[#002A54] dark:text-[#8AA8FF]"
 };
 
 const colorGlow: Record<string, string> = { 
-  cyan: "shadow-[0_0_20px_rgba(34,211,238,0.4)]", pink: "shadow-[0_0_20px_rgba(236,72,153,0.4)]", 
-  purple: "shadow-[0_0_20px_rgba(168,85,247,0.4)]", blue: "shadow-[0_0_20px_rgba(59,130,246,0.4)]",
-  emerald: "shadow-[0_0_20px_rgba(16,185,129,0.4)]", amber: "shadow-[0_0_20px_rgba(245,158,11,0.4)]",
-  orange: "shadow-[0_0_20px_rgba(249,115,22,0.4)]", rose: "shadow-[0_0_20px_rgba(244,63,94,0.4)]"
+  cyan: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", pink: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", 
+  purple: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", blue: "shadow-[0_0_20px_rgba(138,168,255,0.4)]",
+  emerald: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", amber: "shadow-[0_0_20px_rgba(138,168,255,0.4)]",
+  orange: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", rose: "shadow-[0_0_20px_rgba(138,168,255,0.4)]"
 };
 
 const colorGradient: Record<string, string> = { 
-  cyan: "from-cyan-500 to-blue-600", pink: "from-pink-500 to-purple-600", 
-  purple: "from-purple-500 to-pink-600", blue: "from-blue-500 to-cyan-600",
-  emerald: "from-emerald-500 to-teal-600", amber: "from-amber-500 to-orange-600",
-  orange: "from-orange-500 to-red-600", rose: "from-rose-500 to-pink-600"
+  cyan: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", pink: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", 
+  purple: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", blue: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
+  emerald: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", amber: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
+  orange: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", rose: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]"
 };
 
 const iconMap: Record<string, any> = {
@@ -191,12 +191,12 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                   <div className={`text-xs font-bold uppercase tracking-widest mb-2 ${colorText[roadmap.colorClass]}`}>
                     {t.roadmaps.interactiveLabel}
                   </div>
-                  <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-1">{roadmap.title}</h2>
-                  <p className="text-slate-500 dark:text-white/50 text-sm">{t.roadmaps.interactiveDesc}</p>
+                  <h2 className="text-3xl font-black text-stone-900 dark:text-white mb-1">{roadmap.title}</h2>
+                  <p className="text-stone-500 dark:text-white/50 text-sm">{t.roadmaps.interactiveDesc}</p>
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-colors text-slate-600 dark:text-white/60"
+                  className="p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-colors text-stone-600 dark:text-white/60"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -204,26 +204,26 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
 
               {/* Live + Time stats */}
               <div className="flex flex-wrap items-center gap-4 mb-5 text-xs">
-                <div className="flex items-center gap-1.5 text-slate-600 dark:text-white/60">
+                <div className="flex items-center gap-1.5 text-stone-600 dark:text-white/60">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
                   </span>
                   <span className="font-bold">{learningNow}</span> {t.roadmaps.learningNow}
                 </div>
-                <div className="flex items-center gap-1.5 text-slate-600 dark:text-white/60">
+                <div className="flex items-center gap-1.5 text-stone-600 dark:text-white/60">
                   <Clock className="w-3.5 h-3.5" />
                   <span className="font-bold">{totalWeeks}</span> {t.roadmaps.weeks}
-                  <span className="text-slate-400">·</span>
+                  <span className="text-stone-400">·</span>
                   <span>~{Math.ceil((totalWeeks * hoursPerWeek) / 4)} h</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <input
                     type="range" min={3} max={40} value={hoursPerWeek}
                     onChange={e => setHoursPerWeek(parseInt(e.target.value))}
-                    className="w-20 accent-cyan-500"
+                    className="w-20 accent-[#8AA8FF]"
                   />
-                  <span className="font-bold text-slate-700 dark:text-white/70">{hoursPerWeek} {t.roadmaps.hoursPerWeek}</span>
+                  <span className="font-bold text-stone-700 dark:text-white/70">{hoursPerWeek} {t.roadmaps.hoursPerWeek}</span>
                 </div>
               </div>
 
@@ -236,7 +236,7 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                     className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all
                       ${filter === f
                         ? `${colorBg[roadmap.colorClass]} text-white border-transparent`
-                        : "bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 text-slate-600 dark:text-white/60 hover:bg-black/10"
+                        : "bg-black/5 dark:bg-white/5 border-black/10 dark:border-white/10 text-stone-600 dark:text-white/60 hover:bg-black/10"
                       }`}
                   >
                     {f === "all" ? t.roadmaps.filters.all
@@ -246,13 +246,13 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                   </button>
                 ))}
                 <div className="flex-1 min-w-[180px] relative">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
                   <input
                     type="text"
                     placeholder={t.roadmaps.searchPlaceholder}
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full pl-9 pr-3 py-1.5 rounded-full text-xs bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-700 dark:text-white/80 placeholder:text-slate-400 focus:outline-none focus:border-cyan-500"
+                    className="w-full pl-9 pr-3 py-1.5 rounded-full text-xs bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-stone-700 dark:text-white/80 placeholder:text-stone-400 focus:outline-none focus:border-[#8AA8FF]"
                   />
                 </div>
               </div>
@@ -260,12 +260,12 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
               {/* Progress bar */}
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-xs font-bold text-slate-500 dark:text-white/50">{t.roadmaps.progress}</span>
+                  <span className="text-xs font-bold text-stone-500 dark:text-white/50">{t.roadmaps.progress}</span>
                   <div className="flex items-center gap-3">
                     {completed.size > 0 && (
                       <button
                         onClick={reset}
-                        className="flex items-center gap-1 text-xs text-slate-400 hover:text-red-500 transition-colors"
+                        className="flex items-center gap-1 text-xs text-stone-400 hover:text-red-500 transition-colors"
                         title={t.roadmaps.reset}
                       >
                         <RotateCcw className="w-3 h-3" /> {t.roadmaps.reset}
@@ -301,7 +301,7 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
             {/* PHASES */}
             <div className="p-8 space-y-10">
               {filteredPhases.length === 0 && (
-                <div className="text-center py-12 text-slate-400 dark:text-white/40">
+                <div className="text-center py-12 text-stone-400 dark:text-white/40">
                   <Filter className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p>{t.roadmaps.nothingFound}</p>
                 </div>
@@ -313,7 +313,7 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-white ${colorBg[roadmap.colorClass]} ${colorGlow[roadmap.colorClass]}`}>
                       {phaseIdx + 1}
                     </div>
-                    <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">{phase.phase}</h3>
+                    <h3 className="text-lg font-black text-stone-900 dark:text-white tracking-tight">{phase.phase}</h3>
                     <div className={`flex-1 h-px ${colorBorder[roadmap.colorClass]} border-t border-dashed opacity-30`} />
                   </div>
 
@@ -348,18 +348,18 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                                     : "border-slate-300 dark:border-white/30 hover:border-green-500"
                                   }`}
                               >
-                                <CheckCircle2 className={`w-4 h-4 ${isDone ? "text-white" : "text-slate-400 dark:text-white/30"}`} />
+                                <CheckCircle2 className={`w-4 h-4 ${isDone ? "text-white" : "text-stone-400 dark:text-white/30"}`} />
                               </button>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <span className={`font-bold text-sm ${isDone ? "line-through text-slate-400 dark:text-white/40" : "text-slate-900 dark:text-white"}`}>
+                                  <span className={`font-bold text-sm ${isDone ? "line-through text-stone-400 dark:text-white/40" : "text-stone-900 dark:text-white"}`}>
                                     {skill.title}
                                   </span>
                                   <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${tagColors[skill.tag]}`}>
                                     {skill.tag}
                                   </span>
                                 </div>
-                                <span className="text-xs text-slate-500 dark:text-white/40">{skill.duration}</span>
+                                <span className="text-xs text-stone-500 dark:text-white/40">{skill.duration}</span>
                               </div>
                               <ChevronRight className={`w-4 h-4 flex-shrink-0 transition-transform ${isActive ? "rotate-90" : ""} ${colorText[roadmap.colorClass]}`} />
                             </div>
@@ -374,17 +374,17 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                                   className="overflow-hidden"
                                 >
                                   <div className="px-4 pb-4 pt-0 border-t border-black/5 dark:border-white/10 space-y-3">
-                                    <p className="text-sm text-slate-600 dark:text-white/60 leading-relaxed pt-3">
+                                    <p className="text-sm text-stone-600 dark:text-white/60 leading-relaxed pt-3">
                                       {skill.description}
                                     </p>
                                     <div>
                                       <div className="flex items-center gap-1.5 mb-2">
                                         <BookOpen className={`w-3.5 h-3.5 ${colorText[roadmap.colorClass]}`} />
-                                        <span className="text-xs font-bold text-slate-700 dark:text-white/70 uppercase tracking-wider">{t.roadmaps.resources}</span>
+                                        <span className="text-xs font-bold text-stone-700 dark:text-white/70 uppercase tracking-wider">{t.roadmaps.resources}</span>
                                       </div>
                                       <div className="flex flex-wrap gap-2">
                                         {skill.resources.map((r: string) => (
-                                          <span key={r} className="text-xs px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-700 dark:text-white/60 font-medium">
+                                          <span key={r} className="text-xs px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-stone-700 dark:text-white/60 font-medium">
                                             {r}
                                           </span>
                                         ))}
@@ -460,8 +460,8 @@ const RoadmapCard = ({ icon: Icon, title, desc, colorClass, roadmapKey, onViewRo
       <div className={`w-16 h-16 rounded-2xl bg-${colorClass}-500/10 flex items-center justify-center mb-6 border border-${colorClass}-500/20 relative z-10 mx-auto`}>
         <Icon className={`w-8 h-8 text-${colorClass}-500 dark:text-${colorClass}-400`} />
       </div>
-      <h3 className="text-2xl font-bold mb-3 text-slate-900 dark:text-white relative z-10">{title}</h3>
-      <p className="text-slate-600 dark:text-white/60 text-sm leading-relaxed mb-4 relative z-10 min-h-[60px]">
+      <h3 className="text-2xl font-bold mb-3 text-stone-900 dark:text-white relative z-10">{title}</h3>
+      <p className="text-stone-600 dark:text-white/60 text-sm leading-relaxed mb-4 relative z-10 min-h-[60px]">
         {desc}
       </p>
 
@@ -475,7 +475,7 @@ const RoadmapCard = ({ icon: Icon, title, desc, colorClass, roadmapKey, onViewRo
               className={`h-full ${colorBg[colorClass]} rounded-full`}
             />
           </div>
-          <p className="text-[10px] text-slate-500 dark:text-white/40 mt-1 uppercase tracking-widest font-bold">
+          <p className="text-[10px] text-stone-500 dark:text-white/40 mt-1 uppercase tracking-widest font-bold">
             {progress}% {t.roadmaps.cardProgressLabel}
           </p>
         </div>
@@ -516,7 +516,7 @@ export const RoadmapsPage = ({ t, initialRoadmap, onOpenRoadmap, lang }: any) =>
 
   return (
     <section className="min-h-screen py-32 relative">
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-pink-500/10 dark:bg-pink-500/20 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#8AA8FF]/10 dark:bg-[#8AA8FF]/20 rounded-full blur-[150px] pointer-events-none" />
 
       <AnimatePresence>
         {openRoadmapData && (
@@ -539,13 +539,13 @@ export const RoadmapsPage = ({ t, initialRoadmap, onOpenRoadmap, lang }: any) =>
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl lg:text-6xl font-extrabold mb-6 text-slate-900 dark:text-white">
+          <h1 className="text-5xl lg:text-6xl font-extrabold mb-6 text-stone-900 dark:text-white">
             {t.roadmaps.title}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-500 dark:from-pink-400 dark:to-cyan-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800] dark:from-[#8AA8FF] dark:via-[#002A54] dark:to-[#FF9800]">
               {t.roadmaps.titleSuffix}
             </span>
           </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
             {t.roadmaps.subtitle}
           </p>
         </motion.div>

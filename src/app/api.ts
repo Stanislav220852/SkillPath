@@ -1,0 +1,128 @@
+// src/app/api.ts — API клиент для SkillPath Backend
+
+const API_URL = "http://localhost:8000";
+const TOKEN_KEY = "skillpath_token";
+const USER_KEY = "skillpath_user";
+
+// === Token management ===
+export const getToken = (): string | null => localStorage.getItem(TOKEN_KEY);
+export const setToken = (token: string) => localStorage.setItem(TOKEN_KEY, token);
+export const removeToken = () => { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); };
+export const isLoggedIn = (): boolean => !!getToken();
+
+export const getSavedUser = (): any | null => {
+  try { return JSON.parse(localStorage.getItem(USER_KEY) || "null"); } catch { return null; }
+};
+export const setSavedUser = (user: any) => localStorage.setItem(USER_KEY, JSON.stringify(user));
+
+// === Base fetch ===
+const api = async (path: string, options: RequestInit = {}) => {
+  const token = getToken();
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    },
+  });
+
+  if (res.status === 401) {
+    removeToken();
+    throw { status: 401, detail: "Unauthorized" };
+  }
+
+  const data = await res.json();
+  if (!res.ok) throw { status: res.status, ...data };
+  return data;
+};
+
+// === Auth ===
+export const register = async (email: string, password: string, name: string, lang: string = "RU") => {
+  const data = await api("/api/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ email, password, name, lang }),
+  });
+  setToken(data.access_token);
+  setSavedUser(data.user);
+  return data;
+};
+
+export const login = async (email: string, password: string) => {
+  const data = await api("/api/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+  setToken(data.access_token);
+  setSavedUser(data.user);
+  return data;
+};
+
+export const getMe = async () => {
+  const data = await api("/api/auth/me");
+  setSavedUser(data);
+  return data;
+};
+
+export const logout = () => {
+  removeToken();
+};
+
+// === Quiz ===
+export const submitQuiz = (quizType: string, topRole: string, scores: Record<string, number>) =>
+  api("/api/quiz/submit", {
+    method: "POST",
+    body: JSON.stringify({ quiz_type: quizType, top_role: topRole, scores }),
+  });
+
+export const getQuizHistory = () => api("/api/quiz/history");
+
+// === Progress ===
+export const getRoadmapProgress = (roadmapKey: string) =>
+  api(`/api/progress/roadmap/${roadmapKey}`);
+
+export const toggleSkill = (roadmapKey: string, skillId: string) =>
+  api("/api/progress/roadmap/toggle", {
+    method: "POST",
+    body: JSON.stringify({ roadmap_key: roadmapKey, skill_id: skillId }),
+  });
+
+export const resetRoadmap = (roadmapKey: string) =>
+  api(`/api/progress/roadmap/${roadmapKey}/reset`, { method: "DELETE" });
+
+export const getLessonProgress = (skillId: string) =>
+  api(`/api/progress/lessons/${skillId}`);
+
+export const completeLesson = (skillId: string, lessonId: string) =>
+  api("/api/progress/lessons/complete", {
+    method: "POST",
+    body: JSON.stringify({ skill_id: skillId, lesson_id: lessonId }),
+  });
+
+// === Mentors ===
+export const bookMentor = (mentorId: number, date: string, time: string) =>
+  api("/api/mentors/book", {
+    method: "POST",
+    body: JSON.stringify({ mentor_id: mentorId, date, time }),
+  });
+
+export const getBookings = () => api("/api/mentors/bookings");
+
+export const cancelBooking = (bookingId: number) =>
+  api(`/api/mentors/bookings/${bookingId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ status: "cancelled" }),
+  });
+
+// === Chat ===
+export const sendChatMessage = (mentorId: number, text: string) =>
+  api(`/api/chat/${mentorId}`, {
+    method: "POST",
+    body: JSON.stringify({ text }),
+  });
+
+export const getChatHistory = (mentorId: number) =>
+  api(`/api/chat/${mentorId}`);
+
+export const clearChat = (mentorId: number) =>
+  api(`/api/chat/${mentorId}`, { method: "DELETE" });

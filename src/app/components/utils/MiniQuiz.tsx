@@ -11,10 +11,10 @@ declare global {
 }
 
 const roleNames: Record<string, { EN: string; RU: string; gradient: string }> = {
-  frontend:    { EN: "Frontend Developer",       RU: "Frontend-разработчик",  gradient: "from-cyan-500 to-blue-600" },
-  ai:          { EN: "AI / ML Engineer",         RU: "AI / ML Инженер",       gradient: "from-pink-500 to-rose-600" },
-  cybersec:    { EN: "Cybersecurity Specialist", RU: "Спец. по кибербезу",    gradient: "from-purple-500 to-violet-600" },
-  datascience: { EN: "Data Scientist",           RU: "Data Scientist",        gradient: "from-blue-500 to-indigo-600" },
+  frontend:    { EN: "Frontend Developer",       RU: "Frontend-разработчик",  gradient: "from-[#8AA8FF] to-[#002A54]" },
+  ai:          { EN: "AI / ML Engineer",         RU: "AI / ML Инженер",       gradient: "from-[#FF9800] to-[#e68900]" },
+  cybersec:    { EN: "Cybersecurity Specialist", RU: "Спец. по кибербезу",    gradient: "from-[#002A54] to-[#001a3a]" },
+  datascience: { EN: "Data Scientist",           RU: "Data Scientist",        gradient: "from-[#8AA8FF] to-[#FF9800]" },
 };
 
 export const MiniQuiz = () => {
@@ -90,21 +90,21 @@ export const MiniQuiz = () => {
 
   return (
     <section className="py-24 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-r from-cyan-500/10 to-pink-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-r from-[#8AA8FF]/10 to-[#FF9800]/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10 max-w-2xl">
 
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-pink-500" />
-            <span className="text-xs font-bold text-slate-600 dark:text-white/70 uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-[#FF9800]" />
+            <span className="text-xs font-bold text-[#002A54]/70 dark:text-white/70 uppercase tracking-wider">
               {t.mini.subtitle}
             </span>
           </div>
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-[#00000F] dark:text-white">
             {t.mini.title}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-pink-500 dark:from-cyan-400 dark:to-pink-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] to-[#FF9800] dark:from-[#8AA8FF] dark:to-[#FF9800]">
               {t.mini.titleAccent}
             </span>
           </h2>
@@ -116,10 +116,10 @@ export const MiniQuiz = () => {
           {/* jQuery UI Progressbar */}
           <div className="mb-6">
             <div className="flex justify-between mb-2 text-xs">
-              <span className="font-bold text-slate-500 dark:text-white/50 uppercase tracking-wider">
+              <span className="font-bold text-[#002A54]/50 dark:text-white/50 uppercase tracking-wider">
                 {Math.min(step + 1, totalQuestions)} / {totalQuestions}
               </span>
-              <span className="font-black text-pink-500">{progressPercent}%</span>
+              <span className="font-black text-[#FF9800]">{progressPercent}%</span>
             </div>
             <div ref={progressRef} className="quiz-progress" />
           </div>
@@ -132,7 +132,7 @@ export const MiniQuiz = () => {
               exit={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.3 }}
             >
-              <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-6">
+              <h3 className="text-2xl md:text-3xl font-black text-[#00000F] dark:text-white mb-6">
                 {t.mini.questions[step]?.q}
               </h3>
 
@@ -143,10 +143,10 @@ export const MiniQuiz = () => {
                     whileHover={{ scale: 1.03, y: -2 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleAnswer(o.v)}
-                    className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 hover:border-cyan-500/50 transition-all text-left"
+                    className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 hover:border-[#8AA8FF]/50 transition-all text-left"
                   >
                     <div className="text-3xl mb-2">{o.emoji}</div>
-                    <p className="text-sm font-bold text-slate-800 dark:text-white">{o.text}</p>
+                    <p className="text-sm font-bold text-[#00000F] dark:text-white">{o.text}</p>
                   </motion.button>
                 ))}
               </div>
@@ -173,7 +173,7 @@ export const MiniQuiz = () => {
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+              className="relative w-full max-w-md bg-white dark:bg-[#0d0e12] border border-black/5 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden"
             >
               {/* Gradient header */}
               <div className={`bg-gradient-to-br ${roleNames[winner].gradient} p-6 relative overflow-hidden`}>
@@ -209,7 +209,7 @@ export const MiniQuiz = () => {
                   </motion.button>
                   <button
                     onClick={reset}
-                    className="px-6 py-3 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-slate-700 dark:text-white font-bold flex items-center gap-2"
+                    className="px-6 py-3 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-colors text-[#002A54] dark:text-white font-bold flex items-center gap-2"
                   >
                     <RotateCcw className="w-4 h-4" />
                     {t.mini.retake}
