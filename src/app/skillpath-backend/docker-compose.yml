@@ -13,6 +13,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U skillpath -d skillpath_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -27,7 +32,22 @@ services:
       - db
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-      
+
+  backend:
+    build: .
+    container_name: skillpath-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://skillpath:skillpath123@db:5432/skillpath_db
+      JWT_SECRET: skillpath-super-secret-key-change-in-production-2024
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRE_MINUTES: "1440"
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000,http://localhost:5174
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   pgdata:

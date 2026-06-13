@@ -195,7 +195,7 @@ export const CodeEditor = ({ challenges, language, onComplete, completedChalleng
           </div>
           <div className="flex gap-2">
             {completedChallenges.size > 0 && (
-              <span className="text-xs font-bold text-[#e6c272] dark:text-[#e6c272]">
+              <span className="text-xs font-bold text-[#8AA8FF] dark:text-[#8AA8FF]">
                 {completedChallenges.size}/{challenges.length} ✅
               </span>
             )}
@@ -272,7 +272,7 @@ export const CodeEditor = ({ challenges, language, onComplete, completedChalleng
           whileTap={{ scale: 0.98 }}
           onClick={runCode}
           disabled={isRunning || !code.trim()}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#f3dfa8] via-[#e6c272] to-[#c89a3f] text-white font-bold text-sm shadow-[0_0_15px_rgba(230,194,114,0.3)] hover:shadow-[0_0_25px_rgba(230,194,114,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800] text-white font-bold text-sm shadow-[0_0_15px_rgba(138,168,255,0.3)] hover:shadow-[0_0_25px_rgba(138,168,255,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Play className="w-4 h-4" />
           {isRunning ? (t?.learning?.running || 'Запуск...') : (t?.learning?.runCode || 'Запустить код')}
@@ -371,7 +371,7 @@ export const CodeEditor = ({ challenges, language, onComplete, completedChalleng
                 onClick={() => setCurrentChallenge(i)}
                 className={`w-2.5 h-2.5 rounded-full transition-all ${
                   i === currentChallenge 
-                    ? 'bg-[#e6c272] scale-125' 
+                    ? 'bg-[#8AA8FF] scale-125' 
                     : completedChallenges.has(challenges[i].id)
                       ? 'bg-green-500'
                       : 'bg-stone-300 dark:bg-white/20'

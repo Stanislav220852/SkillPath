@@ -105,7 +105,7 @@ export const BentoShowcase = ({ onStartQuiz }: { onStartQuiz?: () => void }) => 
             className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#00000F] dark:text-white"
           >
             {t.bento.title1}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800]">
+            <span className="text-[var(--tp)]">
               {t.bento.title2}
             </span>
           </motion.h2>

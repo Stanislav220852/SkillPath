@@ -127,7 +127,7 @@ export const BootstrapInfo = () => {
             className="text-4xl lg:text-5xl font-extrabold text-[#00000F] dark:text-white mb-3"
           >
             {t.title1}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] to-[#FF9800] dark:from-[#8AA8FF] dark:to-[#FF9800]">
+            <span className="text-[var(--tp)]">
               {t.title2}
             </span>
           </motion.h2>

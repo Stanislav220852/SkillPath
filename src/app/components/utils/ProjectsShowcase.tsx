@@ -155,7 +155,7 @@ export const ProjectsShowcase = () => {
             className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#00000F] dark:text-white mb-4"
           >
             {lang === "RU" ? "Работы наших " : "Built by our "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800] dark:from-[#8AA8FF] dark:via-[#002A54] dark:to-[#FF9800]">
+            <span className="text-[var(--tp)]">
               {lang === "RU" ? "выпускников" : "graduates"}
             </span>
           </motion.h2>

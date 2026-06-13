@@ -13,40 +13,40 @@ import { AchievementToast } from '../utils/AchievementToast';
 const glassCard = "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-[2rem] shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
 
 const tagColors: Record<string, string> = {
-  "Must": "bg-[#8AA8FF]/10 text-[#002A54] dark:text-[#8AA8FF] border-[#8AA8FF]/20",
-  "Core": "bg-[#FF9800]/10 text-[#002A54] dark:text-[#FF9800] border-[#FF9800]/20",
-  "Pro":  "bg-[#FF9800]/10 text-[#002A54] dark:text-[#FF9800] border-[#FF9800]/20",
+  "Must": "bg-[var(--tp)]/10 text-[var(--tp-dark)] dark:text-[var(--tp)] border-[var(--tp)]/20",
+  "Core": "bg-[var(--ta)]/10 text-[var(--tp-dark)] dark:text-[var(--ta)] border-[var(--ta)]/20",
+  "Pro":  "bg-[var(--ta)]/10 text-[var(--tp-dark)] dark:text-[var(--ta)] border-[var(--ta)]/20",
 };
 
 const colorBorder: Record<string, string> = { 
-  cyan: "border-[#8AA8FF]", pink: "border-[#8AA8FF]", purple: "border-[#8AA8FF]", blue: "border-[#8AA8FF]",
-  emerald: "border-[#8AA8FF]", amber: "border-[#8AA8FF]", orange: "border-[#8AA8FF]", rose: "border-[#8AA8FF]"
+  cyan: "border-[var(--tp)]", pink: "border-[var(--tp)]", purple: "border-[var(--tp)]", blue: "border-[var(--tp)]",
+  emerald: "border-[var(--tp)]", amber: "border-[var(--tp)]", orange: "border-[var(--tp)]", rose: "border-[var(--tp)]"
 };
 
 const colorBg: Record<string, string> = { 
-  cyan: "bg-[#8AA8FF]", pink: "bg-[#8AA8FF]", purple: "bg-[#8AA8FF]", blue: "bg-[#8AA8FF]",
-  emerald: "bg-[#8AA8FF]", amber: "bg-[#8AA8FF]", orange: "bg-[#8AA8FF]", rose: "bg-[#8AA8FF]"
+  cyan: "bg-[var(--tp)]", pink: "bg-[var(--tp)]", purple: "bg-[var(--tp)]", blue: "bg-[var(--tp)]",
+  emerald: "bg-[var(--tp)]", amber: "bg-[var(--tp)]", orange: "bg-[var(--tp)]", rose: "bg-[var(--tp)]"
 };
 
 const colorText: Record<string, string> = { 
-  cyan: "text-[#002A54] dark:text-[#8AA8FF]", pink: "text-[#002A54] dark:text-[#8AA8FF]", 
-  purple: "text-[#002A54] dark:text-[#8AA8FF]", blue: "text-[#002A54] dark:text-[#8AA8FF]",
-  emerald: "text-[#002A54] dark:text-[#8AA8FF]", amber: "text-[#002A54] dark:text-[#8AA8FF]", 
-  orange: "text-[#002A54] dark:text-[#8AA8FF]", rose: "text-[#002A54] dark:text-[#8AA8FF]"
+  cyan: "text-[var(--tp-dark)] dark:text-[var(--tp)]", pink: "text-[var(--tp-dark)] dark:text-[var(--tp)]", 
+  purple: "text-[var(--tp-dark)] dark:text-[var(--tp)]", blue: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  emerald: "text-[var(--tp-dark)] dark:text-[var(--tp)]", amber: "text-[var(--tp-dark)] dark:text-[var(--tp)]", 
+  orange: "text-[var(--tp-dark)] dark:text-[var(--tp)]", rose: "text-[var(--tp-dark)] dark:text-[var(--tp)]"
 };
 
 const colorGlow: Record<string, string> = { 
-  cyan: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", pink: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", 
-  purple: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", blue: "shadow-[0_0_20px_rgba(138,168,255,0.4)]",
-  emerald: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", amber: "shadow-[0_0_20px_rgba(138,168,255,0.4)]",
-  orange: "shadow-[0_0_20px_rgba(138,168,255,0.4)]", rose: "shadow-[0_0_20px_rgba(138,168,255,0.4)]"
+  cyan: "shadow-[0_0_20px_rgba(var(--tp-rgb),0.4)]", pink: "shadow-[0_0_20px_rgba(var(--tp-rgb),0.4)]", 
+  purple: "shadow-[0_0_20px_rgba(var(--tp-rgb),0.4)]", blue: "shadow-[0_0_20px_rgba(var(--tp-rgb),0.4)]",
+  emerald: "shadow-[0_0_20px_rgba(var(--tp-rgb),0.4)]", amber: "shadow-[0_0_20px_rgba(var(--tp-rgb),0.4)]",
+  orange: "shadow-[0_0_20px_rgba(var(--tp-rgb),0.4)]", rose: "shadow-[0_0_20px_rgba(var(--tp-rgb),0.4)]"
 };
 
 const colorGradient: Record<string, string> = { 
-  cyan: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", pink: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", 
-  purple: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", blue: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-  emerald: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", amber: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-  orange: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]", rose: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]"
+  cyan: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]", pink: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]", 
+  purple: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]", blue: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  emerald: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]", amber: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  orange: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]", rose: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]"
 };
 
 const iconMap: Record<string, any> = {
@@ -221,7 +221,7 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                   <input
                     type="range" min={3} max={40} value={hoursPerWeek}
                     onChange={e => setHoursPerWeek(parseInt(e.target.value))}
-                    className="w-20 accent-[#8AA8FF]"
+                    className="w-20 accent-[var(--tp)]"
                   />
                   <span className="font-bold text-stone-700 dark:text-white/70">{hoursPerWeek} {t.roadmaps.hoursPerWeek}</span>
                 </div>
@@ -252,7 +252,7 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                     placeholder={t.roadmaps.searchPlaceholder}
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full pl-9 pr-3 py-1.5 rounded-full text-xs bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-stone-700 dark:text-white/80 placeholder:text-stone-400 focus:outline-none focus:border-[#8AA8FF]"
+                    className="w-full pl-9 pr-3 py-1.5 rounded-full text-xs bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-stone-700 dark:text-white/80 placeholder:text-stone-400 focus:outline-none focus:border-[var(--tp)]"
                   />
                 </div>
               </div>
@@ -516,7 +516,6 @@ export const RoadmapsPage = ({ t, initialRoadmap, onOpenRoadmap, lang }: any) =>
 
   return (
     <section className="min-h-screen py-32 relative">
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#8AA8FF]/10 dark:bg-[#8AA8FF]/20 rounded-full blur-[150px] pointer-events-none" />
 
       <AnimatePresence>
         {openRoadmapData && (
@@ -541,7 +540,7 @@ export const RoadmapsPage = ({ t, initialRoadmap, onOpenRoadmap, lang }: any) =>
         >
           <h1 className="text-5xl lg:text-6xl font-extrabold mb-6 text-stone-900 dark:text-white">
             {t.roadmaps.title}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800] dark:from-[#8AA8FF] dark:via-[#002A54] dark:to-[#FF9800]">
+            <span className="text-[var(--tp)]">
               {t.roadmaps.titleSuffix}
             </span>
           </h1>

@@ -126,3 +126,31 @@ export const getChatHistory = (mentorId: number) =>
 
 export const clearChat = (mentorId: number) =>
   api(`/api/chat/${mentorId}`, { method: "DELETE" });
+
+// === Profile ===
+export const getProfileStats = () => api("/api/profile/stats");
+
+// === Avatar ===
+export const uploadAvatar = async (file: File): Promise<any> => {
+  const token = getToken();
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${API_URL}/api/auth/avatar`, {
+    method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
+
+  if (res.status === 401) {
+    removeToken();
+    throw { status: 401, detail: "Unauthorized" };
+  }
+
+  const data = await res.json();
+  if (!res.ok) throw { status: res.status, ...data };
+  setSavedUser(data);
+  return data;
+};

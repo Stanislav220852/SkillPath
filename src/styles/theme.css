@@ -2,6 +2,35 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ═══ Theme color tokens ═══ */
+:root,
+.theme-blue {
+  --tp: #8AA8FF;
+  --tp-dark: #002A54;
+  --ta: #FF9800;
+  --tp-rgb: 138,168,255;
+  --tpd-rgb: 0,42,84;
+  --ta-rgb: 255,152,0;
+}
+
+.theme-purple {
+  --tp: #B388FF;
+  --tp-dark: #6A0DAD;
+  --ta: #FF6B9D;
+  --tp-rgb: 179,136,255;
+  --tpd-rgb: 106,13,173;
+  --ta-rgb: 255,107,157;
+}
+
+.theme-mono {
+  --tp: #E0E0E0;
+  --tp-dark: #333333;
+  --ta: #999999;
+  --tp-rgb: 224,224,224;
+  --tpd-rgb: 51,51,51;
+  --ta-rgb: 153,153,153;
+}
+
 :root {
   --font-family: 'Outfit', sans-serif;
   --font-size: 16px;

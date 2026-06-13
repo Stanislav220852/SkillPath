@@ -16,6 +16,7 @@ import {
   Search,
   Sparkles,
 } from "lucide-react";
+import * as API from "../../api";
 
 const glassCard =
   "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-3xl shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
@@ -51,60 +52,60 @@ type ChatMessage = {
 
 const colorMap: Record<ColorKey, { gradient: string; bg: string; text: string; border: string }> = {
   cyan: {
-    gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-    bg: "bg-[#8AA8FF]/10",
-    text: "text-[#002A54] dark:text-[#8AA8FF]",
-    border: "border-[#8AA8FF]/30",
+    gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+    bg: "bg-[var(--tp)]/10",
+    text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+    border: "border-[var(--tp)]/30",
   },
   pink: {
-    gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-    bg: "bg-[#8AA8FF]/10",
-    text: "text-[#002A54] dark:text-[#8AA8FF]",
-    border: "border-[#8AA8FF]/30",
+    gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+    bg: "bg-[var(--tp)]/10",
+    text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+    border: "border-[var(--tp)]/30",
   },
   purple: {
-    gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-    bg: "bg-[#8AA8FF]/10",
-    text: "text-[#002A54] dark:text-[#8AA8FF]",
-    border: "border-[#8AA8FF]/30",
+    gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+    bg: "bg-[var(--tp)]/10",
+    text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+    border: "border-[var(--tp)]/30",
   },
   blue: {
-    gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-    bg: "bg-[#8AA8FF]/10",
-    text: "text-[#002A54] dark:text-[#8AA8FF]",
-    border: "border-[#8AA8FF]/30",
+    gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+    bg: "bg-[var(--tp)]/10",
+    text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+    border: "border-[var(--tp)]/30",
   },
   emerald: {
-    gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-    bg: "bg-[#8AA8FF]/10",
-    text: "text-[#002A54] dark:text-[#8AA8FF]",
-    border: "border-[#8AA8FF]/30",
+    gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+    bg: "bg-[var(--tp)]/10",
+    text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+    border: "border-[var(--tp)]/30",
   },
   amber: {
-    gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-    bg: "bg-[#8AA8FF]/10",
-    text: "text-[#002A54] dark:text-[#8AA8FF]",
-    border: "border-[#8AA8FF]/30",
+    gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+    bg: "bg-[var(--tp)]/10",
+    text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+    border: "border-[var(--tp)]/30",
   },
   orange: {
-    gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-    bg: "bg-[#8AA8FF]/10",
-    text: "text-[#002A54] dark:text-[#8AA8FF]",
-    border: "border-[#8AA8FF]/30",
+    gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+    bg: "bg-[var(--tp)]/10",
+    text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+    border: "border-[var(--tp)]/30",
   },
   rose: {
-    gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-    bg: "bg-[#8AA8FF]/10",
-    text: "text-[#002A54] dark:text-[#8AA8FF]",
-    border: "border-[#8AA8FF]/30",
+    gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+    bg: "bg-[var(--tp)]/10",
+    text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+    border: "border-[var(--tp)]/30",
   },
 };
 
 const fallbackColor = {
-  gradient: "from-[#8AA8FF] via-[#002A54] to-[#FF9800]",
-  bg: "bg-[#8AA8FF]/10",
-  text: "text-[#002A54] dark:text-[#8AA8FF]",
-  border: "border-[#8AA8FF]/30",
+  gradient: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  bg: "bg-[var(--tp)]/10",
+  text: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  border: "border-[var(--tp)]/30",
 };
 
 const buildMentors = (lang: Lang): Mentor[] => [
@@ -361,31 +362,7 @@ const Avatar = ({
   );
 };
 
-const CHAT_KEY = "skillpath-mentor-chats-v1";
-
-const loadChat = (mentorId: number): ChatMessage[] => {
-  try {
-    if (typeof window === "undefined") return [];
-    const raw = localStorage.getItem(CHAT_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw)?.[mentorId] || [];
-  } catch {
-    return [];
-  }
-};
-
-const saveChat = (mentorId: number, messages: ChatMessage[]) => {
-  try {
-    if (typeof window === "undefined") return;
-    const raw = localStorage.getItem(CHAT_KEY);
-    const data = raw ? JSON.parse(raw) : {};
-    data[mentorId] = messages;
-    localStorage.setItem(CHAT_KEY, JSON.stringify(data));
-  } catch {
-    // ignore localStorage errors
-  }
-};
-
+// Chat is stored in DB via API when logged in
 const autoReplies = (lang: Lang, mentorRole?: string) => {
   const role = mentorRole || "IT";
   return lang === "RU"
@@ -419,28 +396,50 @@ const ChatWindow = ({ mentor, lang, onClose }: { mentor: Mentor; lang: Lang; onC
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const saved = loadChat(mentor.id);
-    if (saved.length) {
-      setMessages(saved);
+    if (!API.isLoggedIn()) {
+      const firstName = mentor.name.split(" ")[0];
+      const greeting =
+        lang === "RU"
+          ? `Привет! Я ${firstName}. Спрашивай что угодно про ${mentor.role} 🚀`
+          : `Hey! I'm ${firstName}. Ask me anything about ${mentor.role} 🚀`;
+      setMessages([{ from: "mentor", text: greeting, time: Date.now() }]);
       return;
     }
 
-    const firstName = mentor.name.split(" ")[0];
-    const greeting =
-      lang === "RU"
-        ? `Привет! Я ${firstName}. Спрашивай что угодно про ${mentor.role} 🚀`
-        : `Hey! I'm ${firstName}. Ask me anything about ${mentor.role} 🚀`;
-    setMessages([{ from: "mentor", text: greeting, time: Date.now() }]);
+    API.getChatHistory(mentor.id)
+      .then((data: any) => {
+        if (data?.messages?.length) {
+          setMessages(data.messages.map((m: any) => ({
+            from: m.from_who as "me" | "mentor",
+            text: m.text,
+            time: new Date(m.created_at).getTime(),
+          })));
+        } else {
+          const firstName = mentor.name.split(" ")[0];
+          const greeting =
+            lang === "RU"
+              ? `Привет! Я ${firstName}. Спрашивай что угодно про ${mentor.role} 🚀`
+              : `Hey! I'm ${firstName}. Ask me anything about ${mentor.role} 🚀`;
+          setMessages([{ from: "mentor", text: greeting, time: Date.now() }]);
+        }
+      })
+      .catch(() => {
+        const firstName = mentor.name.split(" ")[0];
+        const greeting =
+          lang === "RU"
+            ? `Привет! Я ${firstName}. Спрашивай что угодно про ${mentor.role} 🚀`
+            : `Hey! I'm ${firstName}. Ask me anything about ${mentor.role} 🚀`;
+        setMessages([{ from: "mentor", text: greeting, time: Date.now() }]);
+      });
   }, [mentor.id, mentor.name, mentor.role, lang]);
 
   useEffect(() => {
-    if (messages.length) saveChat(mentor.id, messages);
     requestAnimationFrame(() => {
       scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
     });
-  }, [messages, typing, mentor.id]);
+  }, [messages, typing]);
 
-  const send = () => {
+  const send = async () => {
     const text = input.trim();
     if (!text) return;
 
@@ -448,17 +447,36 @@ const ChatWindow = ({ mentor, lang, onClose }: { mentor: Mentor; lang: Lang; onC
     setInput("");
     setTyping(true);
 
-    window.setTimeout(() => {
-      const replies = autoReplies(lang, mentor.role);
-      const reply = replies[Math.floor(Math.random() * replies.length)];
-      setMessages((prev) => [...prev, { from: "mentor", text: reply, time: Date.now() }]);
-      setTyping(false);
-    }, 1100 + Math.random() * 900);
+    if (API.isLoggedIn()) {
+      try {
+        const res: any = await API.sendChatMessage(mentor.id, text);
+        if (res?.mentor_reply) {
+          setMessages((prev) => [...prev, {
+            from: "mentor",
+            text: res.mentor_reply.text,
+            time: new Date(res.mentor_reply.created_at).getTime(),
+          }]);
+        }
+      } catch {
+        const replies = autoReplies(lang, mentor.role);
+        const reply = replies[Math.floor(Math.random() * replies.length)];
+        setMessages((prev) => [...prev, { from: "mentor", text: reply, time: Date.now() }]);
+      }
+    } else {
+      window.setTimeout(() => {
+        const replies = autoReplies(lang, mentor.role);
+        const reply = replies[Math.floor(Math.random() * replies.length)];
+        setMessages((prev) => [...prev, { from: "mentor", text: reply, time: Date.now() }]);
+      }, 1100 + Math.random() * 900);
+    }
+    setTyping(false);
   };
 
-  const clearChat = () => {
+  const clearChat = async () => {
     setMessages([]);
-    saveChat(mentor.id, []);
+    if (API.isLoggedIn()) {
+      API.clearChat(mentor.id).catch(() => {});
+    }
   };
 
   return (
@@ -538,7 +556,7 @@ const ChatWindow = ({ mentor, lang, onClose }: { mentor: Mentor; lang: Lang; onC
               if (e.key === "Enter") send();
             }}
             placeholder={lang === "RU" ? "Напишите сообщение..." : "Type a message..."}
-            className="flex-1 rounded-full border border-black/10 bg-black/5 px-4 py-2.5 text-sm text-stone-800 placeholder:text-stone-400 focus:border-[#8AA8FF] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
+              className="flex-1 rounded-full border border-black/10 bg-black/5 px-4 py-2.5 text-sm text-stone-800 placeholder:text-stone-400 focus:border-[var(--tp)] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
           />
           <button
             onClick={send}
@@ -729,8 +747,16 @@ export const MentorsPage = ({ onBack, lang }: MentorsPageProps) => {
     setBookingMentor(mentor);
   };
 
-  const confirmBooking = (date: string, time: string) => {
+  const confirmBooking = async (date: string, time: string) => {
     if (!bookingMentor) return;
+
+    if (API.isLoggedIn()) {
+      try {
+        await API.bookMentor(bookingMentor.id, date, time);
+      } catch (err) {
+        console.error("Failed to book:", err);
+      }
+    }
 
     setBookingConfirmed({ mentorId: bookingMentor.id, date, time });
     setBookedId(bookingMentor.id);
@@ -751,8 +777,6 @@ export const MentorsPage = ({ onBack, lang }: MentorsPageProps) => {
   return (
     <div className="relative min-h-screen overflow-hidden px-5 pb-20 pt-28 md:px-6 md:pt-32">
       <div className="pointer-events-none absolute inset-0 opacity-[0.14] dark:opacity-[0.18] [background-image:linear-gradient(rgba(138,168,255,.18)_1px,transparent_1px),linear-gradient(90deg,rgba(0,42,84,.13)_1px,transparent_1px)] [background-size:88px_88px]" />
-      <div className="pointer-events-none absolute left-[-10%] top-[-10%] h-[40%] w-[40%] rounded-full bg-[#8AA8FF]/10 blur-[120px] dark:bg-[#8AA8FF]/20" />
-      <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full bg-[#8AA8FF]/10 blur-[120px] dark:bg-[#8AA8FF]/20" />
 
       <div className="container relative z-10 mx-auto max-w-7xl">
         <div className="mb-10 text-center md:mb-12">
@@ -761,7 +785,7 @@ export const MentorsPage = ({ onBack, lang }: MentorsPageProps) => {
             animate={{ opacity: 1, y: 0 }}
             className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/5 bg-black/[0.035] px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-stone-500 backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:text-white/50"
           >
-            <Sparkles className="h-4 w-4 text-[#b8893a]" />
+            <Sparkles className="h-4 w-4 text-[var(--tp-dark)] dark:text-[var(--tp)]" />
             SkillPath Mentors
           </motion.div>
 
@@ -771,7 +795,7 @@ export const MentorsPage = ({ onBack, lang }: MentorsPageProps) => {
             className="mb-4 text-4xl font-black md:mb-6 md:text-5xl lg:text-6xl"
           >
             <span className="text-stone-900 dark:text-white">{lang === "RU" ? "Найди своего " : "Find Your "}</span>
-            <span className="bg-gradient-to-r from-[#f3dfa8] via-[#e6c272] to-[#c89a3f] bg-clip-text text-transparent dark:from-[#f3dfa8] dark:via-[#e6c272] dark:to-[#c89a3f]">
+            <span className="bg-gradient-to-r from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)] bg-clip-text text-transparent dark:from-[var(--tp)] dark:via-[var(--tp-dark)] dark:to-[var(--ta)]">
               {lang === "RU" ? "Ментора" : "Mentor"}
             </span>
           </motion.h1>
@@ -790,7 +814,7 @@ export const MentorsPage = ({ onBack, lang }: MentorsPageProps) => {
               placeholder={lang === "RU" ? "Поиск по имени или навыкам..." : "Search by name or skills..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-black/10 bg-black/5 py-2.5 pl-11 pr-4 text-stone-800 placeholder:text-stone-400 focus:border-[#8AA8FF] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
+              className="w-full rounded-xl border border-black/10 bg-black/5 py-2.5 pl-11 pr-4 text-stone-800 placeholder:text-stone-400 focus:border-[var(--tp)] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
             />
           </div>
 

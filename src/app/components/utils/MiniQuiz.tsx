@@ -104,7 +104,7 @@ export const MiniQuiz = () => {
           </div>
           <h2 className="text-4xl lg:text-5xl font-extrabold text-[#00000F] dark:text-white">
             {t.mini.title}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] to-[#FF9800] dark:from-[#8AA8FF] dark:to-[#FF9800]">
+            <span className="text-[var(--tp)]">
               {t.mini.titleAccent}
             </span>
           </h2>
@@ -194,7 +194,7 @@ export const MiniQuiz = () => {
               </div>
 
               <div className="p-6 text-center">
-                <h3 className={`text-3xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r ${roleNames[winner].gradient}`}>
+                <h3 className={`text-3xl font-black mb-6 text-[var(--tp)]`}>
                   {roleNames[winner][lang as "EN" | "RU"]}
                 </h3>
 

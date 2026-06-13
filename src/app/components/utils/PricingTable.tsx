@@ -14,7 +14,7 @@ const PlanCard = ({ plan, i, yearly, t, onStartQuiz, onPaidClick }: { plan: any;
       transition={{ delay: i * 0.1 }}
       className={`relative rounded-3xl p-8 flex flex-col h-full ${
         plan.popular
-          ? "bg-gradient-to-br from-[#002A54] to-[#00000F] dark:from-[#002A54] dark:to-[#00000F] border-2 border-[#FF9800] dark:border-[#FF9800]/50 shadow-2xl shadow-[#FF9800]/20 lg:scale-105 z-10"
+          ? "bg-gradient-to-br from-[#002A54] via-[#001a3a] to-[#00000F] dark:from-[#002A54] dark:via-[#001a3a] dark:to-[#00000F] border-2 border-[#FF9800] dark:border-[#FF9800]/50 shadow-2xl shadow-[#FF9800]/30 lg:scale-105 z-10"
           : "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
       }`}
     >
@@ -88,7 +88,7 @@ export const PricingTable = ({ onStartQuiz }: { onStartQuiz?: () => void }) => {
         <div className="text-center mb-10 md:mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#00000F] dark:text-white mb-4">
             {t.pricing.title}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] via-[#002A54] to-[#FF9800] dark:from-[#8AA8FF] dark:via-[#002A54] dark:to-[#FF9800]">
+            <span className="text-[var(--tp)]">
               {t.pricing.titleAccent}
             </span>
           </h2>

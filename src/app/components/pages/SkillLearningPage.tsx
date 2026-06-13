@@ -6,53 +6,44 @@ import {
   Lightbulb, Eye, Copy, Check, RefreshCw, Menu, X
 } from 'lucide-react';
 import { lessonData } from './LessonData.tsx';   
+import * as API from '../../api';
+import { trackActivity } from '../utils/activityTracker';
 import hljs from 'highlight.js';
 
-const glassCard = "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-[2rem] shadow-[0_8px_32px_rgba(124,94,32,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
+const glassCard = "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-[2rem] shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
 
 const colorText: Record<string, string> = {
-  cyan: "text-[#b8893a] dark:text-[#e6c272]",
-  pink: "text-[#b8893a] dark:text-[#e6c272]",
-  purple: "text-[#b8893a] dark:text-[#e6c272]",
-  blue: "text-[#b8893a] dark:text-[#e6c272]",
-  emerald: "text-[#b8893a] dark:text-[#e6c272]",
-  amber: "text-[#b8893a] dark:text-[#e6c272]",
-  orange: "text-[#b8893a] dark:text-[#e6c272]",
-  rose: "text-[#b8893a] dark:text-[#e6c272]",
+  cyan: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  pink: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  purple: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  blue: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  emerald: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  amber: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  orange: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
+  rose: "text-[var(--tp-dark)] dark:text-[var(--tp)]",
 };
 
 const colorGradient: Record<string, string> = {
-  cyan: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
-  pink: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
-  purple: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
-  blue: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
-  emerald: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
-  amber: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
-  orange: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
-  rose: "from-[#f3dfa8] via-[#e6c272] to-[#c89a3f]",
+  cyan: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  pink: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  purple: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  blue: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  emerald: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  amber: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  orange: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
+  rose: "from-[var(--tp)] via-[var(--tp-dark)] to-[var(--ta)]",
 };
 
-// === localStorage helpers ===
-const LESSONS_STORAGE_KEY = "skillpath-lessons-progress-v1";
+// === Backend-backed progress ===
+const completedCache: Record<string, string[]> = {};
+const loadedSkills = new Set<string>();
 
 const loadCompletedLessons = (skillId: string): string[] => {
-  try {
-    const raw = localStorage.getItem(LESSONS_STORAGE_KEY);
-    if (!raw) return [];
-    const data = JSON.parse(raw);
-    return data[skillId] || [];
-  } catch {
-    return [];
-  }
+  return completedCache[skillId] || [];
 };
 
 const saveCompletedLessons = (skillId: string, lessons: string[]) => {
-  try {
-    const raw = localStorage.getItem(LESSONS_STORAGE_KEY);
-    const data = raw ? JSON.parse(raw) : {};
-    data[skillId] = lessons;
-    localStorage.setItem(LESSONS_STORAGE_KEY, JSON.stringify(data));
-  } catch {}
+  completedCache[skillId] = lessons;
 };
 
 // === auto-detect language ===
@@ -103,7 +94,7 @@ const HighlightedCode = ({ code, language }: { code: string; language?: string }
 };
 
 // === CODE EDITOR ===
-const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error, isRunning, t, autoRun }: any) => {
+const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error, isRunning, t, autoRun, colorClass }: any) => {
   const [code, setCode] = useState(initialCode || '');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const preRef = useRef<HTMLPreElement>(null);
@@ -184,7 +175,7 @@ const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error,
       )}
       <div className="p-3 bg-[#21252b] border-t border-white/5 flex items-center gap-2">
         <button onClick={() => onRun(code)} disabled={isRunning}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#f3dfa8] via-[#e6c272] to-[#c89a3f] text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50">
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r ${colorGradient[colorClass || 'cyan']} text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-50`}>
           {isRunning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
           {isRunning ? t.running : t.runCode}
         </button>
@@ -506,7 +497,7 @@ const LessonView = ({ lesson, lessonIndex, colorClass, completedLessons, onCompl
               )}
               <CodeEditor initialCode={lesson.practice?.starterCode} language={lesson.type}
                 onCodeChange={setLiveCode} onRun={handleRunCode}
-                output={output} error={error} isRunning={isRunning} t={t} autoRun={isHtmlLesson} />
+                output={output} error={error} isRunning={isRunning} t={t} autoRun={isHtmlLesson} colorClass={colorClass} />
             </div>
 
             {isHtmlLesson && (
@@ -571,14 +562,28 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
 
   const lessons = lessonData[skillId] && lessonData[skillId][lang] ? lessonData[skillId][lang] : null;
 
-  // Load completed from localStorage on mount
+  // Load completed from cache + DB on mount
   useEffect(() => {
     if (skillId) {
+      // Load from cache first
       setCompletedLessons(loadCompletedLessons(skillId));
+
+      // Fetch from DB if logged in and not already loaded
+      if (API.isLoggedIn() && !loadedSkills.has(skillId)) {
+        API.getLessonProgress(skillId)
+          .then((data: any) => {
+            if (data?.completed_lessons) {
+              completedCache[skillId] = data.completed_lessons;
+              loadedSkills.add(skillId);
+              setCompletedLessons(data.completed_lessons);
+            }
+          })
+          .catch(() => {});
+      }
     }
   }, [skillId]);
 
-  // Save completed to localStorage on change
+  // Save completed to cache on change
   useEffect(() => {
     if (skillId && completedLessons.length >= 0) {
       saveCompletedLessons(skillId, completedLessons);
@@ -617,28 +622,33 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
   const totalLessons = skill.lessons.length;
   const progress = totalLessons > 0 ? Math.round((completedLessons.length / totalLessons) * 100) : 0;
   const skillColorMap: Record<string, string> = {
-    // frontend
+    // frontend — cyan
     'html-css': 'cyan', 'js-core': 'cyan', 'react': 'cyan', 'typescript': 'cyan', 'state': 'cyan', 'testing': 'cyan', 'deploy': 'cyan',
-    // ai
+    // ai — pink
     'python': 'pink', 'math': 'pink', 'sklearn': 'pink', 'dl': 'pink', 'math-ml': 'pink', 'nlp': 'pink', 'mlops': 'pink',
-    // cybersec
+    // cybersec — purple
     'networking': 'purple', 'linux': 'purple', 'pentest': 'purple', 'webapp': 'purple', 'siem': 'purple', 'certs': 'purple',
-    // datascience
+    // datascience — blue
     'python-ds': 'blue', 'sql': 'blue', 'eda': 'blue', 'stats': 'blue', 'ml-ds': 'blue', 'bi': 'blue', 'bigdata': 'blue',
-    // backend
-    'node': 'cyan', 'db-basics': 'cyan', 'auth': 'cyan', 'apis': 'cyan', 'docker': 'cyan', 'cloud': 'cyan',
-    // mobile
-    'rn-basics': 'pink', 'mobile-ui': 'pink', 'native-api': 'pink', 'state-mobile': 'pink', 'appstore': 'pink', 'perf-mobile': 'pink',
-    // devops
-    'linux-devops': 'purple', 'git-devops': 'purple', 'k8s': 'purple', 'terraform': 'purple', 'monitoring': 'purple', 'aws-devops': 'purple',
-    // gamedev
-    'csharp': 'blue', 'game-math': 'blue', '2d-games': 'blue', '3d-games': 'blue', 'shaders': 'blue', 'multiplayer': 'blue',
+    // backend — emerald
+    'node': 'emerald', 'db-basics': 'emerald', 'auth': 'emerald', 'apis': 'emerald', 'docker': 'emerald', 'cloud': 'emerald',
+    // mobile — amber
+    'rn-basics': 'amber', 'mobile-ui': 'amber', 'native-api': 'amber', 'state-mobile': 'amber', 'appstore': 'amber', 'perf-mobile': 'amber',
+    // devops — orange
+    'linux-devops': 'orange', 'git-devops': 'orange', 'k8s': 'orange', 'terraform': 'orange', 'monitoring': 'orange', 'aws-devops': 'orange',
+    // gamedev — rose
+    'csharp': 'rose', 'game-math': 'rose', '2d-games': 'rose', '3d-games': 'rose', 'shaders': 'rose', 'multiplayer': 'rose',
   };
   const colorClass = skillColorMap[skillId || ''] || 'cyan';
 
   const handleCompleteLesson = (lessonId: string) => {
     if (!completedLessons.includes(lessonId)) {
       setCompletedLessons([...completedLessons, lessonId]);
+      trackActivity("lesson", `${skillId}:${lessonId}`);
+
+      if (API.isLoggedIn() && skillId) {
+        API.completeLesson(skillId, lessonId).catch(() => {});
+      }
     }
   };
 
@@ -678,8 +688,6 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-5 md:px-6 relative">
-      <div className={`absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#e6c272]/10 dark:bg-[#e6c272]/20 rounded-full blur-[120px] pointer-events-none`} />
-
       <div className="container mx-auto max-w-5xl relative z-10">
         {/* HEADER */}
         <div className="mb-8">

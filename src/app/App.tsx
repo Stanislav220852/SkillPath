@@ -1,7 +1,7 @@
-import React, { useEffect, useState, createContext, useContext } from "react";
+import React, { useEffect, useState, createContext, useContext, lazy, Suspense } from "react";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeProvider, useTheme } from "next-themes";
+import { ThemeProvider } from "next-themes";
 import {
   Code2,
   Cpu,
@@ -12,8 +12,6 @@ import {
   Terminal,
   Layers,
   ArrowRight,
-  Sun,
-  Moon,
   Menu,
   X,
   ArrowUp,
@@ -21,7 +19,6 @@ import {
 } from "lucide-react";
 import { Quiz } from "./components/utils/QuizQuest.tsx";
 import { ProfessionsPage } from "./components/pages/ProfessionsPage.tsx";
-import { RoadmapsPage } from "./components/pages/RoadmapsPage.tsx";
 import { SkillLearningPage } from "./components/pages/SkillLearningPage.tsx";
 import { MouseSpotlight } from "./components/utils/MouseSpotlight.tsx";
 import { BentoShowcase } from "./components/utils/BentoShowcase.tsx";
@@ -31,9 +28,7 @@ import { TextScramble } from "./components/utils/TextScramble.tsx";
 import { TiltCard } from "./components/utils/TiltCard.tsx";
 import { MagneticButton } from "./components/utils/MagneticButton.tsx";
 import { AnimatedGrid } from "./components/utils/AnimatedGrid.tsx";
-import { MentorsPage } from "./components/pages/MentorsPage.tsx";
 import { ProfilePage } from "./components/pages/ProfilePage.tsx";
-import { ProjectsShowcase } from "./components/utils/ProjectsShowcase.tsx";
 import { CompaniesStrip } from "./components/utils/CompaniesStrip.tsx";
 import { TestimonialsCarousel } from "./components/utils/TestimonialsCarousel.tsx";
 import { FAQAccordion } from "./components/utils/FAQAccordion.tsx";
@@ -52,7 +47,14 @@ import {
   Gamepad2
 } from "lucide-react";
 import { AuthModal } from "./components/utils/AuthModal.tsx";
+import { FloatingParticles } from "./components/utils/FloatingParticles.tsx";
+import { ThemeSwitcher } from "./components/utils/ThemeSwitcher.tsx";
+import { ThemeEffects } from "./components/utils/ThemeEffects.tsx";
+import { themes, themeLabels, type ThemeId, type ThemeColors } from "./theme.config.ts";
 import * as API from "./api"
+
+const RoadmapsPage = lazy(() => import("./components/pages/RoadmapsPage.tsx").then(m => ({ default: m.RoadmapsPage })));
+const MentorsPage = lazy(() => import("./components/pages/MentorsPage.tsx").then(m => ({ default: m.MentorsPage })));
 
 
 // --- ДАННЫЕ ПЕРЕВОДОВ ---
@@ -64,7 +66,7 @@ footer: {
   contacts: "Contacts",
   socials: "Social Media",
   rights: "All rights reserved",
-  desc: "Empowering the next generation of tech creators.",
+  desc: "Empowering the next generation of builders, hackers, and creators. Start your tech journey today.",
 },
 
 
@@ -192,9 +194,6 @@ footer: {
       s1: { t: "Take the Aptitude Test", d: "A quick 5-minute interactive quiz to analyze your vibe, interests, and logic style." },
       s2: { t: "Get Your Roadmap", d: "Unlock a personalized skill tree with curated tutorials, quests, and mini-projects." },
       s3: { t: "Level Up & Connect", d: "Join guilds (cohorts), find mentors, and build a portfolio to showcase your skills." }
-    },
-    footer: {
-      desc: "Empowering the next generation of builders, hackers, and creators. Start your tech journey today."
     },
     profPage: {
       title1: "Tech",
@@ -532,12 +531,12 @@ footer: {
         { name: "Premium", price: 49, yearPrice: 39,   desc: "Полный карьерный пакет", features: ["Всё из Pro", "1-на-1 с ментором еженедельно", "Программа подготовки к собесам", "Помощь с трудоустройством", "Ревью резюме и LinkedIn", "Доступ навсегда"], cta: "Перейти на Premium" },
       ]
     },
-      footer: {
+footer: {
   navigation: "Навигация",
   contacts: "Контакты",
   socials: "Мы в соц. сетях",
   rights: "Все права защищены",
-  desc: "Даем возможности новому поколению IT-создателей.",
+  desc: "Даем возможности новому поколению строителей, хакеров и творцов. Начни свое IT-путешествие сегодня.",
 },
     
     nav: {
@@ -601,9 +600,6 @@ footer: {
       s1: { t: "Пройти профориентацию", d: "Быстрый тест для анализа твоих интересов, который поможет подобрать идеальное направление в IT." },
       s2: { t: "Освоить базу", d: "Получи доступ к интерактивной программе обучения и пошагово изучай профессию на практике." },
       s3: { t: "Выйти на рынок", d: "Нарабатывай сильное портфолио, общайся с менторами в сообществе и готовься к первым офферам." }
-    },
-    footer: {
-      desc: "Даем возможности новому поколению строителей, хакеров и творцов. Начни свое IT-путешествие сегодня."
     },
     profPage: {
       title1: "Карьерный",
@@ -929,6 +925,9 @@ interface LangCtx {
   setCurrentPage: (p: string) => void;
   openRoadmap: string | null;
   setOpenRoadmap: (k: string | null) => void;
+  colorTheme: ThemeId;
+  setColorTheme: (t: ThemeId) => void;
+  colors: ThemeColors;
 }
 
 export const LanguageContext = createContext<LangCtx>({
@@ -939,6 +938,9 @@ export const LanguageContext = createContext<LangCtx>({
   setCurrentPage: () => {},
   openRoadmap: null,
   setOpenRoadmap: () => {},
+  colorTheme: 'blue',
+  setColorTheme: () => {},
+  colors: themes.blue,
 });
 
 const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
@@ -958,26 +960,6 @@ const useMediaQuery = (query: string) => {
     return () => m.removeEventListener("change", handler);
   }, [query]);
   return matches;
-};
-
-const ThemeToggle = () => {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!mounted) {
-    return <div className="w-10 h-10" />;
-  }
-  return (
-    <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2.5 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 text-slate-700 dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-all backdrop-blur-md"
-      aria-label="Toggle theme"
-    >
-      {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-    </button>
-  );
 };
 
 const LanguageToggle = () => {
@@ -1002,8 +984,9 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
   return (
     <section className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center pt-28 md:pt-24 overflow-hidden pb-16 md:pb-20">
       <AnimatedGrid />
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#8AA8FF]/10 dark:bg-[#8AA8FF]/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#FF9800]/10 dark:bg-[#FF9800]/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] pointer-events-none" style={{backgroundColor: "rgba(var(--tp-rgb),0.08)"}} />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] pointer-events-none" style={{backgroundColor: "rgba(var(--ta-rgb),0.06)"}} />
+      <div className="absolute top-[20%] right-[10%] w-[25%] h-[25%] rounded-full blur-[100px] pointer-events-none" style={{backgroundColor: "rgba(var(--tpd-rgb),0.1)"}} />
 
       <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center z-10">
         <motion.div
@@ -1020,10 +1003,10 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
             />
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight text-[#00000F] dark:text-white">
             {t.hero.t1} <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] to-[#002A54] dark:from-[#8AA8FF] dark:to-[#002A54]">{t.hero.t2}</span> <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9800] to-[#FF9800] dark:from-[#FF9800] dark:to-[#FF9800]">{t.hero.t3}</span>
+            <span className="text-[var(--tp)]">{t.hero.t2}</span> <br />
+            <span className="text-[var(--ta)]">{t.hero.t3}</span>
           </h1>
 
           <p className="text-base md:text-lg text-slate-600 dark:text-white/60 max-w-xl mx-auto lg:mx-0 leading-relaxed">
@@ -1035,7 +1018,8 @@ const Hero = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onStartQuiz}
-              className="px-6 md:px-8 py-3.5 md:py-4 rounded-full bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold tracking-wide shadow-[0_0_15px_rgba(138,168,255,0.3)] dark:shadow-[0_0_20px_rgba(138,168,255,0.4)] flex items-center gap-2 hover:shadow-[0_0_25px_rgba(138,168,255,0.5)] dark:hover:shadow-[0_0_30px_rgba(138,168,255,0.6)] transition-all"
+              className="px-6 md:px-8 py-3.5 md:py-4 rounded-full text-white font-bold tracking-wide flex items-center gap-2 transition-all duration-300"
+              style={{background: "linear-gradient(to right, var(--tp), var(--tp-dark), var(--ta))", boxShadow: "0 0_20px_rgba(var(--tp-rgb),0.35)"}}
             >
               {t.hero.btnQuest}
               <ChevronRight className="w-5 h-5" />
@@ -1189,7 +1173,7 @@ const RolesSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-10 md:mb-16 max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 md:mb-6 text-slate-900 dark:text-white">
-            {t.roles.t}             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AA8FF] to-[#FF9800] dark:from-[#8AA8FF] dark:to-[#FF9800]">{t.roles.ts}</span>
+            {t.roles.t}             <span className="text-[var(--tp)]">{t.roles.ts}</span>
           </h2>
           <p className="text-slate-600 dark:text-white/60">{t.roles.d}</p>
         </div>
@@ -1234,7 +1218,8 @@ const RolesSection = () => {
                 setOpenRoadmap(null);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(138,168,255,0.3)] hover:shadow-[0_0_25px_rgba(138,168,255,0.5)] transition-all"
+              className="px-8 py-3.5 rounded-full text-white font-bold text-sm flex items-center gap-2 transition-all"
+              style={{background: "linear-gradient(to right, var(--tp), var(--tp-dark))", boxShadow: "0_0_15px_rgba(var(--tp-rgb),0.3)"}}
             >
               {lang === "RU" ? "Все роадмапы" : "All Roadmaps"}
               <ArrowRight className="w-4 h-4" />
@@ -1250,14 +1235,13 @@ const StepsSection = () => {
   const { t } = useContext(LanguageContext);
   return (
     <section className="py-16 md:py-24 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[500px] bg-[#8AA8FF]/5 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="container mx-auto px-6">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
           {/* LEFT — steps */}
           <div className="flex-1 space-y-6 md:space-y-8 w-full">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white text-center lg:text-left">
-              {t.steps.t} <br />              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9800] to-[#8AA8FF]">{t.steps.ts}</span>
+              {t.steps.t} <br />              <span className="text-[var(--tp)]">{t.steps.ts}</span>
             </h2>
 
             <div className="space-y-5 md:space-y-6">
@@ -1270,7 +1254,7 @@ const StepsSection = () => {
                   key={i}
                   className={`p-5 md:p-6 ${glassCard} flex gap-4 md:gap-6 items-start`}
                 >
-                  <div className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-[#8AA8FF] to-[#002A54] dark:from-[#8AA8FF] dark:to-[#FF9800] drop-shadow-sm">
+                  <div className="text-3xl md:text-4xl font-black text-[var(--tp)] drop-shadow-sm">
                     0{i+1}
                   </div>
                   <div>
@@ -1382,7 +1366,7 @@ const StepsSection = () => {
    Navbar c МОБИЛЬНЫМ бургер-меню
 ──────────────────────────────────────────────────────────── */
 const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLoginClick: () => void; onNavigate?: () => void; onStartQuiz?: () => void; currentUser?: any }) => {
-  const { t, lang, setCurrentPage, setOpenRoadmap } = useContext(LanguageContext);
+  const { t, lang, setCurrentPage, setOpenRoadmap, colorTheme, setColorTheme } = useContext(LanguageContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
   // блокируем скролл фона при открытом меню
@@ -1421,7 +1405,7 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLogi
           onClick={() => { onNavigate?.(); setCurrentPage('home'); setOpenRoadmap(null); setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           className="flex items-center gap-2 group hover:opacity-90 transition-opacity outline-none"
         >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8AA8FF] to-[#002A54] flex items-center justify-center shadow-[0_0_15px_rgba(138,168,255,0.3)] dark:shadow-[0_0_15px_rgba(138,168,255,0.5)] group-hover:scale-105 transition-transform">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(var(--tp-rgb),0.3)] dark:shadow-[0_0_15px_rgba(var(--tp-rgb),0.5)] group-hover:scale-105 transition-transform" style={{background: "linear-gradient(to bottom right, var(--tp), var(--tp-dark))"}}>
             <Layers className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-[#FF9800] transition-colors">SkillPath</span>
@@ -1437,11 +1421,12 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLogi
         {/* Десктоп-кнопки */}
                 <div className="hidden md:flex items-center gap-3">
           <LanguageToggle />
-          <ThemeToggle />
+          <ThemeSwitcher />
                     {currentUser ? (
             <button
               onClick={() => go("profile")}
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8AA8FF] to-[#002A54] flex items-center justify-center text-white text-xs font-black hover:scale-110 transition-transform"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-black hover:scale-110 transition-transform"
+              style={{background: "linear-gradient(to bottom right, var(--tp), var(--tp-dark))"}}
               title={currentUser.name}
             >
               {currentUser.name?.charAt(0)?.toUpperCase() || "U"}
@@ -1449,17 +1434,17 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLogi
           ) : (
             <button
               onClick={onLoginClick}
-              className="px-5 py-2 rounded-full bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold text-sm hover:opacity-90 transition-all"
+              className="px-5 py-2 rounded-full text-white font-bold text-sm hover:opacity-90 transition-all"
+              style={{background: "linear-gradient(to right, var(--tp), var(--tp-dark))"}}
             >
               {lang === "RU" ? "Войти" : "Sign In"}
             </button>
           )}
         </div>
 
-        {/* Мобилка: язык/тема + бургер */}
+        {/* Мобилка: язык + бургер */}
         <div className="flex md:hidden items-center gap-2">
           <LanguageToggle />
-          <ThemeToggle />
           <button
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
@@ -1486,11 +1471,11 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLogi
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-[80%] max-w-sm bg-white dark:bg-[#0b1120] border-l border-black/10 dark:border-white/10 p-6 flex flex-col md:hidden shadow-2xl"
+              className="fixed top-0 right-0 bottom-0 z-50 w-[80%] max-w-sm bg-white dark:bg-[#0b1120] border-l border-black/10 dark:border-white/10 p-6 flex flex-col md:hidden shadow-2xl overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8AA8FF] to-[#002A54] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(to bottom right, var(--tp), var(--tp-dark))"}}>
                     <Layers className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">SkillPath</span>
@@ -1520,9 +1505,63 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLogi
                 ))}
               </div>
 
+              {/* Color theme picker — mobile */}
+              <div className="mt-6 mb-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#002A54]/40 dark:text-white/30 mb-3 px-1">
+                  {lang === "RU" ? "Цветовая тема" : "Color theme"}
+                </p>
+                <div className="flex gap-2">
+                  {(Object.keys(themes) as ThemeId[]).map((id) => (
+                    <button
+                      key={id}
+                      onClick={() => setColorTheme(id)}
+                      className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-200 ${
+                        colorTheme === id
+                          ? "border-[#8AA8FF] bg-[#8AA8FF]/10 dark:border-[#8AA8FF]/50 dark:bg-[#8AA8FF]/10"
+                          : "border-black/5 dark:border-white/5 hover:border-black/10 dark:hover:border-white/15"
+                      }`}
+                    >
+                      <div
+                        className="w-8 h-8 rounded-full ring-2 ring-offset-1 ring-offset-white dark:ring-offset-[#0b1120]"
+                        style={{
+                          background: `linear-gradient(135deg, ${id === "blue" ? "#8AA8FF,#002A54,#FF9800" : id === "purple" ? "#B388FF,#6A0DAD,#FF6B9D" : "#FFFFFF,#666666,#1A1A1A"})`,
+                          ringColor: colorTheme === id ? themes[id].primary : 'transparent',
+                        }}
+                      />
+                      <span className="text-[10px] font-bold text-[#002A54]/60 dark:text-white/50">
+                        {themeLabels[id][lang]}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {currentUser ? (
+                <button
+                  onClick={() => { setMenuOpen(false); go('profile'); }}
+                  className="w-full mt-3 px-5 py-4 rounded-2xl bg-black/5 dark:bg-white/5 text-base font-bold text-slate-800 dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-all flex items-center gap-3"
+                >
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-black flex-shrink-0"
+                    style={{background: "linear-gradient(to bottom right, var(--tp), var(--tp-dark))"}}>
+                    {currentUser.name?.charAt(0)?.toUpperCase() || "U"}
+                  </div>
+                  <span className="text-left leading-tight">{currentUser.name || (lang === "RU" ? "Профиль" : "Profile")}</span>
+                  <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0 ml-auto" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => { setMenuOpen(false); onLoginClick(); }}
+                  className="w-full mt-3 px-5 py-4 rounded-2xl bg-black/5 dark:bg-white/5 text-base font-bold text-slate-800 dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-all flex items-center justify-between"
+                >
+                  <span>{lang === "RU" ? "Войти" : "Sign In"}</span>
+                  <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                </button>
+              )}
+
               <button
                 onClick={() => { setMenuOpen(false); go('quiz'); }}
-                className="mt-auto w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold text-base shadow-lg shadow-[#8AA8FF]/30 flex items-center justify-center gap-2"
+                className="mt-auto w-full px-6 py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2"
+                style={{background: "linear-gradient(to right, var(--tp), var(--tp-dark))", boxShadow: "0_8px_24px_rgba(var(--tp-rgb),0.3)"}}
               >
                 {lang === "RU" ? "Пройти тест" : "Take the Test"}
                 <ChevronRight className="w-5 h-5" />
@@ -1555,7 +1594,8 @@ const ScrollToTop = () => {
           exit={{ opacity: 0, scale: 0.5 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll to top"
-          className="fixed bottom-5 right-5 z-40 p-3.5 rounded-full bg-gradient-to-br from-[#8AA8FF] to-[#002A54] text-white shadow-lg shadow-[#8AA8FF]/40 hover:scale-110 transition-transform"
+          className="fixed bottom-5 right-5 z-40 p-3.5 rounded-full text-white shadow-lg hover:scale-110 transition-transform"
+          style={{background: "linear-gradient(to bottom right, var(--tp), var(--tp-dark))", boxShadow: "0_8px_24px_rgba(var(--tp-rgb),0.4)"}}
         >
           <ArrowUp className="w-5 h-5" />
         </motion.button>
@@ -1587,7 +1627,8 @@ const MobileStickyCTA = ({ onStartQuiz }: { onStartQuiz: () => void }) => {
         >
           <button
             onClick={onStartQuiz}
-            className="w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-[#8AA8FF] to-[#002A54] text-white font-bold text-base shadow-xl shadow-[#8AA8FF]/30 flex items-center justify-center gap-2"
+            className="w-full px-6 py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2"
+            style={{background: "linear-gradient(to right, var(--tp), var(--tp-dark), var(--ta))", boxShadow: "0_8px_24px_rgba(var(--tp-rgb),0.3)"}}
           >
             {t.hero.btnQuest}
             <ChevronRight className="w-5 h-5" />
@@ -1657,7 +1698,7 @@ const Footer = () => {
           {/* КОЛОНКА 1: ЛОГОТИП */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8AA8FF] to-[#002A54] flex items-center justify-center shadow-lg shadow-[#8AA8FF]/20">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{background: "linear-gradient(to bottom right, var(--tp), var(--tp-dark))", boxShadow: "0_8px_24px_rgba(var(--tp-rgb),0.2)"}}>
                 <Layers className="w-7 h-7 text-white" />
               </div>
               <span className="text-3xl font-black tracking-tighter uppercase italic">SkillPath</span>
@@ -1818,7 +1859,12 @@ const Content = () => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(API.getSavedUser());
-  const { lang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap } = useContext(LanguageContext);
+  const { lang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap, colorTheme } = useContext(LanguageContext);
+
+  useEffect(() => {
+    document.documentElement.classList.remove("theme-blue", "theme-purple", "theme-mono");
+    document.documentElement.classList.add(`theme-${colorTheme}`);
+  }, [colorTheme]);
 
   useEffect(() => {
     if (API.isLoggedIn()) {
@@ -1834,8 +1880,9 @@ const Content = () => {
   const isHome = currentPage === "home" && !showQuiz;
 
   return (
-    <div className="min-h-screen bg-[#FBFFFF] text-[#00000F] font-sans transition-colors duration-300 dark:bg-[#00000F] dark:text-white">
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_20%_10%,rgba(138,168,255,0.12),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(255,152,0,0.08),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent)]" />
+    <div className="min-h-screen bg-[#00000F] text-white font-sans transition-colors duration-300">
+      <FloatingParticles count={15} />
+      <ThemeEffects />
       <MouseSpotlight />
 
       <Navbar
@@ -1845,7 +1892,12 @@ const Content = () => {
         currentUser={currentUser}
       />
 
-      <main className="relative z-10">
+      <main className="relative z-10" key={currentPage + (showQuiz ? "-quiz" : "")}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
         {showQuiz ? (
           <Quiz
             onExit={() => {
@@ -1863,22 +1915,26 @@ const Content = () => {
         ) : currentPage === "professions" ? (
           <ProfessionsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} />
         ) : currentPage === "roadmaps" ? (
-          <RoadmapsPage
-            t={t}
-            initialRoadmap={openRoadmap}
-            onOpenRoadmap={(val: string | null) => {
-              if (val && val.startsWith("learn:")) {
-                const skillId = val.split(":")[1];
-                setCurrentPage("learning:" + skillId);
-                setOpenRoadmap(null);
-              } else {
-                setOpenRoadmap(val);
-              }
-            }}
-            lang={lang}
-          />
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
+            <RoadmapsPage
+              t={t}
+              initialRoadmap={openRoadmap}
+              onOpenRoadmap={(val: string | null) => {
+                if (val && val.startsWith("learn:")) {
+                  const skillId = val.split(":")[1];
+                  setCurrentPage("learning:" + skillId);
+                  setOpenRoadmap(null);
+                } else {
+                  setOpenRoadmap(val);
+                }
+              }}
+              lang={lang}
+            />
+          </Suspense>
         ) : currentPage === "mentors" ? (
-          <MentorsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} />
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#FF9800]/30 border-t-[#FF9800] rounded-full animate-spin" /></div>}>
+            <MentorsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} />
+          </Suspense>
         ) : currentPage === "profile" ? (
           <ProfilePage
             onBack={() => setCurrentPage("home")}
@@ -1900,6 +1956,7 @@ const Content = () => {
               }
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
+            roadmapPhases={translations[lang].roadmaps.phases}
           />
         ) : isLearningPage ? (
           <SkillLearningPage skillId={learningSkillId} onBack={() => setCurrentPage("roadmaps")} lang={lang} />
@@ -1908,17 +1965,18 @@ const Content = () => {
             <Hero onStartQuiz={() => setShowQuiz(true)} />
             <CompaniesStrip />
             <StatsSection />
-            <div className="hidden md:block"><RolesSection /></div>
+            
             <div className="hidden md:block"><BentoShowcase onStartQuiz={() => setShowQuiz(true)} /></div>
-            <div className="hidden md:block"><MiniQuiz /></div>
+        
             <TechMarquee />
             <TestimonialsCarousel />
             <StepsSection />
             <div className="hidden md:block"><BootstrapInfo /></div>
-            <div className="hidden md:block"><PricingTable onStartQuiz={() => setShowQuiz(true)} /></div>
+            
             <FAQAccordion />
           </>
         )}
+        </motion.div>
       </main>
 
       {isHome && <Footer />}
@@ -1941,10 +1999,12 @@ export default function App() {
   const t = translations[lang];
   const [currentPage, setCurrentPage] = useState<string>('home');
   const [openRoadmap, setOpenRoadmap] = useState<string | null>(null);
+  const [colorTheme, setColorTheme] = useState<ThemeId>("blue");
+  const colors = themes[colorTheme];
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-      <LanguageContext.Provider value={{ lang, setLang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap }}>
+      <LanguageContext.Provider value={{ lang, setLang, t, currentPage, setCurrentPage, openRoadmap, setOpenRoadmap, colorTheme, setColorTheme, colors }}>
         <Content />
         
       </LanguageContext.Provider>
