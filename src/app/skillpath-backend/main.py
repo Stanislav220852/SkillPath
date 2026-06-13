@@ -1,13 +1,23 @@
 import sys
+import traceback
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-import logging
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from src.core.config import settings
+print("=== SkillPath Backend Starting ===", flush=True)
+
+try:
+    import logging
+    from contextlib import asynccontextmanager
+    from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.staticfiles import StaticFiles
+    from src.core.config import settings
+    print(f"Config loaded. CORS: {settings.cors_origins_list}", flush=True)
+    print(f"DB URL starts with: {settings.DATABASE_URL[:30]}...", flush=True)
+except Exception as e:
+    print(f"FATAL IMPORT ERROR: {e}", flush=True)
+    traceback.print_exc()
+    sys.exit(1)
 
 logger = logging.getLogger("skillpath")
 
@@ -22,9 +32,10 @@ async def lifespan(app: FastAPI):
         from src.models import Base
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-        logger.info("Database tables created/verified")
+        print("Database tables created/verified", flush=True)
     except Exception as e:
-        logger.warning(f"Database startup error (app will still start): {e}")
+        print(f"WARNING: Database startup error (app will still start): {e}", flush=True)
+        traceback.print_exc()
     yield
 
 
@@ -55,6 +66,8 @@ app.include_router(progress.router)
 app.include_router(mentors.router)
 app.include_router(chat.router)
 app.include_router(profile.router)
+
+print("=== All routers loaded. App ready. ===", flush=True)
 
 
 @app.get("/")
