@@ -1,6 +1,6 @@
 // src/app/api.ts — API клиент для SkillPath Backend
 
-const API_URL = "http://localhost:8000";
+export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const TOKEN_KEY = "skillpath_token";
 const USER_KEY = "skillpath_user";
 

@@ -41,6 +41,7 @@ import {
   Gamepad2,
 } from "lucide-react";
 import * as API from "../../api";
+import { API_URL } from "../../api";
 import { getActivityEvents } from "../utils/activityTracker";
 import { getProgressPercent, useProgressVersion, useRoadmapProgress } from "../utils/useRoadmapProgress";
 
@@ -309,7 +310,7 @@ export const ProfilePage = ({ onBack, lang, currentUser, onLogout, onNavigate, r
   const handleSaveName = async () => {
     if (!newName.trim()) return;
     try {
-      const res = await fetch("http://localhost:8000/api/auth/me", {
+      const res = await fetch(`${API_URL}/api/auth/me`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -589,7 +590,7 @@ export const ProfilePage = ({ onBack, lang, currentUser, onLogout, onNavigate, r
                 <div className="absolute inset-0 rounded-full blur-2xl dark:bg-[var(--tp)]/20" style={{backgroundColor: "rgba(var(--tp-rgb),0.25)"}} />
                 <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full border-2 border-[var(--tp)]/40 bg-gradient-to-br from-stone-50 to-stone-200 text-5xl font-black text-stone-900 shadow-2xl ring-4 ring-white/80 dark:border-[var(--tp)]/30 dark:from-stone-800 dark:to-stone-950 dark:text-[var(--tp)] dark:ring-black/60">
                   {avatarUrl ? (
-                    <img src={avatarUrl.startsWith("/") ? `http://localhost:8000${avatarUrl}` : avatarUrl} alt={currentUser.name || "Profile"} className="h-full w-full object-cover" />
+                    <img src={avatarUrl.startsWith("/") ? `${API_URL}${avatarUrl}` : avatarUrl} alt={currentUser.name || "Profile"} className="h-full w-full object-cover" />
                   ) : (
                     currentUser.name?.charAt(0)?.toUpperCase() || "U"
                   )}
