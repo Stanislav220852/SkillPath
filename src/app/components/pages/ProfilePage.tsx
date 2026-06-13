@@ -284,9 +284,9 @@ export const ProfilePage = ({ onBack, lang, currentUser, onLogout, onNavigate, r
     setLoading(true);
     try {
       const [quizzes, bks, stats] = await Promise.all([
-        API.getQuizHistory().catch(() => []),
-        API.getBookings().catch(() => []),
-        API.getProfileStats().catch(() => null),
+        API.getQuizHistory().catch((e) => { console.warn("Quiz history load failed:", e); return []; }),
+        API.getBookings().catch((e) => { console.warn("Bookings load failed:", e); return []; }),
+        API.getProfileStats().catch((e) => { console.warn("Profile stats load failed:", e); return null; }),
       ]);
       setQuizHistory(Array.isArray(quizzes) ? quizzes : []);
       setBookings(Array.isArray(bks) ? bks : []);
@@ -785,11 +785,13 @@ export const ProfilePage = ({ onBack, lang, currentUser, onLogout, onNavigate, r
             <div className="border-b border-stone-200/70 p-5 dark:border-white/[0.06]">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-xl font-black text-stone-950 dark:text-stone-50">{activeTab === "overview" ? t.activityFeed : activeTab === "quizzes" ? t.quizzes : t.bookingsTab}</h2>
+                  <h2 className="text-xl font-black text-stone-950 dark:text-stone-50">
+                    {activeTab === "overview" ? t.activityFeed : activeTab === "quizzes" ? t.quizzes : activeTab === "courses" ? t.courses : t.bookingsTab}
+                  </h2>
                   <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">{activeTab === "overview" ? `${activities.length} ${t.totalActions}` : "SkillPath"}</p>
                 </div>
 
-                <div className="inline-grid grid-cols-4 rounded-xl border border-stone-200/70 bg-stone-100/60 p-1 dark:border-white/[0.06] dark:bg-white/[0.025]">
+                <div className="inline-grid grid-cols-2 sm:grid-cols-4 gap-1 rounded-xl border border-stone-200/70 bg-stone-100/60 p-1 dark:border-white/[0.06] dark:bg-white/[0.025]">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
