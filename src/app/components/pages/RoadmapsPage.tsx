@@ -4,11 +4,14 @@ import {
   ChevronRight, X, CheckCircle2, BookOpen, Zap, ArrowRight,
   Terminal, Cpu, ShieldAlert, Database, Play, Search,
   Clock, RotateCcw, Users, Filter,
-  Server, Smartphone, Settings, Gamepad2  // 🆕 добавь эти 4 иконки
+  Server, Smartphone, Settings, Gamepad2,
+  ClipboardCheck, Award, Lock
 } from 'lucide-react';
 import { lessonData } from './LessonData.tsx';
 import { useRoadmapProgress, useProgressVersion, getProgressPercent } from '../utils/useRoadmapProgress';
 import { AchievementToast } from '../utils/AchievementToast';
+import { PhaseExam } from './PhaseExam';
+import { FinalExam } from './FinalExam';
 
 const glassCard = "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-[2rem] shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
 
@@ -85,7 +88,7 @@ const parseWeeks = (duration: string): number => {
 };
 
 // === ROADMAP PANEL ===
-const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }: any) => {
+const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang, onStartExam }: any) => {
   const { completed, toggle, reset } = useRoadmapProgress(roadmapKey);
   const [activeSkill, setActiveSkill] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "Must" | "Core" | "Pro">("all");
@@ -417,8 +420,127 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang }
                       );
                     })}
                   </div>
+
+                  {/* Phase Exam Button */}
+                  {(() => {
+                    const phaseSkills = phase.skills.map((s: any) => s.id);
+                    const phaseCompleted = phaseSkills.every((id: string) => completed.has(id));
+                    const phasePartial = phaseSkills.some((id: string) => completed.has(id));
+                    return (
+                      <div className="ml-10 mt-4">
+                        <motion.button
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: phaseIdx * 0.1 + 0.3 }}
+                          onClick={() => phaseCompleted && onStartExam?.(`phase-${roadmapKey}-${phaseIdx}`, phase.phase, roadmap.colorClass, 'phase')}
+                          disabled={!phaseCompleted}
+                          className={`w-full p-4 rounded-2xl border-2 border-dashed transition-all duration-200 flex items-center gap-4
+                            ${phaseCompleted
+                              ? `border-green-500/40 bg-green-500/5 hover:bg-green-500/10 cursor-pointer`
+                              : "border-black/10 dark:border-white/10 bg-black/3 dark:bg-white/3 opacity-50 cursor-not-allowed"
+                            }`}
+                        >
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
+                            ${phaseCompleted
+                              ? "bg-green-500/10"
+                              : "bg-stone-100 dark:bg-white/5"
+                            }`}>
+                            {phaseCompleted ? (
+                              <ClipboardCheck className="w-6 h-6 text-green-500" />
+                            ) : (
+                              <Lock className="w-5 h-5 text-stone-400 dark:text-white/30" />
+                            )}
+                          </div>
+                          <div className="flex-1 text-left">
+                            <p className={`text-sm font-bold ${phaseCompleted ? "text-green-600 dark:text-green-400" : "text-stone-400 dark:text-white/30"}`}>
+                              {lang === 'RU' ? `Зачёт: ${phase.phase}` : `Exam: ${phase.phase}`}
+                            </p>
+                            <p className="text-xs text-stone-500 dark:text-white/40">
+                              {phaseCompleted
+                                ? (lang === 'RU' ? 'Готово! Нажмите чтобы сдать' : 'Done! Click to take exam')
+                                : (lang === 'RU' ? `Пройдите все ${phaseSkills.length} навыков чтобы разблокировать` : `Complete all ${phaseSkills.length} skills to unlock`)
+                              }
+                            </p>
+                          </div>
+                          <div className={`px-3 py-1.5 rounded-full text-xs font-bold
+                            ${phaseCompleted
+                              ? "bg-green-500/10 text-green-600 dark:text-green-400"
+                              : "bg-stone-100 dark:bg-white/5 text-stone-400 dark:text-white/30"
+                            }`}>
+                            {phaseCompleted
+                              ? (lang === 'RU' ? 'Открыт' : 'Unlocked')
+                              : `${phaseSkills.filter((id: string) => completed.has(id)).length}/${phaseSkills.length}`
+                            }
+                          </div>
+                        </motion.button>
+                      </div>
+                    );
+                  })()}
                 </div>
               ))}
+            </div>
+
+            {/* FINAL EXAM */}
+            <div className="p-8 pt-0">
+              {(() => {
+                const allDone = allSkills.every((s: any) => completed.has(s.id));
+                const partial = allSkills.some((s: any) => completed.has(s.id));
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className={`p-6 rounded-2xl border-2 transition-all duration-200
+                      ${allDone
+                        ? "border-[var(--ta)]/40 bg-gradient-to-r from-[var(--ta)]/5 to-[var(--tp)]/5"
+                        : "border-black/10 dark:border-white/10 bg-black/3 dark:bg-white/3"
+                      }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0
+                        ${allDone
+                          ? "bg-gradient-to-br from-[var(--tp)] to-[var(--ta)]"
+                          : "bg-[var(--tp)]/10"
+                        }`}>
+                        {allDone ? (
+                          <Award className="w-7 h-7 text-white" />
+                        ) : !partial ? (
+                          <Lock className={`w-7 h-7 ${colorText[roadmap.colorClass]}`} />
+                        ) : (
+                          <Award className={`w-7 h-7 ${colorText[roadmap.colorClass]}`} />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className={`text-lg font-black ${allDone ? "text-[var(--ta)]" : "text-stone-900 dark:text-white"}`}>
+                          {lang === 'RU' ? '🎯 Финальный экзамен' : '🎯 Final Exam'}
+                        </h3>
+                        <p className="text-sm text-stone-500 dark:text-white/50">
+                          {allDone
+                            ? (lang === 'RU' ? 'Ты готов! Покажи что знаешь профессию.' : 'You\'re ready! Show your professional knowledge.')
+                            : !partial
+                              ? (lang === 'RU' ? 'Пройди уроки чтобы разблокировать экзамен.' : 'Complete lessons to unlock the exam.')
+                              : (lang === 'RU' ? `${completed.size}/${allSkills.length} навыков пройдено` : `${completed.size}/${allSkills.length} skills done`)
+                          }
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => allDone && onStartExam?.(`final-${roadmapKey}`, roadmap.title, roadmap.colorClass, 'final')}
+                        disabled={!allDone}
+                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all
+                          ${allDone
+                            ? `bg-gradient-to-r ${colorGradient[roadmap.colorClass]} text-white shadow-lg ${colorGlow[roadmap.colorClass]} hover:opacity-90 cursor-pointer`
+                            : "bg-stone-100 dark:bg-white/5 text-stone-400 dark:text-white/30 cursor-not-allowed opacity-50"
+                          }`}
+                      >
+                        {allDone
+                          ? (lang === 'RU' ? 'Сдать экзамен' : 'Take Exam')
+                          : (lang === 'RU' ? 'Заблокировано' : 'Locked')
+                        }
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })()}
             </div>
           </div>
         </motion.div>
@@ -497,6 +619,7 @@ const RoadmapCard = ({ icon: Icon, title, desc, colorClass, roadmapKey, onViewRo
 // === MAIN PAGE ===
 export const RoadmapsPage = ({ t, initialRoadmap, onOpenRoadmap, lang }: any) => {
   const [openRoadmap, setOpenRoadmap] = useState(initialRoadmap || null);
+  const [activeExam, setActiveExam] = useState<{ id: string; name: string; colorClass: string; type: 'phase' | 'final' } | null>(null);
 
   useEffect(() => {
     setOpenRoadmap(initialRoadmap || null);
@@ -509,10 +632,50 @@ export const RoadmapsPage = ({ t, initialRoadmap, onOpenRoadmap, lang }: any) =>
     if (onOpenRoadmap) onOpenRoadmap(null);
   };
 
+  // Close on Escape key
+  useEffect(() => {
+    if (!openRoadmap) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") closeRoadmap(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [openRoadmap]);
+
   const handleViewRoadmap = (key: string) => {
     setOpenRoadmap(key);
     if (onOpenRoadmap) onOpenRoadmap(key);
   };
+
+  const handleStartExam = (examId: string, name: string, colorClass: string, type: 'phase' | 'final') => {
+    setActiveExam({ id: examId, name, colorClass, type });
+  };
+
+  // If an exam is active, show it
+  if (activeExam) {
+    if (activeExam.type === 'phase') {
+      const parts = activeExam.id.split('-');
+      const phaseIdx = parseInt(parts[parts.length - 1]);
+      const roadmapKey = parts.slice(1, -1).join('-');
+      return (
+        <PhaseExam
+          roadmapKey={roadmapKey}
+          phaseIdx={phaseIdx}
+          colorClass={activeExam.colorClass}
+          onBack={() => setActiveExam(null)}
+          lang={lang}
+        />
+      );
+    } else {
+      const roadmapKey = activeExam.id.replace('final-', '');
+      return (
+        <FinalExam
+          roadmapKey={roadmapKey}
+          colorClass={activeExam.colorClass}
+          onBack={() => setActiveExam(null)}
+          lang={lang}
+        />
+      );
+    }
+  }
 
   return (
     <section className="min-h-screen py-32 relative">
@@ -528,6 +691,7 @@ export const RoadmapsPage = ({ t, initialRoadmap, onOpenRoadmap, lang }: any) =>
             onStartLearning={(skillId: string) => {
               if (onOpenRoadmap) onOpenRoadmap(`learn:${skillId}`);
             }}
+            onStartExam={handleStartExam}
           />
         )}
       </AnimatePresence>

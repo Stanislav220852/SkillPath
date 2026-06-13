@@ -50,6 +50,8 @@ import { AuthModal } from "./components/utils/AuthModal.tsx";
 import { FloatingParticles } from "./components/utils/FloatingParticles.tsx";
 import { ThemeSwitcher } from "./components/utils/ThemeSwitcher.tsx";
 import { ThemeEffects } from "./components/utils/ThemeEffects.tsx";
+import { MusicPlayer } from "./components/utils/MusicPlayer.tsx";
+import { GuideCharacter, emitMusicState } from "./components/utils/GuideCharacter.tsx";
 import { themes, themeLabels, type ThemeId, type ThemeColors } from "./theme.config.ts";
 import * as API from "./api"
 
@@ -931,16 +933,16 @@ interface LangCtx {
 }
 
 export const LanguageContext = createContext<LangCtx>({
-  lang: 'EN',
+  lang: 'RU',
   setLang: () => {},
   t: translations.EN,
   currentPage: 'home',
   setCurrentPage: () => {},
   openRoadmap: null,
   setOpenRoadmap: () => {},
-  colorTheme: 'blue',
+  colorTheme: 'purple',
   setColorTheme: () => {},
-  colors: themes.blue,
+  colors: themes.purple,
 });
 
 const glassCard = "bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]";
@@ -1875,6 +1877,15 @@ const Content = () => {
     }
   }, []);
 
+  // Listen for onboarding roadmap open event
+  useEffect(() => {
+    const handler = (e: CustomEvent<string>) => {
+      setOpenRoadmap(e.detail);
+    };
+    window.addEventListener("onboarding-open-roadmap" as any, handler);
+    return () => window.removeEventListener("onboarding-open-roadmap" as any, handler);
+  }, [setOpenRoadmap]);
+
   const isLearningPage = currentPage.startsWith("learning:");
   const learningSkillId = isLearningPage ? currentPage.split(":")[1] : null;
   const isHome = currentPage === "home" && !showQuiz;
@@ -1983,6 +1994,9 @@ const Content = () => {
       <ScrollToTop />
       {isHome && <MobileStickyCTA onStartQuiz={() => setShowQuiz(true)} />}
 
+      <MusicPlayer onPlayStateChange={(playing) => emitMusicState(playing)} />
+      <GuideCharacter />
+
       {showLogin && (
         <AuthModal
           onClose={() => setShowLogin(false)}
@@ -1995,11 +2009,11 @@ const Content = () => {
 };
 
 export default function App() {
-  const [lang, setLang] = useState<Lang>("EN");
+  const [lang, setLang] = useState<Lang>("RU");
   const t = translations[lang];
   const [currentPage, setCurrentPage] = useState<string>('home');
   const [openRoadmap, setOpenRoadmap] = useState<string | null>(null);
-  const [colorTheme, setColorTheme] = useState<ThemeId>("blue");
+  const [colorTheme, setColorTheme] = useState<ThemeId>("purple");
   const colors = themes[colorTheme];
 
   return (
