@@ -40,7 +40,7 @@ export default function MentorDashboard({ onNavigate, user }: MentorDashboardPro
   const connectWebSocket = (userId: number) => {
     if (wsRef.current) wsRef.current.close();
     const token = API.getToken();
-    const wsUrl = `${API.API_URL.replace("http", "ws")}/api/chat/ws/${userId}?token=${token}`;
+    const wsUrl = `${API.API_URL.replace("https", "wss").replace("http", "ws")}/api/chat/ws/${userId}?token=${token}`;
     const ws = new WebSocket(wsUrl);
     ws.onopen = () => setConnected(true);
     ws.onclose = () => setConnected(false);

@@ -142,7 +142,8 @@ function MentorChatsTab({ lang, currentUser }: { lang: "EN" | "RU"; currentUser:
     wsRef.current?.close();
     const token = API.getToken();
     if (!token) return;
-    const ws = new WebSocket(`${API.API_URL.replace("http", "ws")}/api/chat/ws/${mentorId}?token=${token}`);
+    const wsUrl = `${API.API_URL.replace("https", "wss").replace("http", "ws")}/api/chat/ws/${mentorId}?token=${token}`;
+    const ws = new WebSocket(wsUrl);
     ws.onopen = () => setConnected(true);
     ws.onclose = () => setConnected(false);
     ws.onmessage = (e) => {
@@ -154,17 +155,13 @@ function MentorChatsTab({ lang, currentUser }: { lang: "EN" | "RU"; currentUser:
     wsRef.current = ws;
   };
 
-  const send = async () => {
+  const send = () => {
     if (!newMessage.trim() || !selectedMentor) return;
     const text = newMessage.trim();
     setNewMessage("");
-    setMessages((p) => [...p, { id: Date.now(), from_who: "me", text, created_at: new Date().toISOString() }]);
-    try {
-      const res = await API.sendChatMessage(selectedMentor.id, text);
-      if (res.mentor_reply) {
-        setMessages((p) => [...p, res.mentor_reply]);
-      }
-    } catch (e) { console.error(e); }
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: "send_message", text }));
+    }
   };
 
   if (selectedMentor) {
@@ -289,7 +286,7 @@ function GeneralChatTab({ lang, currentUser }: { lang: "EN" | "RU"; currentUser:
   useEffect(() => {
     const token = API.getToken();
     if (!token) return;
-    const ws = new WebSocket(`${API.API_URL.replace("http", "ws")}/api/chat/ws/general?token=${token}`);
+    const ws = new WebSocket(`${API.API_URL.replace("https", "wss").replace("http", "ws")}/api/chat/ws/general?token=${token}`);
     ws.onopen = () => setConnected(true);
     ws.onclose = () => setConnected(false);
     ws.onmessage = (e) => {
@@ -306,18 +303,13 @@ function GeneralChatTab({ lang, currentUser }: { lang: "EN" | "RU"; currentUser:
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const send = async () => {
+  const send = () => {
     if (!newMessage.trim()) return;
     const text = newMessage.trim();
     setNewMessage("");
-    setMessages((p) => [...p, {
-      id: Date.now(), from_who: "general", text,
-      sender_name: currentUser?.name || "You",
-      created_at: new Date().toISOString(),
-    }]);
-    try {
-      await API.sendGeneralMessage(text);
-    } catch (e) { console.error(e); }
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: "send_message", text }));
+    }
   };
 
   return (
@@ -461,7 +453,7 @@ function DirectChatsTab({ lang, currentUser }: { lang: "EN" | "RU"; currentUser:
     wsRef.current?.close();
     const token = API.getToken();
     if (!token) return;
-    const ws = new WebSocket(`${API.API_URL.replace("http", "ws")}/api/chat/ws/direct/${userId}?token=${token}`);
+    const ws = new WebSocket(`${API.API_URL.replace("https", "wss").replace("http", "ws")}/api/chat/ws/direct/${userId}?token=${token}`);
     ws.onopen = () => setConnected(true);
     ws.onclose = () => setConnected(false);
     ws.onmessage = (e) => {
@@ -473,17 +465,13 @@ function DirectChatsTab({ lang, currentUser }: { lang: "EN" | "RU"; currentUser:
     wsRef.current = ws;
   };
 
-  const send = async () => {
+  const send = () => {
     if (!newMessage.trim() || !selectedUser) return;
     const text = newMessage.trim();
     setNewMessage("");
-    setMessages((p) => [...p, {
-      id: Date.now(), user_id: currentUser?.id, from_who: "user", text,
-      sender_name: currentUser?.name, created_at: new Date().toISOString(),
-    }]);
-    try {
-      await API.sendDirectMessage(selectedUser.user_id, text);
-    } catch (e) { console.error(e); }
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: "send_message", text }));
+    }
   };
 
   if (selectedUser) {
