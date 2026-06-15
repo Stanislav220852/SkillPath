@@ -31,9 +31,19 @@ async def lifespan(app: FastAPI):
         from src.db.database import engine, async_session
         from src.models import Base, User, Mentor
         from src.core.security import hash_password
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        print("Database tables created/verified", flush=True)
+
+        for attempt in range(3):
+            try:
+                async with engine.begin() as conn:
+                    await conn.run_sync(Base.metadata.create_all)
+                print("Database tables created/verified", flush=True)
+                break
+            except Exception as e:
+                print(f"DB connection attempt {attempt + 1}/3 failed: {e}", flush=True)
+                if attempt == 2:
+                    raise
+                import asyncio
+                await asyncio.sleep(2)
 
         async with async_session() as db:
             from sqlalchemy import select
@@ -76,7 +86,7 @@ async def lifespan(app: FastAPI):
                 print(f"Created {len(MENTORS_DATA)} mentors", flush=True)
 
     except Exception as e:
-        print(f"WARNING: Database startup error (app will still start): {e}", flush=True)
+        print(f"FATAL: Database startup error: {e}", flush=True)
         traceback.print_exc()
     yield
 
