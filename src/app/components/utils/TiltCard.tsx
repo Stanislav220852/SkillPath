@@ -1,11 +1,12 @@
-// ./components/utils/TiltCard.tsx
 import { useRef, ReactNode } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+
+const isTouchDevice = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
 interface TiltCardProps {
   children: ReactNode;
   className?: string;
-  intensity?: number; // 1-20, по умолчанию 8
+  intensity?: number;
 }
 
 export const TiltCard = ({ children, className = "", intensity = 8 }: TiltCardProps) => {
@@ -20,7 +21,7 @@ export const TiltCard = ({ children, className = "", intensity = 8 }: TiltCardPr
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-intensity, intensity]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+    if (isTouchDevice || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -31,9 +32,14 @@ export const TiltCard = ({ children, className = "", intensity = 8 }: TiltCardPr
   };
 
   const handleMouseLeave = () => {
+    if (isTouchDevice) return;
     x.set(0);
     y.set(0);
   };
+
+  if (isTouchDevice) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div

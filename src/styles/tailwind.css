@@ -7,8 +7,8 @@
 
 
 /* Safelist for dynamic color classes used in roadmap/profession cards */
-@source inline("{,hover:,dark:,group-hover:}{bg,text,border,from,to,shadow,ring}-{cyan,pink,purple,blue,green,amber,emerald,fuchsia,slate,red,orange,indigo,sky,rose,violet,teal}-{50,100,200,300,400,500,600,700,800,900,950}");
-@source inline("{,hover:,dark:,group-hover:}{bg,text,border}-{cyan,pink,purple,blue,green,amber,emerald,fuchsia}-{400,500}/{5,10,20,30,40,50}");
+@source inline("{,hover:,dark:,group-hover:}{bg,text,border,from,to,shadow,ring}-{cyan,pink,purple,blue,emerald,amber,orange,rose}-{50,100,200,300,400,500,600,700,800,900,950}");
+@source inline("{,hover:,dark:,group-hover:}{bg,text,border}-{cyan,pink,purple,blue,emerald,amber,orange,rose}-{400,500}/{5,10,20,30,40,50}");
 @source inline("dark:bg-{cyan,pink,purple,blue}-{900,950}");
 @source inline("dark:text-{cyan,pink,purple,blue}-{300,400}");
 @source inline("dark:border-{cyan,pink,purple,blue}-{800,700}");

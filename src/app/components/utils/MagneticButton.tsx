@@ -1,12 +1,13 @@
-// ./components/utils/MagneticButton.tsx
 import { useRef, ReactNode, MouseEvent } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+
+const isTouchDevice = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
 interface MagneticButtonProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
-  strength?: number; // по умолчанию 0.3
+  strength?: number;
 }
 
 export const MagneticButton = ({
@@ -22,7 +23,7 @@ export const MagneticButton = ({
   const springY = useSpring(y, { stiffness: 150, damping: 15 });
 
   const handleMouseMove = (e: MouseEvent<HTMLButtonElement>) => {
-    if (!ref.current) return;
+    if (isTouchDevice || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -31,6 +32,7 @@ export const MagneticButton = ({
   };
 
   const handleMouseLeave = () => {
+    if (isTouchDevice) return;
     x.set(0);
     y.set(0);
   };
@@ -41,7 +43,7 @@ export const MagneticButton = ({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      style={{ x: springX, y: springY }}
+      style={isTouchDevice ? undefined : { x: springX, y: springY }}
       whileTap={{ scale: 0.95 }}
       className={className}
     >

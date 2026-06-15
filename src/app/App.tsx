@@ -17,9 +17,6 @@ import {
   ArrowUp,
   ChevronDown,
 } from "lucide-react";
-import { Quiz } from "./components/utils/QuizQuest.tsx";
-import { ProfessionsPage } from "./components/pages/ProfessionsPage.tsx";
-import { SkillLearningPage } from "./components/pages/SkillLearningPage.tsx";
 import { MouseSpotlight } from "./components/utils/MouseSpotlight.tsx";
 import { BentoShowcase } from "./components/utils/BentoShowcase.tsx";
 import { StatsSection } from "./components/utils/StatsSection.tsx";
@@ -28,7 +25,6 @@ import { TextScramble } from "./components/utils/TextScramble.tsx";
 import { TiltCard } from "./components/utils/TiltCard.tsx";
 import { MagneticButton } from "./components/utils/MagneticButton.tsx";
 import { AnimatedGrid } from "./components/utils/AnimatedGrid.tsx";
-import { ProfilePage } from "./components/pages/ProfilePage.tsx";
 import { CompaniesStrip } from "./components/utils/CompaniesStrip.tsx";
 import { TestimonialsCarousel } from "./components/utils/TestimonialsCarousel.tsx";
 import { FAQAccordion } from "./components/utils/FAQAccordion.tsx";
@@ -51,872 +47,32 @@ import { FloatingParticles } from "./components/utils/FloatingParticles.tsx";
 import { ThemeSwitcher } from "./components/utils/ThemeSwitcher.tsx";
 import { ThemeEffects } from "./components/utils/ThemeEffects.tsx";
 import { MusicPlayer } from "./components/utils/MusicPlayer.tsx";
-import { GuideCharacter, emitMusicState } from "./components/utils/GuideCharacter.tsx";
+import { emitMusicState } from "./components/utils/emitMusicState.ts";
 import { themes, themeLabels, type ThemeId, type ThemeColors } from "./theme.config.ts";
+import enTranslations from "./translations/en";
+import ruTranslations from "./translations/ru";
 import * as API from "./api"
 
 const RoadmapsPage = lazy(() => import("./components/pages/RoadmapsPage.tsx").then(m => ({ default: m.RoadmapsPage })));
 const MentorsPage = lazy(() => import("./components/pages/MentorsPage.tsx").then(m => ({ default: m.MentorsPage })));
+const AdminLogin = lazy(() => import("./components/pages/AdminLogin.tsx"));
+const AdminDashboard = lazy(() => import("./components/pages/AdminDashboard.tsx"));
+const AdminUsers = lazy(() => import("./components/pages/AdminUsers.tsx"));
+const AdminMentors = lazy(() => import("./components/pages/AdminMentors.tsx"));
+const AdminBookings = lazy(() => import("./components/pages/AdminBookings.tsx"));
+const AdminSettings = lazy(() => import("./components/pages/AdminSettings.tsx"));
+const MentorDashboard = lazy(() => import("./components/pages/MentorDashboard.tsx"));
+const ChatsPage = lazy(() => import("./components/pages/ChatsPage.tsx"));
+const Presentation = lazy(() => import("./presentation/Presentation.tsx").then(m => ({ default: m.Presentation })));
+const Quiz = lazy(() => import("./components/utils/QuizQuest.tsx").then(m => ({ default: m.Quiz })));
+const ProfessionsPage = lazy(() => import("./components/pages/ProfessionsPage.tsx").then(m => ({ default: m.ProfessionsPage })));
+const SkillLearningPage = lazy(() => import("./components/pages/SkillLearningPage.tsx").then(m => ({ default: m.SkillLearningPage })));
+const ProfilePage = lazy(() => import("./components/pages/ProfilePage.tsx").then(m => ({ default: m.ProfilePage })));
+const GuideCharacter = lazy(() => import("./components/utils/GuideCharacter.tsx").then(m => ({ default: m.GuideCharacter })));
 
 
 // --- ДАННЫЕ ПЕРЕВОДОВ ---
-const translations = {
-  EN: {
-    // EN
-footer: {
-  navigation: "Navigation",
-  contacts: "Contacts",
-  socials: "Social Media",
-  rights: "All rights reserved",
-  desc: "Empowering the next generation of builders, hackers, and creators. Start your tech journey today.",
-},
-
-
-    companies: {
-      title: "Our graduates work at",
-    },
-    testimonials: {
-      title: "Real stories from",
-      titleAccent: "our students",
-      items: [
-        { name: "Alex Petrov",    role: "Junior Frontend @ Yandex",  text: "Leaving accounting at 30 was terrifying. I thought coding was for math geniuses. But the course walks you step by step from basic tags to complex stuff. The community chat and clear roadmap kept me going. It really works!", before: "Accountant", after: "$3k/mo" },
-        { name: "Maria Volkova",  role: "ML Engineer @ Tinkoff",     text: "I had zero math background. The roadmap broke everything into bite-sized pieces. Now I train models at a top bank.", before: "Marketing", after: "$5k/mo" },
-        { name: "Daniel Kim",     role: "Pentester @ Group-IB",      text: "From watching Mr. Robot to actually hacking systems legally. Best decision of my career.", before: "Sysadmin", after: "$4k/mo" },
-        { name: "Sofia Lebedeva", role: "Data Analyst @ Avito",      text: "Spent 2 years watching random YouTube tutorials — total chaos. SkillPath gave me structure. My mentor was brutally honest with feedback and helped me build a real portfolio. Got hired at Avito in 6 months!", before: "Student", after: "$3.5k/mo" },
-        { name: "Igor Savchenko", role: "Backend Dev @ Ozon",        text: "After the army I thought it was too late for IT. A friend shared SkillPath, I took the test and got on the backend roadmap. Wrote my first API in 4 months, got an offer in 7. Mentors actually review your code. Best investment ever.", before: "Military", after: "$3.2k/mo" },
-        { name: "Anna Krylova",   role: "Mobile Dev @ VK",           text: "Joined SkillPath as a stay-at-home mom who didn't know what Git was. Studied at night while the baby slept. The mobile dev roadmap is incredible: every step is clear, projects are real. Now I work remotely at VK and finally have financial independence.", before: "Stay-at-home mom", after: "$3.8k/mo" },
-      ]
-    },
-    faq: {
-      title: "Frequently Asked",
-      titleAccent: "Questions",
-      items: [
-        { q: "How much does it cost?",              a: "We have a free tier with basic roadmaps and a Pro plan starting from $19/month with mentor access, certificates and projects." },
-        { q: "How long until I get a job?",         a: "Most students land their first offer within 6-8 months of focused learning (10h/week). Some do it in 4 months, others in a year — it's your pace." },
-        { q: "Do I need any coding background?",    a: "Nope. 60% of our students started from zero. The roadmaps are built for absolute beginners with clear step-by-step progression." },
-        { q: "What if I get stuck?",                a: "You get a personal mentor, 24/7 AI copilot and an active Discord community of 5000+ students helping each other." },
-        { q: "Do you help with job placement?",     a: "Yes — resume reviews, mock interviews, referrals to partner companies (Yandex, Tinkoff, Sber, Avito) and a job board with exclusive openings." },
-        { q: "Can I switch roadmaps later?",        a: "Absolutely. You can switch anytime, and completed skills carry over where they overlap." },
-      ]
-    },
-    pricing: {
-      title: "Choose your",
-      titleAccent: "plan",
-      subtitle: "Start free. Upgrade when you're ready to level up.",
-      monthly: "Monthly",
-      yearly: "Yearly",
-      save: "Save 20%",
-      popular: "Most Popular",
-      perMonth: "/month",
-      cta: "Get Started",
-      plans: [
-        { name: "Free",    price: 0,  yearPrice: 0,    desc: "Perfect to explore",     features: ["All public roadmaps", "Community access", "Basic progress tracking", "1 free mentor session"], cta: "Start Free" },
-        { name: "Pro",     price: 19, yearPrice: 15,   desc: "For serious learners",   features: ["Everything in Free", "Unlimited mentor chat", "All certificates", "Live workshops", "Project reviews", "Priority support"], cta: "Go Pro", popular: true },
-        { name: "Premium", price: 49, yearPrice: 39,   desc: "Full career package",    features: ["Everything in Pro", "1-on-1 weekly mentor", "Interview prep program", "Job placement help", "Resume & LinkedIn review", "Lifetime access"], cta: "Go Premium" },
-      ]
-    },
-    mini: {
-  title: "Find your",
-  titleAccent: "perfect path",
-  subtitle: "Answer 5 quick questions",
-  questions: [
-    { q: "What gets you excited?", opts: [
-      { emoji: "🎨", text: "Beautiful design", v: "frontend" },
-      { emoji: "🤖", text: "Smart machines",   v: "ai" },
-      { emoji: "🛡", text: "Solving puzzles",  v: "cybersec" },
-      { emoji: "📊", text: "Finding patterns", v: "datascience" },
-    ]},
-    { q: "Your superpower?", opts: [
-      { emoji: "✨", text: "Visual taste",     v: "frontend" },
-      { emoji: "🧮", text: "Math & logic",     v: "ai" },
-      { emoji: "🔍", text: "Attention to detail", v: "cybersec" },
-      { emoji: "📈", text: "Spotting trends",  v: "datascience" },
-    ]},
-    { q: "Ideal Saturday?", opts: [
-      { emoji: "🖌", text: "Drawing concepts", v: "frontend" },
-      { emoji: "📚", text: "Reading research", v: "ai" },
-      { emoji: "🕵", text: "Solving mysteries", v: "cybersec" },
-      { emoji: "📉", text: "Analyzing data",   v: "datascience" },
-    ]},
-    { q: "Pick a tool you'd love to master:", opts: [
-      { emoji: "⚛️", text: "Figma & React",    v: "frontend" },
-      { emoji: "🧠", text: "PyTorch & TensorFlow", v: "ai" },
-      { emoji: "🔓", text: "Kali Linux & Burp Suite", v: "cybersec" },
-      { emoji: "📊", text: "SQL & Tableau",    v: "datascience" },
-    ]},
-    { q: "What kind of impact do you want?", opts: [
-      { emoji: "🌐", text: "Make the web beautiful", v: "frontend" },
-      { emoji: "🚀", text: "Build the future of AI", v: "ai" },
-      { emoji: "🛡️", text: "Protect people online",  v: "cybersec" },
-      { emoji: "💡", text: "Turn data into decisions", v: "datascience" },
-    ]},
-  ],
-  result: "You're best suited for",
-  cta: "See full roadmap",
-  retake: "Take again",
-},
-    nav: {
-      profs: "Professions",
-      roads: "Roadmaps",
-      mentors: "Mentors",
-      login: "Login",
-      loginTitle: "Welcome back",
-      loginSubtitle: "Login to continue your journey",
-      emailPlaceholder: "Email",
-      passwordPlaceholder: "Password",
-      loginBtn: "Sign In",
-      noAccount: "Don't have an account?",
-      signUp: "Sign up",
-      orContinue: "or continue with",
-      comingSoon: "Coming soon! 🚀",
-      mentorsToast: "Mentor matching is launching next month",
-    },
-    hero: {
-      badge: "SkillPath Beta 2.0",
-      t1: "Choose Your",
-      t2: "Future Class",
-      t3: "In Tech",
-      desc: "Interactive guide for youth IT academy. Find the profession that fits your vibe. Whether you love breaking things or building them—start your journey here.",
-      btnQuest: "Start Your Quest",
-      btnRoles: "Explore Roles"
-    },
-    roles: {
-      t: "Select Your",
-      ts: "Character Class",
-      d: "Discover the paths available in the tech realm. Each class has unique abilities, tools, and a specialized skill tree.",
-      f: { t: "Frontend Dev", d: "Master of the visual realm. Create stunning UI/UX with code and design magic." },
-      ai: { t: "AI Engineer", d: "Train neural networks. Speak to machines and build the artificial minds of tomorrow." },
-      cs: { t: "Cybersec", d: "The digital guardian. Hack systems to patch them and protect data from dark hats." },
-      ds: { t: "Data Scientist", d: "The modern alchemist. Turn raw data into predictive gold and uncover hidden truths." },
-      view: "View Roadmap"
-    },
-    steps: {
-      t: "How to begin your",
-      ts: "Adventure",
-      s1: { t: "Take the Aptitude Test", d: "A quick 5-minute interactive quiz to analyze your vibe, interests, and logic style." },
-      s2: { t: "Get Your Roadmap", d: "Unlock a personalized skill tree with curated tutorials, quests, and mini-projects." },
-      s3: { t: "Level Up & Connect", d: "Join guilds (cohorts), find mentors, and build a portfolio to showcase your skills." }
-    },
-    profPage: {
-      title1: "Tech",
-      title2: "Professions",
-      subtitle: "Explore all available career paths in the tech industry",
-      skills: "Key Skills",
-      salary: "Salary Range",
-      watchVideo: "Watch overview",
-      dayInLife: "Day in Life",
-      tools: "Popular Tools",
-      juniorLabel: "Junior",
-      seniorLabel: "Senior",
-      openRoadmap: "Open Full Roadmap",
-      selectProf: "Select a profession",
-      back: "Back",
-    },
-    roadmaps: {
-      title: "Skill",
-      titleSuffix: "Roadmaps",
-      subtitle: "Personalized learning roadmaps for every tech career path",
-      viewBtn: "View Roadmap",
-      interactiveLabel: "Interactive Roadmap",
-      interactiveDesc: "Click on a skill to explore details. Track your completed milestones.",
-      progress: "Progress",
-      progressDone: "% complete",
-      resources: "Resources",
-      markDone: "Mark as completed",
-      markNotDone: "Mark as not completed",
-      startLearning: "Start Learning",
-      filters: { all: "All", must: "Must-have", core: "Core", pro: "Pro" },
-      totalTime: "Total time",
-      weeks: "weeks",
-      hoursPerWeek: "h/week",
-      searchPlaceholder: "Search skills...",
-      continueBtn: "Continue",
-      nothingFound: "No skills match your search",
-      reset: "Reset progress",
-      learningNow: "learning right now",
-      toastPhase: "Phase Complete!",
-      toastRoadmap: "Roadmap Complete! You're a beast 🔥",
-      cardProgressLabel: "complete",
-      phases: {
-        frontend: {
-          title: "Frontend Developer",
-          colorClass: "cyan",
-          phases: [
-            {
-              phase: "Fundamentals",
-              skills: [
-                { id: "html-css", title: "HTML & CSS", description: "Page layout, flexbox, grid, animations. The foundation of all visuals.", resources: ["MDN Web Docs", "CSS Tricks", "freeCodeCamp"], duration: "4 wks", tag: "Must" },
-                { id: "js-core", title: "JavaScript Core", description: "Variables, functions, DOM, async. The language that brings pages to life.", resources: ["javascript.info", "Eloquent JS", "You Don't Know JS"], duration: "6 wks", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Frameworks",
-              skills: [
-                { id: "react", title: "React", description: "Components, hooks, state. The most popular UI framework in the world.", resources: ["react.dev", "Scrimba React", "Epic React"], duration: "8 wks", tag: "Core" },
-                { id: "typescript", title: "TypeScript", description: "Typing makes code reliable and scalable. Must-have in 2024.", resources: ["TypeScript Handbook", "Total TypeScript", "TS Exercises"], duration: "3 wks", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Advanced",
-              skills: [
-                { id: "state", title: "State Management", description: "Zustand, Redux Toolkit, Jotai — managing global app state.", resources: ["Zustand docs", "Redux Toolkit docs", "Jotai"], duration: "3 wks", tag: "Pro" },
-                { id: "testing", title: "Testing", description: "Vitest, Playwright — reliable code requires tests.", resources: ["Testing Library", "Vitest Docs", "Playwright"], duration: "3 wks", tag: "Pro" },
-                { id: "deploy", title: "Deploy & CI/CD", description: "Vercel, Netlify, GitHub Actions — delivering code to users.", resources: ["Vercel Docs", "GitHub Actions", "Docker Intro"], duration: "2 wks", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        ai: {
-          title: "AI / ML Engineer",
-          colorClass: "pink",
-          phases: [
-            {
-              phase: "Fundamentals",
-              skills: [
-                { id: "python", title: "Python", description: "Syntax, data structures, OOP. The main language of the AI/ML world.", resources: ["Python.org", "Automate the Boring Stuff", "RealPython"], duration: "5 wks", tag: "Must" },
-                { id: "math", title: "Math for ML", description: "Linear algebra, statistics, calculus. Without this, neural networks are a black box.", resources: ["3Blue1Brown", "Khan Academy", "Mathematics for ML book"], duration: "6 wks", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Machine Learning",
-              skills: [
-                { id: "sklearn", title: "Scikit-learn", description: "Classic ML algorithms: regression, classification, clustering.", resources: ["sklearn docs", "Kaggle Learn", "Hands-on ML book"], duration: "5 wks", tag: "Core" },
-                { id: "dl", title: "Deep Learning", description: "PyTorch — neural networks, CNN, RNN. The foundation of modern AI.", resources: ["fast.ai", "PyTorch tutorials", "Deep Learning book"], duration: "8 wks", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Specialization",
-              skills: [
-                { id: "nlp", title: "NLP & LLMs", description: "Transformers, fine-tuning, RAG — working with language models.", resources: ["Hugging Face", "LLM course", "LangChain docs"], duration: "6 wks", tag: "Pro" },
-                { id: "mlops", title: "MLOps", description: "MLflow, DVC, deploying models to production.", resources: ["MLflow docs", "Made With ML", "Full Stack Deep Learning"], duration: "4 wks", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        cybersec: {
-          title: "Cybersecurity Specialist",
-          colorClass: "purple",
-          phases: [
-            {
-              phase: "Fundamentals",
-              skills: [
-                { id: "networking", title: "Networking", description: "TCP/IP, DNS, HTTP, Wireshark. Without network knowledge — you can't understand attacks.", resources: ["CompTIA Network+", "Professor Messer", "TryHackMe"], duration: "6 wks", tag: "Must" },
-                { id: "linux", title: "Linux & CLI", description: "Bash, permissions, processes. Most servers run on Linux.", resources: ["OverTheWire", "Linux Journey", "Bandit Wargame"], duration: "4 wks", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Attacks & Defense",
-              skills: [
-                { id: "pentest", title: "Penetration Testing", description: "Kali Linux, Metasploit, OWASP Top 10. Hack legally.", resources: ["HackTheBox", "TryHackMe", "PentesterLab"], duration: "8 wks", tag: "Core" },
-                { id: "webapp", title: "Web App Security", description: "SQL Injection, XSS, CSRF — web application vulnerabilities.", resources: ["OWASP WebGoat", "PortSwigger Academy", "DVWA"], duration: "5 wks", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Advanced",
-              skills: [
-                { id: "siem", title: "SIEM & SOC", description: "Splunk, ELK — monitoring, incident detection.", resources: ["Splunk Fundamentals", "Blue Team Labs", "SANS SOC"], duration: "5 wks", tag: "Pro" },
-                { id: "certs", title: "Certifications", description: "CEH, OSCP, CompTIA Security+ — certify your skills.", resources: ["CompTIA", "Offensive Security", "EC-Council"], duration: "Ongoing", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        datascience: {
-          title: "Data Scientist",
-          colorClass: "blue",
-          phases: [
-            {
-              phase: "Fundamentals",
-              skills: [
-                { id: "python-ds", title: "Python for Data", description: "Pandas, NumPy — processing and analyzing tabular data.", resources: ["Kaggle Python", "Pandas docs", "Python Data Science Handbook"], duration: "5 wks", tag: "Must" },
-                { id: "sql", title: "SQL", description: "SELECT, JOIN, aggregations. Data lives in databases.", resources: ["Mode SQL Tutorial", "SQLZoo", "LeetCode SQL"], duration: "3 wks", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Analysis & Visualization",
-              skills: [
-                { id: "eda", title: "EDA & Visualization", description: "Matplotlib, Seaborn, Plotly — find patterns in data.", resources: ["Kaggle EDA", "Plotly docs", "Seaborn gallery"], duration: "4 wks", tag: "Core" },
-                { id: "stats", title: "Statistics", description: "Hypotheses, p-value, A/B tests — the foundation of data-driven decisions.", resources: ["StatQuest", "Think Stats", "Khan Statistics"], duration: "5 wks", tag: "Core" },
-              ]
-            },
-            {
-              phase: "ML & Production",
-              skills: [
-                { id: "ml-ds", title: "Machine Learning", description: "Sklearn, feature engineering, prediction models.", resources: ["Kaggle ML", "Hands-on ML", "fast.ai"], duration: "7 wks", tag: "Pro" },
-                { id: "bi", title: "BI & Dashboards", description: "Tableau, Power BI, Superset — business visualization.", resources: ["Tableau Public", "Power BI Docs", "Metabase"], duration: "3 wks", tag: "Pro" },
-                { id: "bigdata", title: "Big Data", description: "Spark, Hadoop — processing data at industrial scale.", resources: ["Databricks", "Apache Spark", "Coursera Big Data"], duration: "5 wks", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        backend: {
-          title: "Backend Developer",
-          colorClass: "emerald",
-          phases: [
-            {
-              phase: "Fundamentals",
-              skills: [
-                { id: "node", title: "Node.js & Express", description: "Server-side JavaScript, REST APIs, middleware.", resources: ["Node.js docs", "Express guide", "The Net Ninja"], duration: "5 wks", tag: "Must" },
-                { id: "db-basics", title: "Databases Basics", description: "SQL vs NoSQL, schemas, queries, indexes.", resources: ["PostgreSQL Tutorial", "MongoDB University", "SQLBolt"], duration: "4 wks", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Backend Skills",
-              skills: [
-                { id: "auth", title: "Auth & Security", description: "JWT, OAuth, sessions, hashing passwords.", resources: ["Auth0 Blog", "OWASP Guide", "JWT.io"], duration: "3 wks", tag: "Core" },
-                { id: "apis", title: "REST & GraphQL", description: "API design patterns, versioning, GraphQL basics.", resources: ["REST API Design", "GraphQL.org", "Apollo Tutorial"], duration: "4 wks", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Production",
-              skills: [
-                { id: "docker", title: "Docker & Containers", description: "Containerization, Docker Compose, deployment.", resources: ["Docker Docs", "Docker Mastery", "Play with Docker"], duration: "3 wks", tag: "Pro" },
-                { id: "cloud", title: "Cloud (AWS/GCP)", description: "EC2, S3, Lambda, deploying to production.", resources: ["AWS Free Tier", "GCP Codelabs", "Cloud Guru"], duration: "5 wks", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        mobile: {
-          title: "Mobile Developer",
-          colorClass: "amber",
-          phases: [
-            {
-              phase: "Fundamentals",
-              skills: [
-                { id: "rn-basics", title: "React Native Basics", description: "Components, navigation, state management on mobile.", resources: ["RN Docs", "Expo Docs", "Academind RN"], duration: "5 wks", tag: "Must" },
-                { id: "mobile-ui", title: "Mobile UI/UX", description: "iOS HIG, Material Design, gestures, animations.", resources: ["Apple HIG", "Material Design", "Mobbin"], duration: "3 wks", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Native Features",
-              skills: [
-                { id: "native-api", title: "Native APIs", description: "Camera, GPS, push notifications, biometrics.", resources: ["RN Camera", "Expo Notifications", "RN Maps"], duration: "4 wks", tag: "Core" },
-                { id: "state-mobile", title: "State & Storage", description: "Redux/Zustand, AsyncStorage, SQLite mobile.", resources: ["Zustand docs", "AsyncStorage", "WatermelonDB"], duration: "3 wks", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Publishing",
-              skills: [
-                { id: "appstore", title: "App Store Publishing", description: "Build configs, signing, App Store / Play Store submission.", resources: ["Apple Developer", "Google Play Console", "EAS Build"], duration: "2 wks", tag: "Pro" },
-                { id: "perf-mobile", title: "Mobile Performance", description: "Bundle size, render optimization, native modules.", resources: ["RN Performance", "Flipper", "Hermes engine"], duration: "3 wks", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        devops: {
-          title: "DevOps Engineer",
-          colorClass: "orange",
-          phases: [
-            {
-              phase: "Fundamentals",
-              skills: [
-                { id: "linux-devops", title: "Linux & Bash", description: "Shell scripting, processes, permissions, networking.", resources: ["Linux Journey", "Bash Academy", "OverTheWire"], duration: "4 wks", tag: "Must" },
-                { id: "git-devops", title: "Git & CI/CD Basics", description: "Advanced Git, GitHub Actions, GitLab CI.", resources: ["Pro Git book", "GitHub Actions", "GitLab CI Docs"], duration: "3 wks", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Infrastructure",
-              skills: [
-                { id: "k8s", title: "Kubernetes", description: "Pods, deployments, services, ingress, Helm charts.", resources: ["K8s.io tutorials", "KodeKloud", "Helm docs"], duration: "6 wks", tag: "Core" },
-                { id: "terraform", title: "Terraform & IaC", description: "Infrastructure as Code, providers, state management.", resources: ["HashiCorp Learn", "Terraform Up & Running", "Pluralsight"], duration: "4 wks", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Production",
-              skills: [
-                { id: "monitoring", title: "Monitoring & Logs", description: "Prometheus, Grafana, ELK stack, alerting.", resources: ["Prometheus Docs", "Grafana Tutorials", "Elastic Guide"], duration: "4 wks", tag: "Pro" },
-                { id: "aws-devops", title: "AWS / Cloud Pro", description: "ECS, EKS, CloudFormation, cost optimization.", resources: ["AWS Solutions Architect", "A Cloud Guru", "Cloud Resume"], duration: "6 wks", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        gamedev: {
-          title: "Game Developer",
-          colorClass: "rose",
-          phases: [
-            {
-              phase: "Fundamentals",
-              skills: [
-                { id: "csharp", title: "C# & Unity Basics", description: "Programming fundamentals through Unity engine.", resources: ["Unity Learn", "Brackeys YouTube", "C# Microsoft Docs"], duration: "6 wks", tag: "Must" },
-                { id: "game-math", title: "Math for Games", description: "Vectors, matrices, trigonometry, physics basics.", resources: ["3Blue1Brown", "Real-Time Rendering", "Math for Games"], duration: "4 wks", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Game Design",
-              skills: [
-                { id: "2d-games", title: "2D Game Development", description: "Sprites, animations, collisions, tilemaps.", resources: ["Unity 2D", "GDQuest Godot", "Pixel art assets"], duration: "5 wks", tag: "Core" },
-                { id: "3d-games", title: "3D Game Development", description: "Models, lighting, materials, cameras, physics.", resources: ["Unity 3D", "Unreal Engine Docs", "Blender Guru"], duration: "8 wks", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Specialization",
-              skills: [
-                { id: "shaders", title: "Shaders & Graphics", description: "HLSL/GLSL, shader graph, post-processing effects.", resources: ["Catlike Coding", "Book of Shaders", "Ronja Shader Tutorials"], duration: "6 wks", tag: "Pro" },
-                { id: "multiplayer", title: "Multiplayer & Networking", description: "Mirror, Netcode, server architecture, lag compensation.", resources: ["Mirror Networking", "Photon Docs", "Gaffer on Games"], duration: "5 wks", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-      },
-      cards: [
-        { title: "Frontend Dev", desc: "Master of the visual realm. Create stunning UI/UX with code and design magic.", colorClass: "cyan", roadmapKey: "frontend" },
-        { title: "AI Engineer", desc: "Train neural networks. Speak to machines and build the artificial minds of tomorrow.", colorClass: "pink", roadmapKey: "ai" },
-        { title: "Cybersec", desc: "The digital guardian. Hack systems to patch them and protect data from dark hats.", colorClass: "purple", roadmapKey: "cybersec" },
-        { title: "Data Scientist", desc: "The modern alchemist. Turn raw data into predictive gold and uncover hidden truths.", colorClass: "blue", roadmapKey: "datascience" },
-        { title: "Backend Dev",    desc: "Architect of the server side. APIs, databases, and the engine behind every app.",     colorClass: "emerald", roadmapKey: "backend" },
-        { title: "Mobile Dev",     desc: "Build iOS and Android apps that millions carry in their pockets every day.",          colorClass: "amber",   roadmapKey: "mobile" },
-        { title: "DevOps Engineer",desc: "Master of infrastructure. Automate everything, ship code fast and reliably.",         colorClass: "orange",  roadmapKey: "devops" },
-        { title: "Game Developer", desc: "Create worlds. Unity, Unreal, shaders — turn your imagination into playable reality.",colorClass: "rose",    roadmapKey: "gamedev" }
-      ]
-    },
-    bento: {
-      title1: "Everything you need to",
-      title2: "level up",
-      items: {
-        aptitude:   { t: "Aptitude Test",   d: "5-minute interactive quiz that decodes your brain and matches you with the perfect tech class." },
-        roadmaps:   { t: "Roadmaps",        d: "Step-by-step skill trees with curated resources and milestones." },
-        mentors:    { t: "Mentors",         d: "Learn from engineers at top companies." },
-        certs:      { t: "Certificates",    d: "Earn NFT-powered certificates upon completing roadmaps." },
-        workshops:  { t: "Live Workshops",  d: "Weekly coding sessions, CTFs and ML hackathons." },
-        library:    { t: "Curated Library", d: "Hand-picked tutorials, docs and video courses — no noise." },
-        career:     { t: "Career Growth",   d: "Salary insights, interview prep and portfolio reviews." },
-        copilot:    { t: "AI Copilot",      d: "Your personal learning assistant available 24/7." },
-      }
-    },
-    stats: {
-      students: "Students",
-      mentors: "Mentors",
-      profs: "Professions",
-      completion: "Completion",
-    }
-  },
-  RU: {
-    companies: {
-      title: "Наши выпускники работают в",
-    },
-     testimonials: {
-      title: "Реальные истории",
-      titleAccent: "наших студентов",
-      items: [
-        { name: "Алексей Петров",   role: "Junior Frontend @ Yandex",  text: "Уходить из бухгалтерии в 30 лет было дико страшно, казалось, что код — это для гениев математики. Но курс построен так, что тебя ведут за руку от простых тегов до сложных штук. Было ли тяжело? Да, иногда хотелось всё бросить. Но поддержка в чате и чёткий план не дали слиться. Ребята, это реально работает!", before: "Бухгалтер", after: "$3k/мес" },
-        { name: "Мария Волкова",    role: "ML Engineer @ Tinkoff",     text: "У меня был ноль по математике. Роадмап разбил всё на маленькие шаги. Сейчас тренирую модели в банке.", before: "Маркетолог", after: "$5k/мес" },
-        { name: "Данил Ким",        role: "Pentester @ Group-IB",      text: "От просмотра Mr. Robot до реальных взломов систем легально. Лучшее решение в карьере.", before: "Сисадмин", after: "$4k/мес" },
-        { name: "София Лебедева",   role: "Data Analyst @ Avito",      text: "Два года пыталась учиться сама по роликам на YouTube. В итоге каша в голове и полное ощущение, что IT не для меня. В SkillPath пришла ради структуры. Ментор просто спас: разложил всё по полочкам, честно критиковал домашку и помог собрать нормальное портфолио. Через полгода я прошла собес в Авито!", before: "Студентка", after: "$3.5k/мес" },
-        { name: "Игорь Савченко",   role: "Backend Dev @ Ozon",        text: "После армии думал, что в IT уже поздно. Друг скинул SkillPath, я прошёл тест и попал на бэкенд-роадмап. Через 4 месяца написал первый API, через 7 — получил оффер. Менторы реально разбирают твой код, а не просто ставят оценку. Лучшая инвестиция в жизни.", before: "Военнослужащий", after: "$3.2k/мес" },
-        { name: "Анна Крылова",     role: "Mobile Dev @ VK",           text: "Пришла в SkillPath мамой в декрете, которая не знала, что такое Git. Училась по ночам, пока ребёнок спал. Роадмап по мобильной разработке — просто бомба: каждый шаг понятен, проекты реальные. Сейчас работаю удалённо в VK и наконец-то финансово независима.", before: "В декрете", after: "$3.8k/мес" },
-      ]
-    },
-    faq: {
-      title: "Частые",
-      titleAccent: "вопросы",
-      items: [
-        { q: "Сколько это стоит?", a: "Обучение полностью бесплатное. У вас будет доступ ко всем учебным материалам и практическим заданиям без скрытых платежей и подписок." },
-        { q: "Как быстро я найду работу?", a: "Всё зависит от вашего темпа и выбранного направления. В среднем наши студенты осваивают базу и собирают первое портфолио за 6–9 месяцев, после чего можно активно откликаться на вакансии." },
-        { q: "Нужен ли опыт программирования?", a: "Нет, наши программы рассчитаны на новичков. Мы начинаем с самых азов, а интерактивный тест на старте поможет выбрать направление, которое подходит именно вам." },
-        { q: "Что делать, если у меня возникнут трудности с заданием?", a: "Вы не останетесь одни. Вы всегда можете задать вопрос в нашем комьюнити или обратиться к менторам — практикующим IT-специалистам, которые помогут разобраться со сложной темой." },
-        { q: "Помогаете с трудоустройством?", a: "Да, мы помогаем оформить сильное портфолио, составить резюме и делимся советами, как успешно проходить собеседования в IT-компании." },
-        { q: "Можно ли переключиться на другое направление в процессе?", a: "Да, конечно. Если вы поймёте, что выбранная сфера вам не подходит, вы можете в любой момент открыть другой курс и начать изучать новую профессию." },
-      ]
-    },
-    pricing: {
-      title: "Выбери свой",
-      titleAccent: "план",
-      subtitle: "Начни бесплатно. Прокачайся когда будешь готов.",
-      monthly: "Помесячно",
-      yearly: "Годовой",
-      save: "Скидка 20%",
-      popular: "Популярный",
-      perMonth: "/мес",
-      cta: "Начать",
-      plans: [
-        { name: "Free",    price: 0,  yearPrice: 0,    desc: "Чтобы попробовать",   features: ["Все публичные роадмапы", "Доступ к сообществу", "Базовое отслеживание прогресса", "1 бесплатная сессия с ментором"], cta: "Начать бесплатно" },
-        { name: "Pro",     price: 19, yearPrice: 15,   desc: "Для серьёзного обучения", features: ["Всё из Free", "Безлимит чата с ментором", "Все сертификаты", "Live-воркшопы", "Ревью проектов", "Приоритетная поддержка"], cta: "Перейти на Pro", popular: true },
-        { name: "Premium", price: 49, yearPrice: 39,   desc: "Полный карьерный пакет", features: ["Всё из Pro", "1-на-1 с ментором еженедельно", "Программа подготовки к собесам", "Помощь с трудоустройством", "Ревью резюме и LinkedIn", "Доступ навсегда"], cta: "Перейти на Premium" },
-      ]
-    },
-footer: {
-  navigation: "Навигация",
-  contacts: "Контакты",
-  socials: "Мы в соц. сетях",
-  rights: "Все права защищены",
-  desc: "Даем возможности новому поколению строителей, хакеров и творцов. Начни свое IT-путешествие сегодня.",
-},
-    
-    nav: {
-      profs: "Профессии",
-      roads: "Роадмапы",
-      mentors: "Менторы",
-      login: "Войти",
-      loginTitle: "С возвращением",
-      loginSubtitle: "Войдите чтобы продолжить обучение",
-      emailPlaceholder: "Email",
-      passwordPlaceholder: "Пароль",
-      loginBtn: "Войти",
-      noAccount: "Нет аккаунта?",
-      signUp: "Регистрация",
-      orContinue: "или войдите через",
-      comingSoon: "Скоро! 🚀",
-      mentorsToast: "Запуск раздела менторов уже в следующем месяце",
-    },
-    hero: {
-      badge: "SkillPath Бета 2.0",
-      t1: "Выбери своё",
-      t2: "Направление",
-      t3: "В IT",
-      desc: "Интерактивный гид по IT-академии. Найди профессию, которая подходит именно тебе. Начни свой путь здесь.",
-      btnQuest: "Начать тест",
-      btnRoles: "Все Роли"
-    },
-    bento: {
-      title1: "Всё, что нужно чтобы",
-      title2: "прокачаться",
-      items: {
-        aptitude:   { t: "Тест на профориентацию", d: "5-минутный интерактивный квиз, который расшифрует твой мозг и подберёт идеальное направление." },
-        roadmaps:   { t: "Роадмапы",               d: "Пошаговые деревья навыков с подобранными ресурсами и контрольными точками." },
-        mentors:    { t: "Менторы",                d: "Учись у инженеров из топовых компаний." },
-        certs:      { t: "Сертификаты",            d: "Получай NFT-сертификаты за прохождение роадмапов." },
-        workshops:  { t: "Воркшопы вживую",        d: "Еженедельные кодинг-сессии, CTF и ML-хакатоны." },
-        library:    { t: "Подборка материалов",    d: "Отобранные туториалы, доки и видеокурсы — без воды." },
-        career:     { t: "Карьерный рост",         d: "Зарплатная аналитика, подготовка к собесам и ревью портфолио." },
-        copilot:    { t: "AI Копилот",             d: "Твой персональный ассистент по обучению 24/7." },
-      }
-    },
-    stats: {
-      students: "Студентов",
-      mentors: "Менторов",
-      profs: "Профессий",
-      completion: "Завершение",
-    },
-    roles: {
-      t: "Выбери свое",
-      ts: "Направление",
-      d: "Исследуй доступные пути в мире технологий. У каждого наравления есть уникальные способности, инструменты и свое дерево навыков.",
-      f: { t: "Frontend-разработчик", d: "Мастер визуального мира. Создавай потрясающие интерфейсы с помощью кода и магии дизайна." },
-      ai: { t: "AI Инженер", d: "Обучай нейросети. Общайся с машинами и создавай искусственный интеллект будущего." },
-      cs: { t: "Кибербезопасность", d: "Цифровой страж. Вскрывай системы, чтобы защитить их и спасти данные от хакеров." },
-      ds: { t: "Data Scientist", d: "Современный алхимик. Превращай сырые данные в золото прогнозов и находи скрытые истины." },
-      view: "Карта пути"
-    },
-    steps: {
-      t: "Как начать свое",
-      ts: "Приключение",
-      s1: { t: "Пройти профориентацию", d: "Быстрый тест для анализа твоих интересов, который поможет подобрать идеальное направление в IT." },
-      s2: { t: "Освоить базу", d: "Получи доступ к интерактивной программе обучения и пошагово изучай профессию на практике." },
-      s3: { t: "Выйти на рынок", d: "Нарабатывай сильное портфолио, общайся с менторами в сообществе и готовься к первым офферам." }
-    },
-    profPage: {
-      title1: "Карьерный",
-      title2: "трек",
-      subtitle: "Изучите все доступные карьерные пути в технологической индустрии",
-      skills: "Ключевые навыки",
-      salary: "Зарплатная вилка",
-      watchVideo: "Смотреть обзор",
-      dayInLife: "Один день из жизни",
-      tools: "Популярные инструменты",
-      juniorLabel: "Джуниор",
-      seniorLabel: "Сеньор",
-      openRoadmap: "Открыть полный курс",
-      selectProf: "Выберите профессию",
-      back: "Назад",
-    },
-    roadmaps: {
-      title: "Карта",
-      titleSuffix: "Развития",
-      subtitle: "Персонализированные дорожные карты обучения для каждой профессии",
-      viewBtn: "Показать роадмап",
-      interactiveLabel: "Интерактивный роадмап",
-      interactiveDesc: "Кликни на навык — изучи детали. Отмечай пройденные этапы.",
-      progress: "Прогресс",
-      progressDone: "% завершено",
-      resources: "Ресурсы",
-      markDone: "Отметить как пройденное",
-      markNotDone: "Отметить как не пройденное",
-      startLearning: "Начать обучение",
-      filters: { all: "Все", must: "Обязательно", core: "Основа", pro: "Продвинутое" },
-      totalTime: "Общее время",
-      weeks: "недель",
-      hoursPerWeek: "ч/неделя",
-      searchPlaceholder: "Поиск навыков...",
-      continueBtn: "Продолжить",
-      nothingFound: "По запросу ничего не найдено",
-      reset: "Сбросить прогресс",
-      learningNow: "учат прямо сейчас",
-      toastPhase: "Фаза завершена!",
-      toastRoadmap: "Роадмап пройден! Ты зверь 🔥",
-      cardProgressLabel: "завершено",
-      phases: {
-        frontend: {
-          title: "Frontend-разработчик",
-          colorClass: "cyan",
-          phases: [
-            {
-              phase: "Основы",
-              skills: [
-                { id: "html-css", title: "HTML & CSS", description: "Разметка страниц, flexbox, grid, анимации. Основа всего визуала.", resources: ["MDN Web Docs", "CSS Tricks", "freeCodeCamp"], duration: "4 нед.", tag: "Must" },
-                { id: "js-core", title: "JavaScript Core", description: "Переменные, функции, DOM, асинхронность. Язык, который оживляет страницы.", resources: ["javascript.info", "Eloquent JS", "You Don't Know JS"], duration: "6 нед.", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Фреймворки",
-              skills: [
-                { id: "react", title: "React", description: "Компоненты, хуки, состояние. Самый популярный UI-фреймворк в мире.", resources: ["react.dev", "Scrimba React", "Epic React"], duration: "8 нед.", tag: "Core" },
-                { id: "typescript", title: "TypeScript", description: "Типизация делает код надёжным и масштабируемым. Must-have в 2024.", resources: ["TypeScript Handbook", "Total TypeScript", "TS Exercises"], duration: "3 нед.", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Продвинутый",
-              skills: [
-                { id: "state", title: "State Management", description: "Zustand, Redux Toolkit, Jotai — управление глобальным состоянием приложения.", resources: ["Zustand docs", "Redux Toolkit docs", "Jotai"], duration: "3 нед.", tag: "Pro" },
-                { id: "testing", title: "Тестирование", description: "Vitest, Playwright — надёжный код требует тестов.", resources: ["Testing Library", "Vitest Docs", "Playwright"], duration: "3 нед.", tag: "Pro" },
-                { id: "deploy", title: "Deploy & CI/CD", description: "Vercel, Netlify, GitHub Actions — доставка кода до пользователей.", resources: ["Vercel Docs", "GitHub Actions", "Docker Intro"], duration: "2 нед.", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        
-        ai: {
-          title: "AI / ML Инженер",
-          colorClass: "pink",
-          phases: [
-            {
-              phase: "Основы",
-              skills: [
-                { id: "python", title: "Python", description: "Синтаксис, структуры данных, ООП. Основной язык AI/ML мира.", resources: ["Python.org", "Automate the Boring Stuff", "RealPython"], duration: "5 нед.", tag: "Must" },
-                { id: "math", title: "Математика для ML", description: "Линейная алгебра, статистика, матанализ. Без этого нейросети — чёрный ящик.", resources: ["3Blue1Brown", "Khan Academy", "Mathematics for ML book"], duration: "6 нед.", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Машинное обучение",
-              skills: [
-                { id: "sklearn", title: "Scikit-learn", description: "Классические алгоритмы ML: регрессия, классификация, кластеризация.", resources: ["sklearn docs", "Kaggle Learn", "Hands-on ML book"], duration: "5 нед.", tag: "Core" },
-                { id: "dl", title: "Deep Learning", description: "PyTorch — нейросети, CNN, RNN. Основа современного AI.", resources: ["fast.ai", "PyTorch tutorials", "Deep Learning book"], duration: "8 нед.", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Специализация",
-              skills: [
-                { id: "nlp", title: "NLP & LLMs", description: "Трансформеры, fine-tuning, RAG — работа с языковыми моделями.", resources: ["Hugging Face", "LLM course", "LangChain docs"], duration: "6 нед.", tag: "Pro" },
-                { id: "mlops", title: "MLOps", description: "MLflow, DVC, deployment моделей в продакшн.", resources: ["MLflow docs", "Made With ML", "Full Stack Deep Learning"], duration: "4 нед.", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        cybersec: {
-          title: "Кибербезопасность",
-          colorClass: "purple",
-          phases: [
-            {
-              phase: "Основы",
-              skills: [
-                { id: "networking", title: "Сети (Networking)", description: "TCP/IP, DNS, HTTP, Wireshark. Без знания сетей — не понять атаки.", resources: ["CompTIA Network+", "Professor Messer", "TryHackMe"], duration: "6 нед.", tag: "Must" },
-                { id: "linux", title: "Linux & CLI", description: "Bash, права доступа, процессы. Большинство серверов — Linux.", resources: ["OverTheWire", "Linux Journey", "Bandit Wargame"], duration: "4 нед.", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Атаки и защита",
-              skills: [
-                { id: "pentest", title: "Penetration Testing", description: "Kali Linux, Metasploit, OWASP Top 10. Взламывай легально.", resources: ["HackTheBox", "TryHackMe", "PentesterLab"], duration: "8 нед.", tag: "Core" },
-                { id: "webapp", title: "Web App Security", description: "SQL Injection, XSS, CSRF — уязвимости веб-приложений.", resources: ["OWASP WebGoat", "PortSwigger Academy", "DVWA"], duration: "5 нед.", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Продвинутый",
-              skills: [
-                { id: "siem", title: "SIEM & SOC", description: "Splunk, ELK — мониторинг, обнаружение инцидентов.", resources: ["Splunk Fundamentals", "Blue Team Labs", "SANS SOC"], duration: "5 нед.", tag: "Pro" },
-                { id: "certs", title: "Сертификации", description: "CEH, OSCP, CompTIA Security+ — подтверди навыки документально.", resources: ["CompTIA", "Offensive Security", "EC-Council"], duration: "Ongoing", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        datascience: {
-          title: "Data Scientist",
-          colorClass: "blue",
-          phases: [
-            {
-              phase: "Основы",
-              skills: [
-                { id: "python-ds", title: "Python для данных", description: "Pandas, NumPy — обработка и анализ табличных данных.", resources: ["Kaggle Python", "Pandas docs", "Python Data Science Handbook"], duration: "5 нед.", tag: "Must" },
-                { id: "sql", title: "SQL", description: "SELECT, JOIN, агрегации. Данные живут в базах.", resources: ["Mode SQL Tutorial", "SQLZoo", "LeetCode SQL"], duration: "3 нед.", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Анализ и визуализация",
-              skills: [
-                { id: "eda", title: "EDA & Визуализация", description: "Matplotlib, Seaborn, Plotly — найди паттерны в данных.", resources: ["Kaggle EDA", "Plotly docs", "Seaborn gallery"], duration: "4 нед.", tag: "Core" },
-                { id: "stats", title: "Статистика", description: "Гипотезы, p-value, A/B тесты — основа data-driven решений.", resources: ["StatQuest", "Think Stats", "Khan Statistics"], duration: "5 нед.", tag: "Core" },
-              ]
-            },
-            {
-              phase: "ML и продакшн",
-              skills: [
-                { id: "ml-ds", title: "Machine Learning", description: "Sklearn, feature engineering, модели предсказания.", resources: ["Kaggle ML", "Hands-on ML", "fast.ai"], duration: "7 нед.", tag: "Pro" },
-                { id: "bi", title: "BI & Дашборды", description: "Tableau, Power BI, Superset — визуализация для бизнеса.", resources: ["Tableau Public", "Power BI Docs", "Metabase"], duration: "3 нед.", tag: "Pro" },
-                { id: "bigdata", title: "Big Data", description: "Spark, Hadoop — обработка данных в промышленных масштабах.", resources: ["Databricks", "Apache Spark", "Coursera Big Data"], duration: "5 нед.", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        backend: {
-          title: "Backend-разработчик",
-          colorClass: "emerald",
-          phases: [
-            {
-              phase: "Основы",
-              skills: [
-                { id: "node", title: "Node.js & Express", description: "Серверный JavaScript, REST API, middleware.", resources: ["Node.js docs", "Express guide", "The Net Ninja"], duration: "5 нед.", tag: "Must" },
-                { id: "db-basics", title: "Базы данных", description: "SQL vs NoSQL, схемы, запросы, индексы.", resources: ["PostgreSQL Tutorial", "MongoDB University", "SQLBolt"], duration: "4 нед.", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Бэкенд-навыки",
-              skills: [
-                { id: "auth", title: "Авторизация & безопасность", description: "JWT, OAuth, сессии, хеширование паролей.", resources: ["Auth0 Blog", "OWASP Guide", "JWT.io"], duration: "3 нед.", tag: "Core" },
-                { id: "apis", title: "REST & GraphQL", description: "Проектирование API, версионирование, GraphQL.", resources: ["REST API Design", "GraphQL.org", "Apollo Tutorial"], duration: "4 нед.", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Production",
-              skills: [
-                { id: "docker", title: "Docker & контейнеры", description: "Контейнеризация, Docker Compose, деплой.", resources: ["Docker Docs", "Docker Mastery", "Play with Docker"], duration: "3 нед.", tag: "Pro" },
-                { id: "cloud", title: "Облака (AWS/GCP)", description: "EC2, S3, Lambda, деплой в продакшн.", resources: ["AWS Free Tier", "GCP Codelabs", "Cloud Guru"], duration: "5 нед.", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        mobile: {
-          title: "Mobile-разработчик",
-          colorClass: "amber",
-          phases: [
-            {
-              phase: "Основы",
-              skills: [
-                { id: "rn-basics", title: "React Native основы", description: "Компоненты, навигация, управление состоянием на мобиле.", resources: ["RN Docs", "Expo Docs", "Academind RN"], duration: "5 нед.", tag: "Must" },
-                { id: "mobile-ui", title: "Mobile UI/UX", description: "iOS HIG, Material Design, жесты, анимации.", resources: ["Apple HIG", "Material Design", "Mobbin"], duration: "3 нед.", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Нативные фичи",
-              skills: [
-                { id: "native-api", title: "Нативные API", description: "Камера, GPS, push-уведомления, биометрия.", resources: ["RN Camera", "Expo Notifications", "RN Maps"], duration: "4 нед.", tag: "Core" },
-                { id: "state-mobile", title: "State & хранилище", description: "Redux/Zustand, AsyncStorage, SQLite на мобиле.", resources: ["Zustand docs", "AsyncStorage", "WatermelonDB"], duration: "3 нед.", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Публикация",
-              skills: [
-                { id: "appstore", title: "App Store публикация", description: "Сборка, подпись, отправка в App Store / Play Store.", resources: ["Apple Developer", "Google Play Console", "EAS Build"], duration: "2 нед.", tag: "Pro" },
-                { id: "perf-mobile", title: "Mobile производительность", description: "Размер бандла, оптимизация рендера, нативные модули.", resources: ["RN Performance", "Flipper", "Hermes engine"], duration: "3 нед.", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        devops: {
-          title: "DevOps Инженер",
-          colorClass: "orange",
-          phases: [
-            {
-              phase: "Основы",
-              skills: [
-                { id: "linux-devops", title: "Linux & Bash", description: "Shell-скрипты, процессы, права, сеть.", resources: ["Linux Journey", "Bash Academy", "OverTheWire"], duration: "4 нед.", tag: "Must" },
-                { id: "git-devops", title: "Git & CI/CD основы", description: "Продвинутый Git, GitHub Actions, GitLab CI.", resources: ["Pro Git book", "GitHub Actions", "GitLab CI Docs"], duration: "3 нед.", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Инфраструктура",
-              skills: [
-                { id: "k8s", title: "Kubernetes", description: "Pods, deployments, services, ingress, Helm charts.", resources: ["K8s.io tutorials", "KodeKloud", "Helm docs"], duration: "6 нед.", tag: "Core" },
-                { id: "terraform", title: "Terraform & IaC", description: "Infrastructure as Code, провайдеры, управление state.", resources: ["HashiCorp Learn", "Terraform Up & Running", "Pluralsight"], duration: "4 нед.", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Production",
-              skills: [
-                { id: "monitoring", title: "Мониторинг & логи", description: "Prometheus, Grafana, ELK stack, алертинг.", resources: ["Prometheus Docs", "Grafana Tutorials", "Elastic Guide"], duration: "4 нед.", tag: "Pro" },
-                { id: "aws-devops", title: "AWS / Cloud Pro", description: "ECS, EKS, CloudFormation, оптимизация затрат.", resources: ["AWS Solutions Architect", "A Cloud Guru", "Cloud Resume"], duration: "6 нед.", tag: "Pro" },
-              ]
-            }
-          ]
-        },
-        gamedev: {
-          title: "Game-разработчик",
-          colorClass: "rose",
-          phases: [
-            {
-              phase: "Основы",
-              skills: [
-                { id: "csharp", title: "C# & Unity основы", description: "Программирование через движок Unity.", resources: ["Unity Learn", "Brackeys YouTube", "C# Microsoft Docs"], duration: "6 нед.", tag: "Must" },
-                { id: "game-math", title: "Математика для игр", description: "Векторы, матрицы, тригонометрия, физика.", resources: ["3Blue1Brown", "Real-Time Rendering", "Math for Games"], duration: "4 нед.", tag: "Must" },
-              ]
-            },
-            {
-              phase: "Геймдизайн",
-              skills: [
-                { id: "2d-games", title: "2D разработка", description: "Спрайты, анимации, коллизии, тайлмапы.", resources: ["Unity 2D", "GDQuest Godot", "Pixel art assets"], duration: "5 нед.", tag: "Core" },
-                { id: "3d-games", title: "3D разработка", description: "Модели, освещение, материалы, камеры, физика.", resources: ["Unity 3D", "Unreal Engine Docs", "Blender Guru"], duration: "8 нед.", tag: "Core" },
-              ]
-            },
-            {
-              phase: "Специализация",
-              skills: [
-                { id: "shaders", title: "Шейдеры & графика", description: "HLSL/GLSL, shader graph, пост-процессинг.", resources: ["Catlike Coding", "Book of Shaders", "Ronja Shader Tutorials"], duration: "6 нед.", tag: "Pro" },
-                { id: "multiplayer", title: "Мультиплеер", description: "Mirror, Netcode, серверная архитектура.", resources: ["Mirror Networking", "Photon Docs", "Gaffer on Games"], duration: "5 нед.", tag: "Pro" },
-              ]
-            }
-          ]
-        }
-      },
-      cards: [
-        { title: "Frontend Dev", desc: "Мастер визуального мира. Создавай потрясающие интерфейсы с помощью кода и магии дизайна.", colorClass: "cyan", roadmapKey: "frontend" },
-        { title: "AI Engineer", desc: "Обучай нейросети. Общайся с машинами и создавай искусственный интеллект будущего.", colorClass: "pink", roadmapKey: "ai" },
-        { title: "Cybersec", desc: "Цифровой страж. Вскрывай системы, чтобы защитить их и спасти данные от хакеров.", colorClass: "purple", roadmapKey: "cybersec" },
-        { title: "Data Scientist", desc: "Современный алхимик. Превращай сырые данные в золото прогнозов и находи скрытые истины.", colorClass: "blue", roadmapKey: "datascience" },
-        { title: "Backend Dev",     desc: "Архитектор серверной части. API, базы данных и движок за каждым приложением.",   colorClass: "emerald", roadmapKey: "backend" },
-        { title: "Mobile Dev",      desc: "Создавай iOS и Android приложения, которые миллионы носят в карманах.",           colorClass: "amber",   roadmapKey: "mobile" },
-        { title: "DevOps",          desc: "Хозяин инфраструктуры. Автоматизируй всё, доставляй код быстро и надёжно.",        colorClass: "orange",  roadmapKey: "devops" },
-        { title: "Game Dev",        desc: "Создавай миры. Unity, Unreal, шейдеры — превращай воображение в играбельную реальность.", colorClass: "rose", roadmapKey: "gamedev" }
-   ]
-    },
-    mini: {
-  title: "Найди свой",
-  titleAccent: "идеальный путь",
-  subtitle: "Ответь на 5 быстрых вопросов",
-  questions: [
-    { q: "Что тебя зажигает?", opts: [
-      { emoji: "🎨", text: "Красивый дизайн", v: "frontend" },
-      { emoji: "🤖", text: "Умные машины",    v: "ai" },
-      { emoji: "🛡", text: "Решать головоломки", v: "cybersec" },
-      { emoji: "📊", text: "Искать паттерны", v: "datascience" },
-    ]},
-    { q: "Твоя суперсила?", opts: [
-      { emoji: "✨", text: "Чувство вкуса",    v: "frontend" },
-      { emoji: "🧮", text: "Математика и логика", v: "ai" },
-      { emoji: "🔍", text: "Внимание к деталям", v: "cybersec" },
-      { emoji: "📈", text: "Видеть тренды",    v: "datascience" },
-    ]},
-    { q: "Идеальная суббота?", opts: [
-      { emoji: "🖌", text: "Рисовать концепты", v: "frontend" },
-      { emoji: "📚", text: "Читать исследования", v: "ai" },
-      { emoji: "🕵", text: "Расследовать тайны", v: "cybersec" },
-      { emoji: "📉", text: "Анализировать данные", v: "datascience" },
-    ]},
-    { q: "Какой инструмент хочешь освоить?", opts: [
-      { emoji: "⚛️", text: "Figma и React",    v: "frontend" },
-      { emoji: "🧠", text: "PyTorch и TensorFlow", v: "ai" },
-      { emoji: "🔓", text: "Kali Linux и Burp Suite", v: "cybersec" },
-      { emoji: "📊", text: "SQL и Tableau",    v: "datascience" },
-    ]},
-    { q: "Какой след хочешь оставить?", opts: [
-      { emoji: "🌐", text: "Сделать веб красивым", v: "frontend" },
-      { emoji: "🚀", text: "Строить будущее ИИ", v: "ai" },
-      { emoji: "🛡️", text: "Защищать людей в сети", v: "cybersec" },
-      { emoji: "💡", text: "Превращать данные в решения", v: "datascience" },
-    ]},
-  ],
-  result: "Тебе подходит",
-  cta: "Открыть роадмап",
-  retake: "Пройти ещё раз",
-},
-  },
-};
+const translations = { EN: enTranslations, RU: ruTranslations } as const;
 
 type Lang = "EN" | "RU";
 interface LangCtx {
@@ -1398,6 +554,7 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLogi
     { label: lang === "RU" ? "Профиль\nпрофессии" : "Profession\nProfiles", page: "professions" },
     { label: lang === "RU" ? "Обучающие\nкурсы" : "Learning\nCourses", page: "roadmaps" },
     { label: lang === "RU" ? "Наши\nменторы" : "Our\nMentors", page: "mentors" },
+    { label: lang === "RU" ? "Чаты" : "Chats", page: "chats" },
   ];
 
   return (
@@ -1425,14 +582,26 @@ const Navbar = ({ onLoginClick, onNavigate, onStartQuiz, currentUser }: { onLogi
           <LanguageToggle />
           <ThemeSwitcher />
                     {currentUser ? (
-            <button
-              onClick={() => go("profile")}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-black hover:scale-110 transition-transform"
-              style={{background: "linear-gradient(to bottom right, var(--tp), var(--tp-dark))"}}
-              title={currentUser.name}
-            >
-              {currentUser.name?.charAt(0)?.toUpperCase() || "U"}
-            </button>
+            <>
+              {currentUser.role === "admin" && (
+                <button onClick={() => go("admin")} className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 text-xs font-medium hover:bg-red-500/20 transition-colors">
+                  Admin
+                </button>
+              )}
+              {currentUser.role === "mentor" && (
+                <button onClick={() => go("mentor-dashboard")} className="px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-400 text-xs font-medium hover:bg-orange-500/20 transition-colors">
+                  Mentor
+                </button>
+              )}
+              <button
+                onClick={() => go("profile")}
+                className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-black hover:scale-110 transition-transform"
+                style={{background: "linear-gradient(to bottom right, var(--tp), var(--tp-dark))"}}
+                title={currentUser.name}
+              >
+                {currentUser.name?.charAt(0)?.toUpperCase() || "U"}
+              </button>
+            </>
           ) : (
             <button
               onClick={onLoginClick}
@@ -1690,6 +859,7 @@ const Footer = () => {
     { label: t.nav.profs, page: "professions" },
     { label: t.nav.roads, page: "roadmaps" },
     { label: t.nav.mentors, page: "mentors" },
+    { label: lang === 'RU' ? 'Презентация' : 'Presentation', page: "presentation" },
   ];
 
   return (
@@ -1889,19 +1059,33 @@ const Content = () => {
   const isLearningPage = currentPage.startsWith("learning:");
   const learningSkillId = isLearningPage ? currentPage.split(":")[1] : null;
   const isHome = currentPage === "home" && !showQuiz;
+  const isPresentation = currentPage === "presentation";
+  const isMobile = useMediaQuery("(max-width: 767px)");
+
+  if (isPresentation) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-[#0A0A0A]">
+        <Suspense fallback={<div className="flex items-center justify-center h-screen bg-[#0A0A0A]"><div className="w-10 h-10 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" /></div>}>
+          <Presentation onExit={() => setCurrentPage("home")} />
+        </Suspense>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#00000F] text-white font-sans transition-colors duration-300">
-      <FloatingParticles count={15} />
-      <ThemeEffects />
-      <MouseSpotlight />
+      {!currentPage.startsWith("admin") && !isMobile && <FloatingParticles count={15} />}
+      {!currentPage.startsWith("admin") && <ThemeEffects isHome={isHome} isMobile={isMobile} />}
+      {!currentPage.startsWith("admin") && !isMobile && <MouseSpotlight />}
 
-      <Navbar
-        onLoginClick={() => setShowLogin(true)}
-        onNavigate={() => setShowQuiz(false)}
-        onStartQuiz={() => setShowQuiz(true)}
-        currentUser={currentUser}
-      />
+      {!currentPage.startsWith("admin") && (
+        <Navbar
+          onLoginClick={() => setShowLogin(true)}
+          onNavigate={() => setShowQuiz(false)}
+          onStartQuiz={() => setShowQuiz(true)}
+          currentUser={currentUser}
+        />
+      )}
 
       <main className="relative z-10" key={currentPage + (showQuiz ? "-quiz" : "")}>
         <motion.div
@@ -1910,21 +1094,25 @@ const Content = () => {
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
         {showQuiz ? (
-          <Quiz
-            onExit={() => {
-              setShowQuiz(false);
-              setCurrentPage("home");
-            }}
-            lang={lang}
-            onGoToRoadmap={(roadmapKey) => {
-              setShowQuiz(false);
-              setCurrentPage("roadmaps");
-              setOpenRoadmap(roadmapKey);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-          />
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
+            <Quiz
+              onExit={() => {
+                setShowQuiz(false);
+                setCurrentPage("home");
+              }}
+              lang={lang}
+              onGoToRoadmap={(roadmapKey) => {
+                setShowQuiz(false);
+                setCurrentPage("roadmaps");
+                setOpenRoadmap(roadmapKey);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
+          </Suspense>
         ) : currentPage === "professions" ? (
-          <ProfessionsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} />
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
+            <ProfessionsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} />
+          </Suspense>
         ) : currentPage === "roadmaps" ? (
           <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
             <RoadmapsPage
@@ -1946,45 +1134,75 @@ const Content = () => {
           <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#FF9800]/30 border-t-[#FF9800] rounded-full animate-spin" /></div>}>
             <MentorsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} />
           </Suspense>
+        ) : currentPage === "chats" ? (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
+            <ChatsPage onBack={() => setCurrentPage("home")} lang={lang} t={t} currentUser={currentUser} />
+          </Suspense>
         ) : currentPage === "profile" ? (
-          <ProfilePage
-            onBack={() => setCurrentPage("home")}
-            lang={lang}
-            currentUser={currentUser}
-            onLogout={() => {
-              API.logout();
-              setCurrentUser(null);
-              setCurrentPage("home");
-            }}
-            onNavigate={(page, roadmapKey) => {
-              if (page === "quiz") {
-                setShowQuiz(true);
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
+            <ProfilePage
+              onBack={() => setCurrentPage("home")}
+              lang={lang}
+              currentUser={currentUser}
+              onLogout={() => {
+                API.logout();
+                setCurrentUser(null);
                 setCurrentPage("home");
-              } else {
-                setShowQuiz(false);
-                setCurrentPage(page);
-                setOpenRoadmap(roadmapKey || null);
-              }
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            roadmapPhases={translations[lang].roadmaps.phases}
-          />
+              }}
+              onNavigate={(page, roadmapKey) => {
+                if (page === "quiz") {
+                  setShowQuiz(true);
+                  setCurrentPage("home");
+                } else {
+                  setShowQuiz(false);
+                  setCurrentPage(page);
+                  setOpenRoadmap(roadmapKey || null);
+                }
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              roadmapPhases={translations[lang].roadmaps.phases}
+            />
+          </Suspense>
         ) : isLearningPage ? (
-          <SkillLearningPage skillId={learningSkillId} onBack={() => setCurrentPage("roadmaps")} lang={lang} />
+          <Suspense fallback={<div className="flex items-center justify-center min-h-[60vh]"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
+            <SkillLearningPage skillId={learningSkillId} onBack={() => setCurrentPage("roadmaps")} lang={lang} />
+          </Suspense>
+        ) : currentPage === "admin-login" ? (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
+            <AdminLogin onSuccess={(user) => { setCurrentUser(user); setCurrentPage("admin"); }} onBack={() => setCurrentPage("home")} />
+          </Suspense>
+        ) : currentPage.startsWith("admin") && currentUser?.role === "admin" ? (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="w-10 h-10 border-4 border-[#8AA8FF]/30 border-t-[#8AA8FF] rounded-full animate-spin" /></div>}>
+            {currentPage === "admin" ? (
+              <AdminDashboard onNavigate={(p) => { setCurrentPage(p); window.scrollTo({ top: 0 }); }} onLogout={() => { API.logout(); setCurrentUser(null); setCurrentPage("home"); }} />
+            ) : currentPage === "admin-users" ? (
+              <AdminUsers onNavigate={(p) => { setCurrentPage(p); window.scrollTo({ top: 0 }); }} />
+            ) : currentPage === "admin-mentors" ? (
+              <AdminMentors onNavigate={(p) => { setCurrentPage(p); window.scrollTo({ top: 0 }); }} />
+            ) : currentPage === "admin-bookings" ? (
+              <AdminBookings onNavigate={(p) => { setCurrentPage(p); window.scrollTo({ top: 0 }); }} />
+            ) : currentPage === "admin-settings" ? (
+              <AdminSettings onNavigate={(p) => { setCurrentPage(p); window.scrollTo({ top: 0 }); }} />
+            ) : null}
+          </Suspense>
+        ) : currentPage === "mentor-dashboard" && currentUser?.role === "mentor" ? (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="w-10 h-10 border-4 border-[#FF9800]/30 border-t-[#FF9800] rounded-full animate-spin" /></div>}>
+            <MentorDashboard onNavigate={(p) => { setCurrentPage(p); window.scrollTo({ top: 0 }); }} user={currentUser} />
+          </Suspense>
         ) : (
           <>
-            <Hero onStartQuiz={() => setShowQuiz(true)} />
+            <div data-tour="hero"><Hero onStartQuiz={() => setShowQuiz(true)} /></div>
             <CompaniesStrip />
-            <StatsSection />
+            <div data-tour="stats"><StatsSection /></div>
             
-            <div className="hidden md:block"><BentoShowcase onStartQuiz={() => setShowQuiz(true)} /></div>
+            <div data-tour="bento" className="hidden md:block"><BentoShowcase onStartQuiz={() => setShowQuiz(true)} /></div>
         
             <TechMarquee />
-            <TestimonialsCarousel />
-            <StepsSection />
+            <div data-tour="testimonials"><TestimonialsCarousel /></div>
+            <div data-tour="steps"><StepsSection /></div>
             <div className="hidden md:block"><BootstrapInfo /></div>
             
-            <FAQAccordion />
+            <div data-tour="faq"><FAQAccordion /></div>
           </>
         )}
         </motion.div>
@@ -1994,8 +1212,8 @@ const Content = () => {
       <ScrollToTop />
       {isHome && <MobileStickyCTA onStartQuiz={() => setShowQuiz(true)} />}
 
-      <MusicPlayer onPlayStateChange={(playing) => emitMusicState(playing)} />
-      <GuideCharacter />
+      {!currentPage.startsWith("admin") && <MusicPlayer onPlayStateChange={(playing) => emitMusicState(playing)} />}
+      {!currentPage.startsWith("admin") && <Suspense fallback={null}><GuideCharacter /></Suspense>}
 
       {showLogin && (
         <AuthModal

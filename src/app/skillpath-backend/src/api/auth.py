@@ -1,9 +1,9 @@
 import uuid
 from pathlib import Path
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, Request, UploadFile, File, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.db.database import get_db
-from src.api.dependencies import get_current_user
+from src.api.dependencies import get_current_user, check_rate_limit, _get_client_ip
 from src.models.user import User
 from src.schemas.user import RegisterRequest, LoginRequest, TokenResponse, UserResponse, UserUpdate
 from src.services.auth_service import register_user, login_user
@@ -21,7 +21,9 @@ async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(data: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
+    ip = _get_client_ip(request)
+    check_rate_limit(ip, limit=5, window=900)
     user, token = await login_user(data, db)
     return TokenResponse(access_token=token, user=UserResponse.model_validate(user))
 
@@ -48,6 +50,9 @@ async def update_me(
     return UserResponse.model_validate(user)
 
 
+ALLOWED_AVATAR_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "webp"}
+
+
 @router.post("/avatar", response_model=UserResponse)
 async def upload_avatar(
     file: UploadFile = File(...),
@@ -57,7 +62,12 @@ async def upload_avatar(
     if not file.content_type or not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
 
-    ext = file.filename.rsplit(".", 1)[-1] if "." in (file.filename or "") else "jpg"
+    ext = (file.filename.rsplit(".", 1)[-1] if "." in (file.filename or "") else "").lower()
+    if ext not in ALLOWED_AVATAR_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file extension. Allowed: {', '.join(sorted(ALLOWED_AVATAR_EXTENSIONS))}",
+        )
     filename = f"avatar_{user.id}_{uuid.uuid4().hex[:8]}.{ext}"
     filepath = UPLOAD_DIR / filename
 

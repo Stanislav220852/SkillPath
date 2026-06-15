@@ -5,10 +5,34 @@ import {
   ChevronRight, Star, Trophy, Zap,
   Lightbulb, Eye, Copy, Check, RefreshCw, Menu, X
 } from 'lucide-react';
-import { lessonData } from './LessonData.tsx';   
+import { loadLesson } from './LessonData.tsx';
 import * as API from '../../api';
 import { trackActivity } from '../utils/activityTracker';
-import hljs from 'highlight.js';
+
+let hljsInstance: any = null;
+let hljsPromise: Promise<any> | null = null;
+
+const getHljs = () => {
+  if (hljsInstance) return Promise.resolve(hljsInstance);
+  if (!hljsPromise) {
+    hljsPromise = import('highlight.js/lib/core').then(async (mod) => {
+      const h = mod.default;
+      const [htmlMod, cssMod, jsMod, pyMod] = await Promise.all([
+        import('highlight.js/lib/languages/xml'),
+        import('highlight.js/lib/languages/css'),
+        import('highlight.js/lib/languages/javascript'),
+        import('highlight.js/lib/languages/python'),
+      ]);
+      h.registerLanguage('html', htmlMod.default);
+      h.registerLanguage('css', cssMod.default);
+      h.registerLanguage('javascript', jsMod.default);
+      h.registerLanguage('python', pyMod.default);
+      hljsInstance = h;
+      return h;
+    });
+  }
+  return hljsPromise;
+};
 
 const glassCard = "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-[2rem] shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
 
@@ -59,13 +83,16 @@ const detectLang = (code: string): string => {
 const HighlightedCode = ({ code, language }: { code: string; language?: string }) => {
   const lang = language || detectLang(code);
   const [copied, setCopied] = useState(false);
+  const [highlighted, setHighlighted] = useState(code);
 
-  const highlighted = useMemo(() => {
-    try {
-      return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
-    } catch {
-      return hljs.highlightAuto(code).value;
-    }
+  useEffect(() => {
+    getHljs().then((h) => {
+      try {
+        setHighlighted(h.highlight(code, { language: lang, ignoreIllegals: true }).value);
+      } catch {
+        setHighlighted(h.highlightAuto(code).value);
+      }
+    });
   }, [code, lang]);
 
   const copy = () => {
@@ -107,10 +134,14 @@ const CodeEditor = ({ initialCode, language, onCodeChange, onRun, output, error,
     : language === 'python' ? 'python'
     : 'javascript';
 
-  const highlighted = useMemo(() => {
-    try {
-      return hljs.highlight(code + '\n', { language: lang, ignoreIllegals: true }).value;
-    } catch { return code; }
+  const [highlighted, setHighlighted] = useState(code);
+
+  useEffect(() => {
+    getHljs().then((h) => {
+      try {
+        setHighlighted(h.highlight(code + '\n', { language: lang, ignoreIllegals: true }).value);
+      } catch { setHighlighted(code); }
+    });
   }, [code, lang]);
 
   const handleScroll = useCallback(() => {
@@ -559,8 +590,17 @@ const LessonNavigator = ({ lessons, currentIndex, completedLessons, onSelect, co
 export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
+  const [lessons, setLessons] = useState<any>(null);
+  const [lessonLoading, setLessonLoading] = useState(true);
 
-  const lessons = lessonData[skillId] && lessonData[skillId][lang] ? lessonData[skillId][lang] : null;
+  useEffect(() => {
+    setLessonLoading(true);
+    setLessons(null);
+    loadLesson(skillId, lang).then((data) => {
+      setLessons(data);
+      setLessonLoading(false);
+    });
+  }, [skillId, lang]);
 
   // Load completed from cache + DB on mount
   useEffect(() => {
@@ -594,6 +634,21 @@ export const SkillLearningPage = ({ skillId, onBack, lang }: any) => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentLessonIndex]);
+
+  if (lessonLoading) {
+    return (
+      <div className="min-h-screen pt-28 md:pt-32 pb-20 px-5 md:px-6 relative">
+        <div className="container mx-auto max-w-4xl relative z-10">
+          <div className={`${glassCard} p-6 md:p-8 text-center`}>
+            <div className="w-10 h-10 border-4 border-[var(--tp)]/30 border-t-[var(--tp)] rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-stone-600 dark:text-white/60">
+              {lang === 'RU' ? 'Загрузка уроков...' : 'Loading lessons...'}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!lessons) {
     return (

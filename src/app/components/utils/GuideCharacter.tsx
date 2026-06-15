@@ -4,7 +4,6 @@ import { LanguageContext } from "../../App";
 import { themes, type ThemeId } from "../../theme.config";
 import { GuideDialog } from "./GuideDialog";
 import { guideDialogs, type CharacterState, type ItemKind } from "./guideData";
-import { playGreetingSound, playItemSound } from "./guideSounds";
 
 const PIXEL = 6;
 const GRID = 16;
@@ -51,14 +50,17 @@ const WHISKERS: PC[][] = [
   ["#000","#000",null,null,null,null,null,null,null,null,null,null,null,null,"#000","#000"],
 ];
 
+// Tour character states
+type TourState = "idle" | "wave" | "running" | "arriving" | "showItem" | "excited" | "sleepy";
+
 const CatPixelArt: React.FC<{
-  theme: ThemeId; state: CharacterState; blinking: boolean;
-  item?: ItemKind; musicOn: boolean; hovered: boolean;
-}> = ({ theme, state, blinking, item, musicOn, hovered }) => {
+  theme: ThemeId; state: TourState; blinking: boolean;
+  item?: string; hovered: boolean;
+}> = ({ theme, state, blinking, item, hovered }) => {
   const c = themes[theme];
   const [p, d, a] = [c.primary, c.primaryDark, c.accent];
   const eyes = state === "sleepy" ? EYES_SLEEPY : blinking ? EYES_CLOSED : EYES_OPEN;
-  const mouth = state === "wave" || state === "curious" || state === "excited" ? MOUTH_WIDE
+  const mouth = state === "wave" || state === "excited" ? MOUTH_WIDE
     : state === "sleepy" ? MOUTH_SLEEPY : MOUTH_HAPPY;
 
   const grid = React.useMemo(() => {
@@ -84,8 +86,25 @@ const CatPixelArt: React.FC<{
 
   const tailSpeed = hovered ? 0.4 : state==="wave" ? 0.5 : state==="excited" ? 0.6 : 2;
 
+  const catBodyAnimation = state === "running"
+    ? { scaleX: [1, 1.15, 0.9, 1.15, 1], y: [0, -3, 0, -3, 0] }
+    : state === "arriving"
+    ? { scaleX: [1.1, 0.9, 1], scaleY: [0.9, 1.1, 1], y: [0, 5, 0] }
+    : state === "sleepy"
+    ? { y: [0,-1,0], rotate: [0,2,0] }
+    : state === "excited"
+    ? { y: [0,-8,0,-8,0], rotate: [0,-3,3,-3,0] }
+    : state === "wave"
+    ? { rotate: [0,-5,5,0], y: [0,-2,0] }
+    : state === "showItem"
+    ? { y: [0,-4,0] }
+    : { y: [0,-3,0] };
+
+  const catDuration = state === "running" ? 0.4 : state === "arriving" ? 0.3 : state === "sleepy" ? 3 : state === "excited" ? 0.6 : 1.8;
+
   return (
     <div className="relative" style={{ width: GRID*PIXEL, height: GRID*PIXEL }}>
+      {/* Tail */}
       <motion.div
         animate={state==="wave"?{rotate:[-10,10,-10]}:state==="excited"?{rotate:[-15,15,-15,15,-15],x:[0,3,0,3,0]}:{rotate:[-5,5,-5],x:[0,2,0]}}
         transition={{ duration: tailSpeed, repeat:Infinity, ease:"easeInOut" }}
@@ -96,42 +115,28 @@ const CatPixelArt: React.FC<{
         ))}</div>
       </motion.div>
 
+      {/* Body */}
       <motion.div className="relative grid"
         style={{ gridTemplateColumns:`repeat(${GRID},${PIXEL}px)`, gridTemplateRows:`repeat(${GRID},${PIXEL}px)`, imageRendering:"pixelated" }}
-        animate={
-          state==="sleepy"?{y:[0,-1,0],rotate:[0,2,0]}:
-          state==="excited"?{y:[0,-8,0,-8,0],rotate:[0,-3,3,-3,0]}:
-          state==="idle"?{y:[0,-4,0],rotate:[0,1,-1,0]}:
-          state==="wave"?{rotate:[0,-5,5,0],y:[0,-2,0]}:
-          state==="curious"?{rotate:[0,3,-3,0],y:[0,-2,0]}:
-          state==="showItem"?{y:[0,-6,0]}:{}
-        }
-        transition={{ duration: state==="sleepy"?3:state==="excited"?0.6:state==="wave"?0.5:1.8, repeat:Infinity, ease:"easeInOut" }}>
+        animate={catBodyAnimation}
+        transition={{ duration: catDuration, repeat: state==="running" ? Infinity : 0, ease:"easeInOut" }}>
         {grid.flat().map((color,i)=>(
           <div key={i} style={{ width:PIXEL, height:PIXEL, backgroundColor:color||"transparent" }}/>
         ))}
       </motion.div>
 
-      {musicOn&&(
-        <motion.div initial={{y:-10,opacity:0}} animate={{y:0,opacity:1}}
-          className="absolute -top-1 left-1/2 -translate-x-1/2" style={{width:GRID*PIXEL+8}}>
-          <div className="absolute top-0 left-1 right-1 h-[3px] rounded-full" style={{backgroundColor:d}}/>
-          <div className="absolute -left-1 top-0 w-[10px] h-[10px] rounded-full border-2" style={{borderColor:d,backgroundColor:a}}/>
-          <div className="absolute -right-1 top-0 w-[10px] h-[10px] rounded-full border-2" style={{borderColor:d,backgroundColor:a}}/>
-        </motion.div>
-      )}
-
+      {/* Emoji above head */}
       <AnimatePresence>
-        {item&&(state==="showItem"||state==="excited")&&(
-          <motion.div initial={{scale:0,y:10}} animate={{scale:1,y:0}}
-            exit={{scale:0,y:10}} transition={{type:"spring",stiffness:400,damping:15}}
-            className="absolute -top-6 -left-4 text-lg" onAnimationComplete={()=>playItemSound()}>
-            {item==="map"&&"🗺️"}{item==="book"&&"📖"}{item==="compass"&&"🧭"}{item==="star"&&"⭐"}
-            {item==="rocket"&&"🚀"}{item==="trophy"&&"🏆"}{item==="code"&&"💻"}{item==="shield"&&"🛡️"}
+        {item && state === "showItem" && (
+          <motion.div initial={{scale:0,y:10,opacity:0}} animate={{scale:1,y:-8,opacity:1}}
+            exit={{scale:0,y:10,opacity:0}} transition={{type:"spring",stiffness:400,damping:12}}
+            className="absolute -top-8 left-1/2 -translate-x-1/2 text-xl">
+            {item}
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* Sleepy zzz */}
       {state==="sleepy"&&(
         <div className="absolute -top-6 -right-2">
           <motion.span className="text-xs font-bold text-white/40"
@@ -144,6 +149,7 @@ const CatPixelArt: React.FC<{
         </div>
       )}
 
+      {/* Idle sparkles */}
       {state==="idle"&&(
         <div className="absolute -top-3 -left-2">
           {[0,1,2].map(i=>(
@@ -151,267 +157,362 @@ const CatPixelArt: React.FC<{
               style={{height:6,left:i*4}} animate={{y:[0,-8,0],opacity:[0.4,0.8,0.4]}}
               transition={{duration:1.5,repeat:Infinity,delay:i*0.3}}/>
           ))}
-          <div className="w-[14px] h-[10px] rounded-sm bg-[#8B4513] border border-[#654321] relative">
-            <div className="absolute -right-[3px] top-[2px] w-[4px] h-[5px] rounded-r-sm border border-[#654321] border-l-0"/>
-          </div>
+        </div>
+      )}
+
+      {/* Speed lines when running */}
+      {state === "running" && (
+        <div className="absolute -left-6 top-1/2 -translate-y-1/2">
+          {[0,1,2].map(i => (
+            <motion.div key={i} className="absolute h-[2px] rounded-full bg-white/30"
+              style={{ width: 12 + i*4, top: -6 + i*6, left: -i*3 }}
+              animate={{ x: [-5, -20], opacity: [0.5, 0] }}
+              transition={{ duration: 0.3, repeat: Infinity, delay: i * 0.1 }} />
+          ))}
         </div>
       )}
     </div>
   );
 };
 
-// Onboarding steps — visits ALL pages, shows interactive demos
-interface OnboardingStep {
-  page: string;
-  scrollTo?: number;
-  openRoadmapKey?: string;
-  learningSkillId?: string;
+// Tour bubble — dark gradient with word-by-word text
+const TourBubble: React.FC<{
+  messages: string[];
+  lang: string;
+  onAdvance: () => void;
+  onClose: () => void;
+  isLast: boolean;
+}> = ({ messages, lang, onAdvance, onClose, isLast }) => {
+  const [msgIdx, setMsgIdx] = useState(0);
+  const [displayedWords, setDisplayedWords] = useState<string[]>([]);
+  const [allShown, setAllShown] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  const currentMsg = messages[msgIdx] || "";
+  const words = currentMsg.split(" ");
+
+  useEffect(() => {
+    setDisplayedWords([]);
+    setAllShown(false);
+    let i = 0;
+    timerRef.current = window.setInterval(() => {
+      i++;
+      setDisplayedWords(words.slice(0, i));
+      if (i >= words.length) {
+        clearInterval(timerRef.current!);
+        setAllShown(true);
+      }
+    }, 200);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [msgIdx, currentMsg]);
+
+  const handleClick = () => {
+    if (!allShown) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      setDisplayedWords(words);
+      setAllShown(true);
+      return;
+    }
+    if (msgIdx < messages.length - 1) {
+      setMsgIdx(i => i + 1);
+    } else {
+      onAdvance();
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ scale: 0.8, opacity: 0, y: 10 }}
+      animate={{ scale: 1, opacity: 1, y: 0 }}
+      exit={{ scale: 0.8, opacity: 0, y: 10 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="absolute bottom-full right-0 mb-4 w-[280px] cursor-pointer select-none"
+      onClick={handleClick}
+    >
+      {/* Bubble */}
+      <div className="rounded-2xl p-4 relative"
+        style={{
+          background: "linear-gradient(135deg, rgba(15,15,30,0.95), rgba(10,10,20,0.98))",
+          border: "1px solid rgba(138,168,255,0.2)",
+          boxShadow: "0 0 20px rgba(138,168,255,0.1), 0 8px 32px rgba(0,0,0,0.4)",
+        }}>
+        {/* Close button */}
+        <button onClick={(e) => { e.stopPropagation(); onClose(); }}
+          className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors text-[10px]">
+          ✕
+        </button>
+
+        {/* Text */}
+        <p className="text-[13px] text-white/90 pr-4 min-h-[32px] leading-relaxed">
+          {displayedWords.map((word, i) => (
+            <motion.span key={`${msgIdx}-${i}`}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.15 }}
+              className="inline-block mr-1"
+            >
+              {word}
+            </motion.span>
+          ))}
+        </p>
+
+        {/* Dots */}
+        <div className="flex gap-1 mt-3 pt-2 border-t border-white/5">
+          {messages.map((_, i) => (
+            <div key={i}
+              className={`w-1.5 h-1.5 rounded-full transition-all ${
+                i === msgIdx ? "bg-[#8AA8FF] w-4" : i < msgIdx ? "bg-[#8AA8FF]/40" : "bg-white/10"
+              }`} />
+          ))}
+        </div>
+
+        {/* Next hint */}
+        <div className="text-[10px] text-white/20 mt-2 text-center">
+          {allShown ? (isLast && msgIdx === messages.length - 1 ? "click to finish" : "click to continue →") : ""}
+        </div>
+      </div>
+
+      {/* Arrow */}
+      <div className="absolute bottom-[-6px] right-8 w-3 h-3 rotate-45"
+        style={{
+          background: "rgba(15,15,30,0.95)",
+          borderRight: "1px solid rgba(138,168,255,0.2)",
+          borderBottom: "1px solid rgba(138,168,255,0.2)",
+        }} />
+    </motion.div>
+  );
+};
+
+// Tour overlay — blur + particles only
+const TourOverlay: React.FC<{
+  active: boolean;
+  highlightSelector?: string;
+}> = ({ active, highlightSelector }) => {
+  if (!active) return null;
+
+  return (
+    <div className="fixed inset-0 z-[9997] pointer-events-none">
+      {/* Floating particles only */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <motion.div key={i}
+          className="absolute w-1 h-1 rounded-full"
+          style={{
+            left: `${10 + (i * 13) % 80}%`,
+            top: `${15 + (i * 15) % 70}%`,
+            background: i % 2 === 0 ? "rgba(138,168,255,0.4)" : "rgba(255,152,0,0.3)",
+          }}
+          animate={{
+            y: [-8, 8, -8],
+            x: [-4, 4, -4],
+            opacity: [0.2, 0.6, 0.2],
+          }}
+          transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Tour steps
+interface TourStep {
+  page?: string;
+  section?: string;
   messages: { EN: string[]; RU: string[] };
-  characterState: CharacterState;
-  item?: ItemKind;
+  catState: TourState;
+  emoji?: string;
   delay: number;
 }
 
-const ONBOARDING_STEPS: OnboardingStep[] = [
+const TOUR_STEPS: TourStep[] = [
+  // 1. Welcome
+  {
+    messages: {
+      EN: ["Hey there! I'm Pixel, your personal guide!", "Welcome to SkillPath — the platform where you pick a tech career and we build your learning path.", "Let me show you everything we've got!"],
+      RU: ["Привет! Я Pixel, твой персональный гид!", "Добро пожаловать в SkillPath — платформа, где ты выбираешь карьеру в IT, а мы строим твой путь обучения.", "Давай покажу всё что у нас есть!"],
+    },
+    catState: "wave",
+  },
+  // 2. Hero
   {
     page: "home",
-    scrollTo: 0,
+    section: "hero",
     messages: {
-      EN: [
-        "Hey there! I'm Pixel, your personal guide!",
-        "Welcome to SkillPath — the platform where you pick a career and we build your learning path.",
-        "Let me walk you through everything we've got!",
-      ],
-      RU: [
-        "Привет! Я Пиксель, твой персональный гид!",
-        "Добро пожаловать в SkillPath — платформа, где ты выбираешь карьеру, а мы строим твой путь обучения.",
-        "Давай покажу всё что у нас есть!",
-      ],
+      EN: ["This is our main page — the Hero section!", "See the big title 'Choose Your Future Class In Tech'? That's what we help you do.", "Two buttons: 'Start Your Quest' launches the aptitude quiz, 'Explore Roles' shows all career paths.", "Up top is the navigation bar with Professions, Roadmaps, Mentors, language toggle, and Sign In."],
+      RU: ["Это главная страница — секция Hero!", "Заголовок 'Выбери своё направление в IT' — мы помогаем тебе это сделать.", "Две кнопки: 'Начать тест' запускает профориентацию, 'Все роли' показывает все карьерные пути.", "Сверху навигация: Профессии, Роадмапы, Менторы, переключатель языка и кнопка входа."],
     },
-    characterState: "wave",
-    delay: 14000,
+    catState: "showItem",
+    emoji: "🚀",
   },
+  // 3. Stats
   {
     page: "home",
-    scrollTo: 2,
+    section: "stats",
     messages: {
-      EN: [
-        "Over 5,000 students already started their tech journey here!",
-        "We have roadmaps, mentors, quizzes, and interactive lessons.",
-        "Everything you need to go from zero to hired — in one place.",
-      ],
-      RU: [
-        "Более 5000 студентов уже начали свой путь в IT здесь!",
-        "У нас есть роадмапы, менторы, тесты и интерактивные уроки.",
-        "Всё что нужно чтобы перейти от нуля до трудоустройства — в одном месте.",
-      ],
+      EN: ["Here's our platform stats — real numbers!", "5,000+ students, 50+ mentors, 8 career directions, 92% completion rate.", "These represent real people changing their lives through tech."],
+      RU: ["Статистика платформы — реальные цифры!", "5000+ студентов, 50+ менторов, 8 направлений, 92% завершения.", "За цифрами стоят реальные люди, меняющие жизнь через технологии."],
     },
-    characterState: "showItem",
-    item: "star",
-    delay: 14000,
+    catState: "showItem",
+    emoji: "⭐",
   },
+  // 4. Roles
   {
     page: "home",
-    scrollTo: 6,
+    section: "roles",
     messages: {
-      EN: [
-        "Getting started is super easy — just 3 steps!",
-        "First, take our quick quiz — it finds the perfect career for you.",
-        "Then get your personalized roadmap and start learning right away!",
-      ],
-      RU: [
-        "Начать проще простого — всего 3 шага!",
-        "Сначала пройди быстрый тест — он найдёт идеальную карьеру для тебя.",
-        "Потом получи персональный роадмап и начинай учиться сразу!",
-      ],
+      EN: ["8 career paths to choose from!", "Frontend, AI, Cybersecurity, Data Science, Backend, Mobile, DevOps, GameDev.", "Each path has unique skills, tools, and a specialized roadmap.", "Click on any card to see full details."],
+      RU: ["8 карьерных путей на выбор!", "Frontend, AI, Кибербезопасность, Data Science, Backend, Mobile, DevOps, GameDev.", "У каждого пути уникальные навыки, инструменты и специализированный план.", "Нажми на любую карточку чтобы увидеть подробности."],
     },
-    characterState: "showItem",
-    item: "map",
-    delay: 14000,
+    catState: "showItem",
+    emoji: "🧭",
   },
+  // 5. Steps
+  {
+    page: "home",
+    section: "steps",
+    messages: {
+      EN: ["Getting started is super easy — just 3 steps!", "Step 1: Take our quick 5-minute aptitude test.", "Step 2: Get your personalized roadmap.", "Step 3: Level up, connect with mentors, and build your portfolio."],
+      RU: ["Начать проще простого — всего 3 шага!", "Шаг 1: Пройди быстрый 5-минутный тест.", "Шаг 2: Получи персональный роадмап.", "Шаг 3: Прокачивайся, общайся с менторами и собирай портфолио."],
+    },
+    catState: "showItem",
+    emoji: "🗺️",
+  },
+  // 6. Bento
+  {
+    page: "home",
+    section: "bento",
+    messages: {
+      EN: ["Everything you need to level up — all in one platform!", "Tests, roadmaps, mentors, certificates, workshops, library, career tools, and AI copilot 24/7."],
+      RU: ["Всё что нужно для прокачки — на одной платформе!", "Тесты, роадмапы, менторы, сертификаты, воркшопы, библиотека, карьерные инструменты и AI-копилот 24/7."],
+    },
+    catState: "showItem",
+    emoji: "📖",
+  },
+  // 7. Roadmaps
   {
     page: "roadmaps",
-    openRoadmapKey: "frontend",
     messages: {
-      EN: [
-        "Let me show you how learning works!",
-        "I'm opening the Frontend roadmap — it has phases from basics to advanced.",
-        "Each phase has skills you need to master.",
-      ],
-      RU: [
-        "Давай покажу как работает обучение!",
-        "Открываю роадмап Frontend — он имеет фазы от основ до продвинутого.",
-        "У каждой фазы есть навыки которые нужно освоить.",
-      ],
+      EN: ["Welcome to the Roadmaps page!", "All available learning paths for every tech career.", "Each roadmap has phases: Fundamentals → Advanced → Specialization.", "Click skills to see resources, duration, and difficulty. Track your progress!"],
+      RU: ["Добро пожаловать на страницу Роадмапов!", "Все доступные пути обучения для каждой IT-профессии.", "Каждый роадмап разделён на фазы: Основы → Продвинутый → Специализация.", "Кликай на навыки чтобы увидеть ресурсы, длительность и сложность. Отслеживай прогресс!"],
     },
-    characterState: "showItem",
-    item: "book",
-    delay: 14000,
+    catState: "showItem",
+    emoji: "💻",
   },
+  // 8. Roadmaps — уроки
   {
-    page: "learning:html-css",
-    learningSkillId: "html-css",
+    page: "roadmaps",
     messages: {
-      EN: [
-        "This is an actual lesson — HTML & CSS Fundamentals!",
-        "On the left you have theory with code examples. On the right — a live code editor!",
-        "You can write code and see results instantly. It's like having a mini IDE in your browser!",
-      ],
-      RU: [
-        "Это настоящий урок — Основы HTML & CSS!",
-        "Слева теория с примерами кода. Справа — живой редактор кода!",
-        "Ты можешь писать код и видеть результат сразу. Как мини-IDE в браузере!",
-      ],
+      EN: ["Each skill has interactive lessons with a built-in code editor!", "Write code and see results instantly — like a mini IDE in your browser.", "After lessons, take exams to earn certificates.", "Certificates prove your skills — share them on LinkedIn!"],
+      RU: ["У каждого навыка есть интерактивные уроки с встроенным редактором кода!", "Пиши код и видь результат сразу — как мини-IDE в браузере.", "После уроков сдавай экзамены чтобы получить сертификаты.", "Сертификаты подтверждают навыки — делись ими в LinkedIn!"],
     },
-    characterState: "excited",
-    item: "code",
-    delay: 16000,
+    catState: "showItem",
+    emoji: "🏆",
   },
-  {
-    page: "learning:html-css",
-    learningSkillId: "html-css",
-    messages: {
-      EN: [
-        "After each lesson there's a practice task — write real code to solve it!",
-        "When you complete all lessons, you take an exam to earn your certificate.",
-        "The certificate proves you've mastered the skill — share it on LinkedIn!",
-      ],
-      RU: [
-        "После каждого урока есть практика — напиши реальный код чтобы решить!",
-        "Когда пройдёшь все уроки, сдаёшь экзамен чтобы получить сертификат.",
-        "Сертификат подтверждает что ты освоил навык — делись им в LinkedIn!",
-      ],
-    },
-    characterState: "showItem",
-    item: "trophy",
-    delay: 16000,
-  },
-  {
-    page: "professions",
-    messages: {
-      EN: [
-        "Check out all 8 career paths!",
-        "Frontend, AI, Cybersecurity, Data Science, Backend, Mobile, DevOps, and Game Dev.",
-        "Each one shows you the required skills, tools, and expected salary range.",
-      ],
-      RU: [
-        "Посмотри все 8 карьерных путей!",
-        "Frontend, AI, Кибербезопасность, Data Science, Backend, Mobile, DevOps и Game Dev.",
-        "У каждой показаны нужные навыки, инструменты и ожидаемая зарплата.",
-      ],
-    },
-    characterState: "showItem",
-    item: "compass",
-    delay: 14000,
-  },
+  // 9. Mentors
   {
     page: "mentors",
     messages: {
-      EN: [
-        "Meet our team of experienced mentors!",
-        "They work at top tech companies and have real industry experience.",
-        "Book a 1-on-1 session to get personalized feedback on your code or career plan.",
-      ],
-      RU: [
-        "Познакомься с нашей командой опытных менторов!",
-        "Они работают в топовых IT-компаниях и имеют реальный опыт.",
-        "Запишись на сессию 1-на-1 чтобы получить персональный фидбек.",
-      ],
+      EN: ["Meet our team of experienced mentors!", "Each works at a top tech company with real industry experience.", "Filter by category: Frontend, AI, Cybersec, Data, Backend, Mobile, DevOps, GameDev.", "Every mentor has a rating, reviews, price per hour, and skills list."],
+      RU: ["Познакомься с нашей командой менторов!", "Каждый работает в топовой IT-компании с реальным опытом.", "Фильтруй по категории: Frontend, AI, Кибер, Data, Backend, Mobile, DevOps, GameDev.", "У каждого рейтинг, отзывы, цена за час и список навыков."],
     },
-    characterState: "showItem",
-    item: "compass",
-    delay: 14000,
+    catState: "showItem",
+    emoji: "👨‍💻",
   },
+  // 10. Mentors — чат
+  {
+    page: "mentors",
+    messages: {
+      EN: ["Click a mentor to see their profile and start a chat!", "Message them directly — ask questions, discuss career plans, get code review.", "Book a 1-on-1 session: pick date and time, mentor prepares for you."],
+      RU: ["Нажми на ментора чтобы увидеть профиль и начать чат!", "Напиши им напрямую — задавай вопросы, обсуждай карьеру, получи ревью кода.", "Забронируй сессию 1-на-1: выбери дату и время, ментор подготовится."],
+    },
+    catState: "showItem",
+    emoji: "💬",
+  },
+  // 11. Professions
+  {
+    page: "professions",
+    messages: {
+      EN: ["This is our Professions page!", "Each profession shows: key skills, popular tools, salary range (Junior to Senior), and a day-in-the-life description.", "You can watch overview videos and click 'Open Full Roadmap' to start learning.", "Every profession has a clear career progression path."],
+      RU: ["Это страница Профессий!", "Каждая показывает: ключевые навыки, инструменты, зарплату (Junior до Senior) и описание дня из жизни.", "Можно посмотреть видео и нажать 'Открыть полный курс' чтобы начать.", "У каждой профессии чёткий путь карьерного роста."],
+    },
+    catState: "showItem",
+    emoji: "🎯",
+  },
+  // 12. Quiz
   {
     page: "home",
     messages: {
-      EN: [
-        "So — ready to start your tech career?",
-        "Creating an account is free and takes just 30 seconds!",
-        "Click the 'Sign In' button at the top right — I'll be waiting for you on the other side!",
-      ],
-      RU: [
-        "Ну что — готов начать карьеру в IT?",
-        "Создать аккаунт бесплатно и занимает всего 30 секунд!",
-        "Нажми кнопку 'Sign In' в правом углу — я буду ждать тебя на той стороне!",
-      ],
+      EN: ["Now let me show you how our aptitude quiz works!", "5-minute interactive test: interests, superpowers, ideal Saturday, preferred tools, desired impact.", "We match you with the perfect career path. No coding background needed!"],
+      RU: ["Покажу как работает тест на профориентацию!", "5-минутный тест: интересы, суперсилы, идеальная суббота, инструменты, желаемое влияние.", "Мы подберём идеальный карьерный путь. Опыт программирования не нужен!"],
     },
-    characterState: "excited",
-    item: "rocket",
-    delay: 14000,
+    catState: "excited",
+    emoji: "🎯",
+  },
+  // 13. Profile
+  {
+    page: "profile",
+    messages: {
+      EN: ["This is your Profile — personal dashboard!", "Avatar, progress index, courses, quiz history, mentor bookings.", "Upload avatar, edit name, track study calendar.", "Heatmap shows activity — green means productive days!"],
+      RU: ["Это твой Профиль — персональная панель!", "Аватар, прогресс, курсы, история квизов, бронирования менторов.", "Загрузи аватар, отредактируй имя, отслеживай календарь.", "Тепловая карта показывает активность — зелёный = продуктивные дни!"],
+    },
+    catState: "showItem",
+    emoji: "👤",
+  },
+  // 14. Footer
+  {
+    page: "home",
+    messages: {
+      EN: ["Here's the footer with contacts and social media.", "Find us on Telegram, Instagram, GitHub.", "Navigation links for quick access. We're available 24/7 for support."],
+      RU: ["Футер с контактами и соцсетями.", "Нас можно найти в Telegram, Instagram, GitHub.", "Ссылки навигации для быстрого доступа. Мы на связи 24/7."],
+    },
+    catState: "showItem",
+    emoji: "📱",
+  },
+  // 15. Final
+  {
+    messages: {
+      EN: ["That's SkillPath! 🎉", "You've seen everything: professions, roadmaps, mentors, lessons, quizzes, and your profile.", "Creating an account is free — just 30 seconds.", "Click 'Sign In' to get started. Good luck — you've got this!"],
+      RU: ["Это SkillPath! 🎉", "Ты увидел всё: профессии, роадмапы, менторов, уроки, тесты и профиль.", "Создать аккаунт бесплатно — всего 30 секунд.", "Нажми 'Войти' чтобы начать. Удачи — у тебя всё получится!"],
+    },
+    catState: "excited",
+    emoji: "🚀",
   },
 ];
 
-const PAGE_TO_SECTION: Record<string, string> = {
-  home: "hero",
-  roadmaps: "roadmaps",
-  profile: "profile",
-  mentors: "mentors",
-  professions: "roles",
+const TOUR_SECTION_MAP: Record<string, string> = {
+  hero: "[data-tour='hero']",
+  stats: "[data-tour='stats']",
+  roles: "[data-tour='roles']",
+  steps: "[data-tour='steps']",
+  bento: "[data-tour='bento']",
 };
 
+// Main GuideCharacter component
 export const GuideCharacter: React.FC = () => {
   const { lang, colorTheme, currentPage, setCurrentPage } = useContext(LanguageContext);
-  const [state, setState] = useState<CharacterState>("idle");
+  const [catState, setCatState] = useState<TourState>("idle");
   const [blinking, setBlinking] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
-  const [dialog, setDialog] = useState(guideDialogs[0]);
-  const [dialogMessages, setDialogMessages] = useState<{ EN: string[]; RU: string[] }>({ EN: [], RU: [] });
-  const [greeted, setGreeted] = useState(false);
-  const [musicOn, setMusicOn] = useState(false);
-  const [item, setItem] = useState<ItemKind | undefined>();
   const [hovered, setHovered] = useState(false);
   const [sleepy, setSleepy] = useState(false);
-  const [onboarding, setOnboarding] = useState(false);
-  const [onboardingStep, setOnboardingStep] = useState(0);
+  const [item, setItem] = useState<string | undefined>();
+
+  // Tour state
+  const [touring, setTouring] = useState(false);
+  const [tourStep, setTourStep] = useState(0);
+  const [showBubble, setShowBubble] = useState(false);
   const [catPos, setCatPos] = useState({ x: 0, y: 0 });
+  const [showOverlay, setShowOverlay] = useState(false);
+
+  // Non-tour dialog state
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogMessages, setDialogMessages] = useState<{EN:string[],RU:string[]}>({EN:[],RU:[]});
+
   const lastPage = useRef("");
-  const lastSection = useRef("");
   const greetedRef = useRef(false);
   const sleepTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const onboardingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const stepTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isLoggedIn = !!localStorage.getItem("skillpath_token");
   const wasLoggedOut = useRef(!isLoggedIn);
   const welcomeShown = useRef(false);
-
-  // Detect first login after onboarding — show welcome message
-  useEffect(() => {
-    if (isLoggedIn && wasLoggedOut.current && !welcomeShown.current && !onboarding) {
-      welcomeShown.current = true;
-      wasLoggedOut.current = false;
-      setTimeout(() => {
-        const msgs = {
-          EN: [
-            "Welcome back! I'm Pixel, your personal learning assistant!",
-            "I'll help you navigate courses, track progress, and stay on top of your goals.",
-            "Good luck on your journey — you've got this!",
-          ],
-          RU: [
-            "С возвращением! Я Пиксель, твой персональный помощник в обучении!",
-            "Я помогу тебе с курсами, прогрессом и целью.",
-            "Удачи на пути — у тебя всё получится!",
-          ],
-        };
-        setDialogMessages(msgs);
-        setState("excited");
-        setItem("star");
-        setShowDialog(true);
-        setCatPos({ x: 0, y: 0 });
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        // Close dialog and go to idle after message
-        setTimeout(() => {
-          setShowDialog(false);
-          setState("idle");
-          setItem(undefined);
-        }, 12000);
-      }, 1500);
-    }
-    if (!isLoggedIn) {
-      wasLoggedOut.current = true;
-    }
-  }, [isLoggedIn, onboarding]);
 
   // Blink
   useEffect(() => {
@@ -423,295 +524,234 @@ export const GuideCharacter: React.FC = () => {
   }, []);
 
   // Sleep timer
-  const resetSleepTimer = useCallback(() => {
+  const resetSleep = useCallback(() => {
     setSleepy(false);
     if (sleepTimer.current) clearTimeout(sleepTimer.current);
     sleepTimer.current = setTimeout(() => {
-      if (!onboarding) setSleepy(true);
+      if (!touring) setSleepy(true);
     }, 25000);
-  }, [onboarding]);
+  }, [touring]);
 
   useEffect(() => {
-    resetSleepTimer();
+    resetSleep();
     return () => { if (sleepTimer.current) clearTimeout(sleepTimer.current); };
-  }, [resetSleepTimer]);
+  }, [resetSleep]);
 
-  // Auto-start onboarding for non-logged-in users on first visit
+  // Auto-start tour for non-logged-in users on first visit
   useEffect(() => {
     if (isLoggedIn || greetedRef.current || currentPage !== "home") return;
     const t = setTimeout(() => {
       greetedRef.current = true;
-      setOnboarding(true);
-      setOnboardingStep(0);
-      resetSleepTimer();
+      startTour();
     }, 2000);
     return () => clearTimeout(t);
-  }, [isLoggedIn, currentPage, resetSleepTimer]);
+  }, [isLoggedIn, currentPage]);
 
-  // Onboarding step progression — navigates through all pages with demos
+  // Welcome back for logged-in users
   useEffect(() => {
-    if (!onboarding || onboardingStep >= ONBOARDING_STEPS.length) {
-      if (onboarding && onboardingStep >= ONBOARDING_STEPS.length) {
-        setOnboarding(false);
-        setCatPos({ x: 0, y: 0 });
-        setState("idle");
-        setShowDialog(false);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-      return;
-    }
-
-    const step = ONBOARDING_STEPS[onboardingStep];
-
-    // Move cat to different positions during onboarding
-    const positions = [
-      { x: 0, y: 0 },
-      { x: -200, y: 0 },
-      { x: -400, y: -50 },
-      { x: 0, y: 0 },
-    ];
-    setCatPos(positions[onboardingStep % positions.length]);
-
-    // Handle roadmap opening
-    if (step.openRoadmapKey) {
-      setShowDialog(false);
-      setState("idle");
-      setCurrentPage("roadmaps");
-      window.scrollTo({ top: 0, behavior: "instant" });
-      // Open the roadmap after page loads
-      onboardingTimer.current = setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: "instant" });
-        // Use a custom event to open the roadmap
-        window.dispatchEvent(new CustomEvent("onboarding-open-roadmap", { detail: step.openRoadmapKey }));
-        setTimeout(() => {
-          setDialogMessages(step.messages);
-          setState(step.characterState);
-          setItem(step.item);
-          setShowDialog(true);
-          resetSleepTimer();
-        }, 1500);
-      }, 500);
-    }
-    // Handle lesson navigation
-    else if (step.learningSkillId) {
-      setShowDialog(false);
-      setState("idle");
-      setCurrentPage(`learning:${step.learningSkillId}`);
-      window.scrollTo({ top: 0, behavior: "instant" });
-      onboardingTimer.current = setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: "instant" });
-        setTimeout(() => {
-          setDialogMessages(step.messages);
-          setState(step.characterState);
-          setItem(step.item);
-          setShowDialog(true);
-          resetSleepTimer();
-        }, 1000);
-      }, 500);
-    }
-    // Regular page navigation
-    else if (step.page !== currentPage) {
-      setShowDialog(false);
-      setState("idle");
-      setCurrentPage(step.page);
-      window.scrollTo({ top: 0, behavior: "instant" });
-      onboardingTimer.current = setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: "instant" });
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: "instant" });
-          if (step.scrollTo !== undefined) {
-            const sections = document.querySelectorAll<HTMLElement>("section");
-            if (sections[step.scrollTo]) {
-              sections[step.scrollTo].scrollIntoView({ behavior: "smooth", block: "center" });
-            }
-          }
-          setTimeout(() => {
-            setDialogMessages(step.messages);
-            setState(step.characterState);
-            setItem(step.item);
-            setShowDialog(true);
-            resetSleepTimer();
-          }, 600);
-        }, 400);
-      }, 400);
-    }
-    // Same page — scroll and show dialog
-    else {
-      if (step.scrollTo !== undefined) {
-        const sections = document.querySelectorAll<HTMLElement>("section");
-        if (sections[step.scrollTo]) {
-          sections[step.scrollTo].scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }
-      onboardingTimer.current = setTimeout(() => {
-        setDialogMessages(step.messages);
-        setState(step.characterState);
-        setItem(step.item);
+    if (isLoggedIn && wasLoggedOut.current && !welcomeShown.current && !touring) {
+      welcomeShown.current = true;
+      wasLoggedOut.current = false;
+      setTimeout(() => {
+        const msgs = {
+          EN: ["Welcome back! I'm Pixel!", "Ready to continue learning?"],
+          RU: ["С возвращением! Я Pixel!", "Готов продолжить обучение?"],
+        };
+        setDialogMessages(msgs);
+        setCatState("excited");
+        setItem("⭐");
         setShowDialog(true);
-        resetSleepTimer();
-      }, 800);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => { setShowDialog(false); setCatState("idle"); setItem(undefined); }, 8000);
+      }, 1500);
     }
+    if (!isLoggedIn) wasLoggedOut.current = true;
+  }, [isLoggedIn, touring]);
 
-    // Advance to next step
-    stepTimer.current = setTimeout(() => {
-      setShowDialog(false);
-      setState("idle");
-      setOnboardingStep(s => s + 1);
-    }, step.delay);
+  // Tour logic
+  const startTour = useCallback(() => {
+    setTouring(true);
+    setTourStep(0);
+    setShowBubble(true);
+    setShowOverlay(true);
+    setCatState("wave");
+    setItem("👋");
+    setCatPos({ x: 0, y: 0 });
+    resetSleep();
+  }, [resetSleep]);
 
-    return () => {
-      if (onboardingTimer.current) clearTimeout(onboardingTimer.current);
-      if (stepTimer.current) clearTimeout(stepTimer.current);
-    };
-  }, [onboarding, onboardingStep, currentPage, setCurrentPage, resetSleepTimer]);
-
-  // Page detection for logged-in users
-  useEffect(() => {
-    if (!isLoggedIn || !currentPage || currentPage === lastPage.current) return;
-    if (onboarding) return;
-
-    if (currentPage.startsWith("learning:")) {
-      const d = guideDialogs.find(x => x.section === "lessons") || guideDialogs[0];
-      setDialog(d);
-      setDialogMessages(d.messages);
-      setState(d.characterState);
-      setItem(d.item);
-      lastPage.current = currentPage;
-      resetSleepTimer();
-      return;
-    }
-    if (currentPage === "quiz") {
-      const d = guideDialogs.find(x => x.section === "quiz") || guideDialogs[0];
-      setDialog(d);
-      setDialogMessages(d.messages);
-      setState(d.characterState);
-      setItem(d.item);
-      lastPage.current = currentPage;
-      resetSleepTimer();
-      return;
-    }
-    const section = PAGE_TO_SECTION[currentPage] || "hero";
-    if (section !== lastSection.current) {
-      lastSection.current = section;
-      lastPage.current = currentPage;
-      const d = guideDialogs.find(x => x.section === section) || guideDialogs[0];
-      setDialog(d);
-      setDialogMessages(d.messages);
-      setState(d.characterState);
-      setItem(d.item);
-      resetSleepTimer();
-    }
-  }, [currentPage, isLoggedIn, onboarding, resetSleepTimer]);
-
-  // Scroll detection for logged-in users on landing page
-  useEffect(() => {
-    if (!isLoggedIn || currentPage !== "home" || onboarding) return;
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-    const detect = () => {
-      if (showDialog) return;
-      const sections = document.querySelectorAll<HTMLElement>("section");
-      const vh = window.innerHeight;
-      let best = "";
-      let bestRatio = 0;
-      sections.forEach((sec) => {
-        const r = sec.getBoundingClientRect();
-        const visTop = Math.max(r.top, 0);
-        const visBot = Math.min(r.bottom, vh);
-        const vis = Math.max(0, visBot - visTop);
-        const ratio = vis / Math.min(r.height || 1, vh);
-        if (ratio > bestRatio && ratio > 0.15) {
-          bestRatio = ratio;
-          const text = (sec.textContent || "").slice(0, 400);
-          if (/choose your|выбери/i.test(text)) best = "hero";
-          else if (/frontend|ai engineer|cybersec|направление/i.test(text)) best = "roles";
-          else if (/how to begin|как начать/i.test(text)) best = "steps";
-          else if (/everything you need|всё.*нужно/i.test(text)) best = "bento";
-          else if (/students|mentors|студент/i.test(text)) best = "stats";
-          else if (/real stories|настоящие/i.test(text)) best = "testimonials";
-          else if (/frequently|частые/i.test(text)) best = "faq";
-          else if (/plan|план/i.test(text)) best = "pricing";
-        }
-      });
-      if (best && best !== lastSection.current) {
-        lastSection.current = best;
-        const d = guideDialogs.find(x => x.section === best) || guideDialogs[0];
-        setDialog(d);
-        setDialogMessages(d.messages);
-        setState(d.characterState);
-        setItem(d.item);
-      }
-    };
-    const onScroll = () => { if (timeout) clearTimeout(timeout); timeout = setTimeout(detect, 80); };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    const t = setTimeout(detect, 500);
-    return () => { window.removeEventListener("scroll", onScroll); clearTimeout(t); if (timeout) clearTimeout(timeout); };
-  }, [currentPage, isLoggedIn, showDialog, onboarding]);
-
-  // Music
-  useEffect(() => {
-    const h = (e: CustomEvent<boolean>) => setMusicOn(e.detail);
-    window.addEventListener("guide-music-state" as any, h);
-    return () => window.removeEventListener("guide-music-state" as any);
+  const endTour = useCallback(() => {
+    setShowBubble(false);
+    setCatState("idle");
+    setItem(undefined);
+    setShowOverlay(false);
+    setTouring(false);
+    setCatPos({ x: 0, y: 0 });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const toggle = useCallback(() => {
-    resetSleepTimer();
-    if (onboarding) {
-      // Skip onboarding on click
-      setOnboarding(false);
-      setShowDialog(false);
-      setState("idle");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+  const advanceTourRef = useRef<() => void>(() => {});
+  const tourStepRef = useRef(0);
+  const pendingStepRef = useRef<number | null>(null);
+
+  const showStepContent = useCallback((stepIdx: number) => {
+    const step = TOUR_STEPS[stepIdx];
+    if (!step) return;
+
+    // Move cat
+    const positions = [
+      { x: 0, y: 0 }, { x: -150, y: -20 }, { x: -300, y: -40 },
+      { x: 0, y: 0 }, { x: 100, y: -15 }, { x: -200, y: -30 },
+      { x: 0, y: 0 }, { x: -100, y: -20 }, { x: -250, y: -35 },
+      { x: 0, y: 0 }, { x: -150, y: -25 }, { x: 0, y: 0 },
+    ];
+    setCatPos(positions[stepIdx % positions.length]);
+
+    // Scroll to section if on same page
+    if (step.section && TOUR_SECTION_MAP[step.section]) {
+      setTimeout(() => {
+        const el = document.querySelector<HTMLElement>(TOUR_SECTION_MAP[step.section]);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
+    }
+
+    // Scroll to footer for the footer step (no section, on home page)
+    if (stepIdx === 13 && !step.section) {
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      }, 300);
+    }
+
+    // Arrive and show bubble
+    setTimeout(() => {
+      setCatState("arriving");
+      setTimeout(() => {
+        setCatState(step.catState);
+        setItem(step.emoji);
+        setTourStep(stepIdx);
+        setShowBubble(true);
+        resetSleep();
+      }, 400);
+    }, 800);
+  }, [resetSleep]);
+
+  // Watch for page changes during tour — show content after page loads
+  useEffect(() => {
+    if (!touring || pendingStepRef.current === null) return;
+    const stepIdx = pendingStepRef.current;
+    pendingStepRef.current = null;
+    // Page has changed, now show content
+    setTimeout(() => showStepContent(stepIdx), 500);
+  }, [currentPage, touring, showStepContent]);
+
+  const advanceTour = useCallback(() => {
+    const nextStep = tourStepRef.current + 1;
+    if (nextStep >= TOUR_STEPS.length) {
+      endTour();
       return;
     }
-    if (showDialog) {
-      setShowDialog(false);
-      setState("idle");
-    } else {
-      setShowDialog(true);
-      setState(dialog.characterState);
-      setItem(dialog.item);
-    }
-  }, [showDialog, dialog, onboarding, resetSleepTimer]);
+    tourStepRef.current = nextStep;
+    setShowBubble(false);
+    setCatState("running");
+    setItem(undefined);
 
-  const close = useCallback(() => {
-    setShowDialog(false);
-    if (!onboarding) setState("idle");
-  }, [onboarding]);
+    const step = TOUR_STEPS[nextStep];
+
+    if (step.page && step.page !== currentPage) {
+      // Store pending step, navigate — useEffect will pick it up
+      pendingStepRef.current = nextStep;
+      setCurrentPage(step.page);
+      window.scrollTo({ top: 0, behavior: "instant" });
+    } else {
+      showStepContent(nextStep);
+    }
+  }, [currentPage, setCurrentPage, showStepContent, endTour]);
+
+  advanceTourRef.current = advanceTour;
+
+  const skipTour = useCallback(() => {
+    endTour();
+  }, [endTour]);
+
+  // Re-trigger
+  useEffect(() => {
+    (window as any).__showPresentation = () => {
+      localStorage.removeItem("skillpath_tour_seen");
+      greetedRef.current = false;
+      startTour();
+    };
+    return () => { delete (window as any).__showPresentation; };
+  }, [startTour]);
+
+  const currentTourStep = touring ? TOUR_STEPS[tourStep] : null;
+  const tourSelector = currentTourStep?.section ? TOUR_SECTION_MAP[currentTourStep.section] : undefined;
 
   return (
-    <motion.div
-      className="fixed bottom-5 right-24 z-50"
-      animate={{ x: catPos.x, y: catPos.y }}
-      transition={{ type: "spring", stiffness: 120, damping: 20, duration: 1.5 }}
-    >
-      <AnimatePresence>
-        {showDialog && (
-          <GuideDialog messages={dialogMessages[lang]} onClose={close} compact={onboarding} />
-        )}
-      </AnimatePresence>
+    <>
+      {/* Tour overlay */}
+      <TourOverlay active={showOverlay} highlightSelector={tourSelector} />
 
+      {/* Cat container */}
       <motion.div
-        onClick={toggle}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        className="relative cursor-pointer select-none"
-        role="button"
-        tabIndex={0}
-        aria-label="Guide character"
+        className="fixed bottom-5 right-24 z-[9999] tour-no-blur"
+        animate={{ x: catPos.x, y: catPos.y }}
+        transition={{ type: "spring", stiffness: 120, damping: 15, duration: 1.5 }}
       >
-        <CatPixelArt theme={colorTheme} state={sleepy ? "sleepy" : state}
-          blinking={blinking} item={item} musicOn={musicOn} hovered={hovered} />
+        {/* Tour bubble */}
+        <AnimatePresence>
+          {touring && showBubble && currentTourStep && (
+            <TourBubble
+              messages={currentTourStep.messages[lang]}
+              lang={lang}
+              onAdvance={advanceTour}
+              onClose={skipTour}
+              isLast={tourStep === TOUR_STEPS.length - 1}
+            />
+          )}
+        </AnimatePresence>
 
-        {!showDialog && (
-          <motion.div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[var(--ta)]"
-            animate={{ y: [0, -3, 0], scale: [1, 1.3, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity }} />
-        )}
+        {/* Non-tour dialog (for logged-in users) */}
+        <AnimatePresence>
+          {showDialog && !touring && (
+            <GuideDialog messages={dialogMessages[lang]} onClose={() => { setShowDialog(false); setCatState("idle"); setItem(undefined); }} />
+          )}
+        </AnimatePresence>
+
+        {/* Cat character */}
+        <motion.div
+          onClick={() => {
+            if (touring) return;
+            if (showDialog) { setShowDialog(false); setCatState("idle"); setItem(undefined); }
+            else {
+              const d = guideDialogs.find(x => x.section === "hero") || guideDialogs[0];
+              setDialogMessages(d.messages);
+              setCatState(d.characterState);
+              setItem(d.item);
+              setShowDialog(true);
+              resetSleep();
+            }
+          }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="relative cursor-pointer select-none"
+          role="button"
+          tabIndex={0}
+          aria-label="Guide character"
+        >
+          <CatPixelArt theme={colorTheme} state={sleepy && !touring ? "sleepy" : catState}
+            blinking={blinking} item={item} hovered={hovered} />
+
+          {/* Notification dot */}
+          {!showDialog && !touring && (
+            <motion.div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[var(--ta)]"
+              animate={{ y: [0, -3, 0], scale: [1, 1.3, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }} />
+          )}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </>
   );
 };
 

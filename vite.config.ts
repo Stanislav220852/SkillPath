@@ -41,11 +41,9 @@ export default defineConfig({
           'vendor-react': ['react', 'react-dom'],
           'vendor-motion': ['framer-motion'],
           'vendor-radix': [
-            '@radix-ui/react-accordion', '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu', '@radix-ui/react-select',
-            '@radix-ui/react-tabs', '@radix-ui/react-tooltip',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-tooltip',
           ],
-          'vendor-mui': ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
           'vendor-utils': ['clsx', 'tailwind-merge', 'class-variance-authority'],
         },
       },

@@ -59,13 +59,14 @@ app.add_middleware(
 app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 # Routers
-from src.api import auth, quiz, progress, mentors, chat, profile
+from src.api import auth, quiz, progress, mentors, chat, profile, admin
 app.include_router(auth.router)
 app.include_router(quiz.router)
 app.include_router(progress.router)
 app.include_router(mentors.router)
 app.include_router(chat.router)
 app.include_router(profile.router)
+app.include_router(admin.router)
 
 print("=== All routers loaded. App ready. ===", flush=True)
 

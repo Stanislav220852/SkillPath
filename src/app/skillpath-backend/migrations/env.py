@@ -10,8 +10,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.db.database import Base  
 from src.models.chat_message import ChatMessage
+from src.models.direct_conversation import DirectConversation
 from src.models.lesson_progress import LessonProgress
+from src.models.mentor import Mentor
 from src.models.mentor_booking import MentorBooking
+from src.models.platform_settings import PlatformSettings
 from src.models.quiz_result import QuizResult
 from src.models.roadmap_progress import RoadmapProgress
 from src.models.user import User

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -11,12 +11,11 @@ import {
   Award,
   Calendar,
   Globe,
-  Send,
-  Trash2,
   Search,
   Sparkles,
 } from "lucide-react";
 import * as API from "../../api";
+import { LanguageContext } from "../../App";
 
 const glassCard =
   "bg-white/80 dark:bg-[#0d0e12]/80 backdrop-blur-2xl border border-stone-200/80 dark:border-white/[0.07] rounded-3xl shadow-[0_8px_32px_rgba(0,42,84,0.10)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
@@ -42,12 +41,6 @@ type Mentor = {
   bio: string;
   sessionsCompleted: number;
   nextSlot: string;
-};
-
-type ChatMessage = {
-  from: "me" | "mentor";
-  text: string;
-  time: number;
 };
 
 const colorMap: Record<ColorKey, { gradient: string; bg: string; text: string; border: string }> = {
@@ -388,189 +381,6 @@ const autoReplies = (lang: Lang, mentorRole?: string) => {
       ];
 };
 
-const ChatWindow = ({ mentor, lang, onClose }: { mentor: Mentor; lang: Lang; onClose: () => void }) => {
-  const c = colorMap[mentor.color];
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [typing, setTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!API.isLoggedIn()) {
-      const firstName = mentor.name.split(" ")[0];
-      const greeting =
-        lang === "RU"
-          ? `Привет! Я ${firstName}. Спрашивай что угодно про ${mentor.role} 🚀`
-          : `Hey! I'm ${firstName}. Ask me anything about ${mentor.role} 🚀`;
-      setMessages([{ from: "mentor", text: greeting, time: Date.now() }]);
-      return;
-    }
-
-    API.getChatHistory(mentor.id)
-      .then((data: any) => {
-        if (data?.messages?.length) {
-          setMessages(data.messages.map((m: any) => ({
-            from: m.from_who as "me" | "mentor",
-            text: m.text,
-            time: new Date(m.created_at).getTime(),
-          })));
-        } else {
-          const firstName = mentor.name.split(" ")[0];
-          const greeting =
-            lang === "RU"
-              ? `Привет! Я ${firstName}. Спрашивай что угодно про ${mentor.role} 🚀`
-              : `Hey! I'm ${firstName}. Ask me anything about ${mentor.role} 🚀`;
-          setMessages([{ from: "mentor", text: greeting, time: Date.now() }]);
-        }
-      })
-      .catch(() => {
-        const firstName = mentor.name.split(" ")[0];
-        const greeting =
-          lang === "RU"
-            ? `Привет! Я ${firstName}. Спрашивай что угодно про ${mentor.role} 🚀`
-            : `Hey! I'm ${firstName}. Ask me anything about ${mentor.role} 🚀`;
-        setMessages([{ from: "mentor", text: greeting, time: Date.now() }]);
-      });
-  }, [mentor.id, mentor.name, mentor.role, lang]);
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-    });
-  }, [messages, typing]);
-
-  const send = async () => {
-    const text = input.trim();
-    if (!text) return;
-
-    setMessages((prev) => [...prev, { from: "me", text, time: Date.now() }]);
-    setInput("");
-    setTyping(true);
-
-    if (API.isLoggedIn()) {
-      try {
-        const res: any = await API.sendChatMessage(mentor.id, text);
-        if (res?.mentor_reply) {
-          setMessages((prev) => [...prev, {
-            from: "mentor",
-            text: res.mentor_reply.text,
-            time: new Date(res.mentor_reply.created_at).getTime(),
-          }]);
-        }
-      } catch {
-        const replies = autoReplies(lang, mentor.role);
-        const reply = replies[Math.floor(Math.random() * replies.length)];
-        setMessages((prev) => [...prev, { from: "mentor", text: reply, time: Date.now() }]);
-      }
-    } else {
-      window.setTimeout(() => {
-        const replies = autoReplies(lang, mentor.role);
-        const reply = replies[Math.floor(Math.random() * replies.length)];
-        setMessages((prev) => [...prev, { from: "mentor", text: reply, time: Date.now() }]);
-      }, 1100 + Math.random() * 900);
-    }
-    setTyping(false);
-  };
-
-  const clearChat = async () => {
-    setMessages([]);
-    if (API.isLoggedIn()) {
-      API.clearChat(mentor.id).catch(() => {});
-    }
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-      className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 p-0 backdrop-blur-md sm:p-6"
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        transition={{ type: "spring", stiffness: 300, damping: 28 }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative flex h-full w-full flex-col overflow-hidden border border-black/5 bg-white shadow-2xl dark:border-white/10 dark:bg-stone-900 sm:h-[600px] sm:max-h-[85vh] sm:max-w-lg sm:rounded-3xl"
-      >
-        <div className={`flex flex-shrink-0 items-center gap-3 bg-gradient-to-r ${c.gradient} px-4 py-3 text-white`}>
-          <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full ring-2 ring-white/40">
-            <Avatar mentor={mentor} c={c} className="h-10 w-10 text-sm" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-bold">{mentor.name}</p>
-            <p className="flex items-center gap-1 text-[11px] text-white/80">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-300" />
-              {lang === "RU" ? "в сети" : "online"}
-            </p>
-          </div>
-          <button
-            onClick={clearChat}
-            title={lang === "RU" ? "Очистить" : "Clear"}
-            className="rounded-full p-2 transition-colors hover:bg-white/20"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-          <button onClick={onClose} className="rounded-full p-2 transition-colors hover:bg-white/20">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto bg-stone-50 p-4 dark:bg-stone-950/50">
-          {messages.map((m, i) => (
-            <div key={`${m.time}-${i}`} className={`flex ${m.from === "me" ? "justify-end" : "justify-start"}`}>
-              <div
-                className={`max-w-[75%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
-                  m.from === "me"
-                    ? `rounded-br-md bg-gradient-to-r ${c.gradient} text-white`
-                    : "rounded-bl-md border border-black/5 bg-white text-stone-800 dark:border-white/10 dark:bg-white/10 dark:text-white"
-                }`}
-              >
-                {m.text}
-              </div>
-            </div>
-          ))}
-
-          {typing && (
-            <div className="flex justify-start">
-              <div className="flex gap-1 rounded-2xl rounded-bl-md border border-black/5 bg-white px-4 py-3 dark:border-white/10 dark:bg-white/10">
-                {[0, 1, 2].map((d) => (
-                  <span
-                    key={d}
-                    className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400"
-                    style={{ animationDelay: `${d * 0.15}s` }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-shrink-0 items-center gap-2 border-t border-black/5 bg-white p-3 dark:border-white/10 dark:bg-stone-900">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") send();
-            }}
-            placeholder={lang === "RU" ? "Напишите сообщение..." : "Type a message..."}
-              className="flex-1 rounded-full border border-black/10 bg-black/5 px-4 py-2.5 text-sm text-stone-800 placeholder:text-stone-400 focus:border-[var(--tp)] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
-          />
-          <button
-            onClick={send}
-            disabled={!input.trim()}
-            className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r ${c.gradient} text-white transition-all hover:opacity-90 disabled:opacity-40`}
-          >
-            <Send className="h-4 w-4" />
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-};
-
 interface MentorsPageProps {
   onBack: () => void;
   lang: Lang;
@@ -707,15 +517,51 @@ const BookingModal = ({
 };
 
 export const MentorsPage = ({ onBack, lang }: MentorsPageProps) => {
+  const { setCurrentPage } = useContext(LanguageContext);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
-  const [chatMentor, setChatMentor] = useState<Mentor | null>(null);
   const [bookedId, setBookedId] = useState<number | null>(null);
   const [bookingMentor, setBookingMentor] = useState<Mentor | null>(null);
   const [bookingConfirmed, setBookingConfirmed] = useState<{ mentorId: number; date: string; time: string } | null>(null);
+  const [apiMentors, setApiMentors] = useState<any[]>([]);
 
-  const mentors = useMemo(() => buildMentors(lang), [lang]);
+  useEffect(() => {
+    API.getMentorUsers()
+      .then((d) => setApiMentors(d.mentors || []))
+      .catch(() => {});
+  }, []);
+
+  const hardcodedMentors = useMemo(() => buildMentors(lang), [lang]);
+
+  const mentors = useMemo(() => {
+    const seen = new Set(hardcodedMentors.map((m) => m.id));
+    const merged = [...hardcodedMentors];
+    for (const m of apiMentors) {
+      if (!seen.has(m.id)) {
+        seen.add(m.id);
+        merged.push({
+          id: m.id,
+          name: m.name,
+          role: m.role_title || "Mentor",
+          company: "",
+          initials: m.name?.split(" ").map((n: string) => n[0]).join("").slice(0, 2) || "?",
+          color: "cyan" as ColorKey,
+          category: "all",
+          experience: 0,
+          rating: 5.0,
+          reviews: 0,
+          pricePerHour: 0,
+          skills: [],
+          languages: ["RU"],
+          bio: "",
+          sessionsCompleted: 0,
+          nextSlot: "",
+        });
+      }
+    }
+    return merged;
+  }, [hardcodedMentors, apiMentors]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -771,7 +617,8 @@ export const MentorsPage = ({ onBack, lang }: MentorsPageProps) => {
 
   const openChat = (mentor: Mentor) => {
     setSelectedMentor(null);
-    setChatMentor(mentor);
+    setCurrentPage("chats");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -1090,10 +937,6 @@ export const MentorsPage = ({ onBack, lang }: MentorsPageProps) => {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {chatMentor && <ChatWindow mentor={chatMentor} lang={lang} onClose={() => setChatMentor(null)} />}
       </AnimatePresence>
     </div>
   );

@@ -7,7 +7,7 @@ import {
   Server, Smartphone, Settings, Gamepad2,
   ClipboardCheck, Award, Lock
 } from 'lucide-react';
-import { lessonData } from './LessonData.tsx';
+import { getAvailableSkillIds } from './LessonData.tsx';
 import { useRoadmapProgress, useProgressVersion, getProgressPercent } from '../utils/useRoadmapProgress';
 import { AchievementToast } from '../utils/AchievementToast';
 import { PhaseExam } from './PhaseExam';
@@ -325,7 +325,7 @@ const RoadmapPanel = ({ roadmap, roadmapKey, onClose, t, onStartLearning, lang, 
                       const isActive = activeSkill === skill.id;
                       const isDone = completed.has(skill.id);
                       const lessonKey = skillIdToLessonKey[skill.id];
-                      const hasLesson = lessonKey && lessonData[lessonKey] && lessonData[lessonKey][lang];
+                      const hasLesson = lessonKey && getAvailableSkillIds().includes(lessonKey);
                       return (
                         <div key={skill.id} id={`skill-${skill.id}`}>
                           <motion.button

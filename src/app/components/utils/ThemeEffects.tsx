@@ -17,27 +17,29 @@ function useIsDark() {
 /* ═══════════════════════════════════════════════════════════════
    BLUE THEME — Ocean Waves
    ═══════════════════════════════════════════════════════════════ */
-const OceanWaves = () => {
-  const dark = useIsDark();
-  const m = dark ? 1 : 0.5; // multiplier for dark mode
+const OceanWaves = ({ dark, isMobile }: { dark: boolean; isMobile: boolean }) => {
+  const m = dark ? 1 : 0.5;
 
-  const waveData = useMemo(() => [
-    { d: "M0,80 C120,120 240,40 360,80 C480,120 600,40 720,80 C840,120 960,40 1080,80 C1200,120 1320,40 1440,80 L1440,160 L0,160 Z", baseOp: 0.22, duration: 10, delay: 0, y: [0, -20, 0], top: "62%", height: 160 },
-    { d: "M0,100 C180,60 360,120 540,80 C720,40 900,110 1080,70 C1260,30 1350,100 1440,90 L1440,160 L0,160 Z", baseOp: 0.14, duration: 14, delay: 1.5, y: [0, -14, 0], top: "70%", height: 140 },
-    { d: "M0,110 C200,80 400,130 600,90 C800,50 1000,120 1200,80 C1300,60 1400,100 1440,100 L1440,160 L0,160 Z", baseOp: 0.09, duration: 18, delay: 3, y: [0, -8, 0], top: "78%", height: 120 },
-    { d: "M0,120 C250,100 500,140 750,110 C1000,80 1250,130 1440,110 L1440,160 L0,160 Z", baseOp: 0.05, duration: 22, delay: 5, y: [0, -5, 0], top: "85%", height: 100 },
-  ], []);
+  const waveData = useMemo(() => {
+    const all = [
+      { d: "M0,80 C120,120 240,40 360,80 C480,120 600,40 720,80 C840,120 960,40 1080,80 C1200,120 1320,40 1440,80 L1440,160 L0,160 Z", baseOp: 0.22, duration: 10, delay: 0, y: [0, -20, 0], top: "62%", height: 160 },
+      { d: "M0,100 C180,60 360,120 540,80 C720,40 900,110 1080,70 C1260,30 1350,100 1440,90 L1440,160 L0,160 Z", baseOp: 0.14, duration: 14, delay: 1.5, y: [0, -14, 0], top: "70%", height: 140 },
+      { d: "M0,110 C200,80 400,130 600,90 C800,50 1000,120 1200,80 C1300,60 1400,100 1440,100 L1440,160 L0,160 Z", baseOp: 0.09, duration: 18, delay: 3, y: [0, -8, 0], top: "78%", height: 120 },
+      { d: "M0,120 C250,100 500,140 750,110 C1000,80 1250,130 1440,110 L1440,160 L0,160 Z", baseOp: 0.05, duration: 22, delay: 5, y: [0, -5, 0], top: "85%", height: 100 },
+    ];
+    return isMobile ? all.slice(0, 2) : all;
+  }, [isMobile]);
 
-  const bubbles = useMemo(() => Array.from({ length: 14 }, (_, i) => ({
+  const bubbles = useMemo(() => Array.from({ length: isMobile ? 5 : 14 }, (_, i) => ({
     id: i, size: 3 + Math.random() * 18, left: `${5 + Math.random() * 90}%`,
     bottom: `${-3 + Math.random() * 20}%`, duration: 10 + Math.random() * 15,
     delay: Math.random() * 10, drift: (Math.random() - 0.5) * 70,
-  })), []);
+  })), [isMobile]);
 
-  const lightRays = useMemo(() => Array.from({ length: 5 }, (_, i) => ({
+  const lightRays = useMemo(() => Array.from({ length: isMobile ? 2 : 5 }, (_, i) => ({
     id: i, left: `${12 + i * 18}%`, width: 2 + Math.random() * 3, angle: -15 + Math.random() * 30,
     opacity: (0.02 + Math.random() * 0.03) * m, duration: 8 + i * 2,
-  })), [m]);
+  })), [m, isMobile]);
 
   return (
     <>
@@ -84,41 +86,41 @@ const OceanWaves = () => {
 /* ═══════════════════════════════════════════════════════════════
    PURPLE THEME — Starry Sky + Planets + Comets
    ═══════════════════════════════════════════════════════════════ */
-const CosmicGlow = () => {
-  const dark = useIsDark();
+const CosmicGlow = ({ dark, isMobile }: { dark: boolean; isMobile: boolean }) => {
   const m = dark ? 1 : 0.4;
 
-  const starsFar = useMemo(() => Array.from({ length: dark ? 100 : 35 }, (_, i) => ({
+  const starsFar = useMemo(() => Array.from({ length: isMobile ? (dark ? 30 : 12) : (dark ? 100 : 35) }, (_, i) => ({
     id: i, x: Math.random() * 100, y: Math.random() * 100,
     size: 0.5 + Math.random() * 1, dur: 2 + Math.random() * 4, delay: Math.random() * 6,
-  })), [dark]);
+  })), [dark, isMobile]);
 
-  const starsMid = useMemo(() => Array.from({ length: dark ? 50 : 18 }, (_, i) => ({
+  const starsMid = useMemo(() => Array.from({ length: isMobile ? (dark ? 15 : 6) : (dark ? 50 : 18) }, (_, i) => ({
     id: i, x: Math.random() * 100, y: Math.random() * 100,
     size: 1.2 + Math.random() * 2, dur: 1.5 + Math.random() * 3, delay: Math.random() * 5,
-  })), [dark]);
+  })), [dark, isMobile]);
 
-  const starsBright = useMemo(() => Array.from({ length: dark ? 25 : 8 }, (_, i) => ({
+  const starsBright = useMemo(() => Array.from({ length: isMobile ? (dark ? 8 : 3) : (dark ? 25 : 8) }, (_, i) => ({
     id: i, x: Math.random() * 100, y: Math.random() * 100,
     size: 2.5 + Math.random() * 2.5, dur: 0.8 + Math.random() * 2, delay: Math.random() * 3,
-  })), [dark]);
+  })), [dark, isMobile]);
 
-  const nebulae = useMemo(() => [], []);
+  const planets = useMemo(() => {
+    const all = [
+      { x: "8%",  y: "18%", size: 90,  c1: "var(--tp)",     c2: "var(--tp-dark)", ring: true,  dur: 35, floatDur: 9 },
+      { x: "85%", y: "55%", size: 72,  c1: "var(--ta)",     c2: "var(--tp-dark)", ring: true,  dur: 28, floatDur: 11 },
+      { x: "50%", y: "80%", size: 48,  c1: "var(--tp)",     c2: "var(--ta)",      ring: false, dur: 42, floatDur: 7 },
+      { x: "72%", y: "12%", size: 56,  c1: "var(--ta)",     c2: "var(--tp)",      ring: true,  dur: 38, floatDur: 10 },
+      { x: "20%", y: "65%", size: 38,  c1: "var(--tp-dark)",c2: "var(--ta)",      ring: false, dur: 50, floatDur: 8 },
+      { x: "60%", y: "35%", size: 28,  c1: "var(--tp)",     c2: "white",         ring: false, dur: 30, floatDur: 6 },
+    ];
+    return isMobile ? all.slice(0, 3) : all;
+  }, [isMobile]);
 
-  const planets = useMemo(() => [
-    { x: "8%",  y: "18%", size: 90,  c1: "var(--tp)",     c2: "var(--tp-dark)", ring: true,  dur: 35, floatDur: 9 },
-    { x: "85%", y: "55%", size: 72,  c1: "var(--ta)",     c2: "var(--tp-dark)", ring: true,  dur: 28, floatDur: 11 },
-    { x: "50%", y: "80%", size: 48,  c1: "var(--tp)",     c2: "var(--ta)",      ring: false, dur: 42, floatDur: 7 },
-    { x: "72%", y: "12%", size: 56,  c1: "var(--ta)",     c2: "var(--tp)",      ring: true,  dur: 38, floatDur: 10 },
-    { x: "20%", y: "65%", size: 38,  c1: "var(--tp-dark)",c2: "var(--ta)",      ring: false, dur: 50, floatDur: 8 },
-    { x: "60%", y: "35%", size: 28,  c1: "var(--tp)",     c2: "white",         ring: false, dur: 30, floatDur: 6 },
-  ], []);
-
-  const comets = useMemo(() => Array.from({ length: dark ? 5 : 2 }, (_, i) => ({
+  const comets = useMemo(() => Array.from({ length: isMobile ? (dark ? 2 : 1) : (dark ? 5 : 2) }, (_, i) => ({
     id: i, startX: 10 + Math.random() * 60, startY: 2 + Math.random() * 20,
     angle: 30 + Math.random() * 20, length: 80 + Math.random() * 80,
     dur: 1.5 + Math.random() * 1, delay: i * 8 + Math.random() * 4, repeatDelay: 12 + Math.random() * 8,
-  })), [dark]);
+  })), [dark, isMobile]);
 
   return (
     <>
@@ -205,49 +207,43 @@ const CosmicGlow = () => {
 /* ═══════════════════════════════════════════════════════════════
    MONO THEME — Geometric Grids + Objects
    ═══════════════════════════════════════════════════════════════ */
-const GeometricGrid = () => {
-  const dark = useIsDark();
+const GeometricGrid = ({ dark, isMobile }: { dark: boolean; isMobile: boolean }) => {
   const op = dark ? 1 : 0.6;
 
-  const hLines = useMemo(() => Array.from({ length: 10 }, (_, i) => ({ id: i, y: `${10 + i * 10}%`, delay: i * 0.4 })), []);
-  const vLines = useMemo(() => Array.from({ length: 7 }, (_, i) => ({ id: i, x: `${12 + i * 14}%`, delay: i * 0.5 })), []);
+  const hLines = useMemo(() => Array.from({ length: isMobile ? 5 : 10 }, (_, i) => ({ id: i, y: `${10 + i * 10}%`, delay: i * 0.4 })), [isMobile]);
+  const vLines = useMemo(() => Array.from({ length: isMobile ? 4 : 7 }, (_, i) => ({ id: i, x: `${12 + i * 14}%`, delay: i * 0.5 })), [isMobile]);
 
-  const polygons = useMemo(() => Array.from({ length: 12 }, (_, i) => ({
+  const polygons = useMemo(() => Array.from({ length: isMobile ? 5 : 12 }, (_, i) => ({
     id: i, size: 20 + Math.random() * 70, x: `${5 + Math.random() * 85}%`, y: `${5 + Math.random() * 85}%`,
     rot: Math.random() * 360, delay: Math.random() * 5, type: i % 4,
-  })), []);
+  })), [isMobile]);
 
-  const nodes = useMemo(() => Array.from({ length: 24 }, (_, i) => ({
+  const nodes = useMemo(() => Array.from({ length: isMobile ? 8 : 24 }, (_, i) => ({
     id: i, x: Math.random() * 100, y: Math.random() * 100, size: 2 + Math.random() * 3, delay: Math.random() * 4,
-  })), []);
+  })), [isMobile]);
 
   const connections = useMemo(() => {
     const pairs: { x1: number; y1: number; x2: number; y2: number; delay: number }[] = [];
-    for (let i = 0; i < 12; i++) {
+    const count = isMobile ? 4 : 12;
+    for (let i = 0; i < count; i++) {
       const a = nodes[Math.floor(Math.random() * nodes.length)];
       const b = nodes[Math.floor(Math.random() * nodes.length)];
       if (a && b) pairs.push({ x1: a.x, y1: a.y, x2: b.x, y2: b.y, delay: i * 0.4 });
     }
     return pairs;
-  }, [nodes]);
+  }, [nodes, isMobile]);
 
-  const floatingSquares = useMemo(() => Array.from({ length: 6 }, (_, i) => ({
+  const floatingSquares = useMemo(() => Array.from({ length: isMobile ? 2 : 6 }, (_, i) => ({
     id: i, size: 100 + Math.random() * 200, x: `${Math.random() * 80}%`, y: `${Math.random() * 80}%`,
     dur: 25 + Math.random() * 20, delay: Math.random() * 5,
-  })), []);
+  })), [isMobile]);
 
-  /* ── Rotating diamond ── */
   const diamond = useMemo(() => ({ x: "50%", y: "30%", size: 120, dur: 45 }), []);
-
-  /* ── Pulsing circle ── */
   const pulsingCircle = useMemo(() => ({ x: "75%", y: "60%", size: 80, dur: 8 }), []);
-
-  /* ── Floating triangle ── */
   const triangle = useMemo(() => ({ x: "20%", y: "45%", size: 60, dur: 35, floatDur: 10 }), []);
 
   return (
     <>
-      {/* Grid lines */}
       <svg className="pointer-events-none absolute inset-0 w-full h-full" style={{ opacity: 0.05 * op }}>
         {hLines.map((l) => (
           <motion.line key={`h-${l.id}`} x1="0%" y1={l.y} x2="100%" y2={l.y} stroke="var(--tp)" strokeWidth="0.5"
@@ -263,7 +259,6 @@ const GeometricGrid = () => {
         ))}
       </svg>
 
-      {/* Connection lines */}
       <svg className="pointer-events-none absolute inset-0 w-full h-full" style={{ opacity: 0.06 * op }}>
         {connections.map((c, i) => (
           <motion.line key={`conn-${i}`} x1={`${c.x1}%`} y1={`${c.y1}%`} x2={`${c.x2}%`} y2={`${c.y2}%`}
@@ -274,7 +269,6 @@ const GeometricGrid = () => {
         ))}
       </svg>
 
-      {/* ★ Rotating diamond outline */}
       <motion.div className="pointer-events-none absolute"
         style={{ left: diamond.x, top: diamond.y, width: diamond.size, height: diamond.size, marginLeft: -diamond.size / 2, marginTop: -diamond.size / 2 }}
         animate={{ rotate: [0, 360] }}
@@ -284,7 +278,6 @@ const GeometricGrid = () => {
         <div className="absolute inset-[15%] border border-[var(--tp)]/[0.08] rotate-45" />
       </motion.div>
 
-      {/* ★ Pulsing concentric circles */}
       <motion.div className="pointer-events-none absolute"
         style={{ left: pulsingCircle.x, top: pulsingCircle.y, width: 0, height: 0 }}
       >
@@ -301,7 +294,6 @@ const GeometricGrid = () => {
         <div className="absolute w-2 h-2 rounded-full bg-[var(--tp)] -ml-1 -mt-1" style={{ opacity: 0.15 * op }} />
       </motion.div>
 
-      {/* ★ Floating triangle (SVG) */}
       <motion.div className="pointer-events-none absolute"
         style={{ left: triangle.x, top: triangle.y }}
         animate={{ y: [0, -15, 0], rotate: [0, 10, -10, 0] }}
@@ -313,7 +305,6 @@ const GeometricGrid = () => {
         </svg>
       </motion.div>
 
-      {/* ★ Cross / plus shape */}
       <motion.div className="pointer-events-none absolute"
         style={{ left: "40%", top: "70%", opacity: 0.06 * op }}
         animate={{ rotate: [0, 90, 0], scale: [0.9, 1.1, 0.9] }}
@@ -325,7 +316,6 @@ const GeometricGrid = () => {
         </svg>
       </motion.div>
 
-      {/* Large floating rotating squares */}
       {floatingSquares.map((s) => (
         <motion.div key={`fsq-${s.id}`} className="pointer-events-none absolute border border-[var(--tp)]"
           style={{ width: s.size, height: s.size, left: s.x, top: s.y, opacity: 0.04 * op }}
@@ -334,7 +324,6 @@ const GeometricGrid = () => {
         />
       ))}
 
-      {/* Floating polygons */}
       {polygons.map((p) => {
         const cls = p.type === 0 ? "rounded-full" : p.type === 1 ? "rounded-sm" : p.type === 2 ? "rounded-sm rotate-45" : "rounded-sm";
         return (
@@ -346,7 +335,6 @@ const GeometricGrid = () => {
         );
       })}
 
-      {/* Node dots */}
       {nodes.map((n) => (
         <motion.div key={`node-${n.id}`} className="absolute rounded-full bg-[var(--tp)]"
           style={{ width: n.size, height: n.size, left: `${n.x}%`, top: `${n.y}%`, opacity: 0.06 * op }}
@@ -355,7 +343,6 @@ const GeometricGrid = () => {
         />
       ))}
 
-      {/* Scan line */}
       <motion.div className="pointer-events-none absolute left-0 right-0 h-px"
         style={{ background: "linear-gradient(90deg, transparent 5%, var(--tp) 50%, transparent 95%)", opacity: 0.1 * op }}
         animate={{ top: ["-2%", "102%"] }}
@@ -366,13 +353,17 @@ const GeometricGrid = () => {
 };
 
 /* ═══════════════════════════════════════════════════════════════ */
-export const ThemeEffects = () => {
+export const ThemeEffects = ({ isHome = true, isMobile = false }: { isHome?: boolean; isMobile?: boolean }) => {
   const { colorTheme } = useContext(LanguageContext);
+  const dark = useIsDark();
+
+  if (isMobile && !isHome) return null;
+
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-      {colorTheme === "blue" && <OceanWaves />}
-      {colorTheme === "purple" && <CosmicGlow />}
-      {colorTheme === "mono" && <GeometricGrid />}
+      {colorTheme === "blue" && <OceanWaves dark={dark} isMobile={isMobile} />}
+      {colorTheme === "purple" && <CosmicGlow dark={dark} isMobile={isMobile} />}
+      {colorTheme === "mono" && <GeometricGrid dark={dark} isMobile={isMobile} />}
     </div>
   );
 };

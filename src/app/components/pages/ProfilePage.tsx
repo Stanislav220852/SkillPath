@@ -1096,6 +1096,15 @@ export const ProfilePage = ({ onBack, lang, currentUser, onLogout, onNavigate, r
             <motion.button
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
+              onClick={() => (window as any).__showPresentation?.()}
+              className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#8AA8FF]/30 bg-gradient-to-r from-[#8AA8FF]/5 to-[#8AA8FF]/10 p-4 text-sm font-black text-[#8AA8FF] shadow-sm transition-all hover:border-[#8AA8FF]/50 hover:from-[#8AA8FF]/10 hover:to-[#8AA8FF]/15 hover:shadow-md hover:shadow-[#8AA8FF]/10"
+            >
+              Replay Presentation
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               onClick={onLogout}
               className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-rose-300/60 bg-gradient-to-r from-rose-50/80 to-rose-100/60 p-4 text-sm font-black text-rose-600 shadow-sm transition-all hover:border-rose-400/70 hover:from-rose-100/80 hover:to-rose-200/60 hover:shadow-md hover:shadow-rose-500/10 dark:border-rose-400/20 dark:from-rose-400/[0.05] dark:to-rose-400/[0.08] dark:text-rose-400 dark:hover:border-rose-400/35 dark:hover:from-rose-400/10 dark:hover:to-rose-400/15"
             >

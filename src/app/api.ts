@@ -100,6 +100,8 @@ export const completeLesson = (skillId: string, lessonId: string) =>
   });
 
 // === Mentors ===
+export const getMentors = () => api("/api/mentors");
+
 export const bookMentor = (mentorId: number, date: string, time: string) =>
   api("/api/mentors/book", {
     method: "POST",
@@ -154,3 +156,97 @@ export const uploadAvatar = async (file: File): Promise<any> => {
   setSavedUser(data);
   return data;
 };
+
+// === Chat (mentor) ===
+export const getMentorInbox = () => api("/api/chat/mentor/inbox");
+export const markChatAsRead = (mentorId: number) =>
+  api(`/api/chat/${mentorId}/read`, { method: "PATCH" });
+
+// === Chat (general) ===
+export const getGeneralChatHistory = () => api("/api/chat/general/history");
+export const sendGeneralMessage = (text: string) =>
+  api("/api/chat/general", { method: "POST", body: JSON.stringify({ text }) });
+
+// === Chat (direct) ===
+export const getDirectConversations = () => api("/api/chat/direct/conversations");
+export const getDirectHistory = (userId: number) => api(`/api/chat/direct/${userId}`);
+export const sendDirectMessage = (userId: number, text: string) =>
+  api(`/api/chat/direct/${userId}`, { method: "POST", body: JSON.stringify({ text }) });
+export const markDirectRead = (userId: number) =>
+  api(`/api/chat/direct/${userId}/read`, { method: "PATCH" });
+
+// === Chat (user search) ===
+export const searchUsers = (query: string) =>
+  api(`/api/chat/users/search?q=${encodeURIComponent(query)}`);
+
+// === Chat (mentor users from users table) ===
+export const getMentorUsers = () => api("/api/chat/mentors/list");
+
+// === Admin ===
+export const getAdminDashboard = () => api("/api/admin/dashboard");
+
+export const getAdminUsers = (search = "", page = 1, perPage = 20) =>
+  api(`/api/admin/users?search=${encodeURIComponent(search)}&page=${page}&per_page=${perPage}`);
+
+export const getAdminUser = (userId: number) =>
+  api(`/api/admin/users/${userId}`);
+
+export const getAdminUserStats = (userId: number) =>
+  api(`/api/admin/users/${userId}/stats`);
+
+export const getAdminUserQuizHistory = (userId: number) =>
+  api(`/api/admin/users/${userId}/quiz-history`);
+
+export const getAdminUserBookings = (userId: number) =>
+  api(`/api/admin/users/${userId}/bookings`);
+
+export const updateAdminUser = (userId: number, data: { role?: string; is_active?: boolean }) =>
+  api(`/api/admin/users/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+
+export const deleteAdminUser = (userId: number) =>
+  api(`/api/admin/users/${userId}`, { method: "DELETE" });
+
+export const hardDeleteAdminUser = (userId: number) =>
+  api(`/api/admin/users/${userId}/permanent`, { method: "DELETE" });
+
+export const resetAdminPassword = (userId: number, newPassword: string) =>
+  api(`/api/admin/users/${userId}/reset-password`, {
+    method: "POST",
+    body: JSON.stringify({ new_password: newPassword }),
+  });
+
+export const getAdminMentors = () => api("/api/admin/mentors");
+
+export const createAdminMentor = (data: any) =>
+  api("/api/admin/mentors", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+export const updateAdminMentor = (mentorId: number, data: any) =>
+  api(`/api/admin/mentors/${mentorId}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+
+export const deleteAdminMentor = (mentorId: number) =>
+  api(`/api/admin/mentors/${mentorId}`, { method: "DELETE" });
+
+export const getAdminBookings = () => api("/api/admin/bookings");
+
+export const updateAdminBooking = (bookingId: number, status: string) =>
+  api(`/api/admin/bookings/${bookingId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ status }),
+  });
+
+export const getAdminSettings = () => api("/api/admin/settings");
+
+export const updateAdminSettings = (key: string, value: any) =>
+  api("/api/admin/settings", {
+    method: "PATCH",
+    body: JSON.stringify({ key, value }),
+  });
